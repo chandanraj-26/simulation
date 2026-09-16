@@ -1244,10 +1244,6 @@ input[type=range] {
           <source src="D:/New folder/rocet.mp4" type="video/mp4">
           Your browser does not support the video tag.
         </video>
-        <!-- Floating un-mute quick banner if autoplay muted -->
-        <button id="btnUnmuteVideo" class="landing-unmute-chip" style="display:none;">
-          🔊 Click to Unmute Audio
-        </button>
       </div>
 
       <!-- Newton's Third Law Visual Explainer Cards Below Video -->
@@ -3410,6 +3406,8 @@ input[type=range] {
       landingOverlay.scrollTop = 0;
     }
     if (introVideo) {
+      introVideo.muted = false;
+      introVideo.volume = 1.0;
       introVideo.currentTime = 0;
       introVideo.play().catch(() => {});
     }
@@ -3421,29 +3419,34 @@ input[type=range] {
 
   if (btnReplayVideo && introVideo) {
     btnReplayVideo.addEventListener('click', () => {
+      introVideo.muted = false;
+      introVideo.volume = 1.0;
       introVideo.currentTime = 0;
       introVideo.play().catch(() => {});
     });
   }
 
-  if (btnUnmuteVideo && introVideo) {
-    btnUnmuteVideo.addEventListener('click', () => {
-      introVideo.muted = false;
-      btnUnmuteVideo.style.display = 'none';
-      introVideo.play().catch(() => {});
-    });
-  }
-
   if (introVideo) {
-    // Autoplay attempt (muted first for browser policy compatibility)
-    introVideo.muted = true;
+    // ALWAYS SOUND ON: Unmuted, full volume
+    introVideo.muted = false;
+    introVideo.volume = 1.0;
+
     const playPromise = introVideo.play();
     if (playPromise !== undefined) {
-      playPromise.then(() => {
-        // Video playing muted, display unmute button
-        if (btnUnmuteVideo) btnUnmuteVideo.style.display = 'inline-flex';
-      }).catch(err => {
-        console.log('Autoplay deferred until user interaction:', err);
+      playPromise.catch(() => {
+        // If the browser temporarily restricts unmuted autoplay before the first user gesture,
+        // trigger sound immediately on the very first touch, keypress, or click anywhere on the page
+        const startAudio = () => {
+          introVideo.muted = false;
+          introVideo.volume = 1.0;
+          introVideo.play().catch(() => {});
+          window.removeEventListener('click', startAudio);
+          window.removeEventListener('touchstart', startAudio);
+          window.removeEventListener('keydown', startAudio);
+        };
+        window.addEventListener('click', startAudio, { once: true });
+        window.addEventListener('touchstart', startAudio, { once: true });
+        window.addEventListener('keydown', startAudio, { once: true });
       });
     }
 
