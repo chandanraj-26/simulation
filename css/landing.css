@@ -1,0 +1,309 @@
+/* ==========================================================================
+   LIGHT & DISSOLVE THEME — Introductory Video Lesson Modal
+   A luminous frosted-glass dissolve overlay with daylight tones, soft blurs,
+   and smooth cinematic transitions for Class 9-10 students.
+   ========================================================================== */
+
+.landing-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 99999;
+  /* Luminous light frosted glass dissolve background */
+  background: radial-gradient(circle at 50% 10%, rgba(255, 255, 255, 0.95) 0%, rgba(240, 246, 254, 0.93) 50%, rgba(226, 238, 252, 0.92) 100%);
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  color: #0f172a;
+  overflow-y: auto;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 24px 20px 48px;
+  box-sizing: border-box;
+  opacity: 1;
+  visibility: visible;
+  /* Dissolve animation: smooth fade and blur transition */
+  transition: opacity 0.45s cubic-bezier(0.16, 1, 0.3, 1),
+              filter 0.45s cubic-bezier(0.16, 1, 0.3, 1),
+              visibility 0.45s ease,
+              transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+  transform: translateY(0) scale(1);
+  filter: blur(0px);
+}
+
+.landing-overlay.landing-hidden {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transform: translateY(-8px) scale(0.985);
+  filter: blur(14px); /* Authentic dissolve effect into the lab stage */
+}
+
+.landing-content {
+  width: 100%;
+  max-width: 920px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  animation: landingFadeIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes landingFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.99);
+    filter: blur(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: blur(0);
+  }
+}
+
+.landing-top-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 12px;
+  border-bottom: 1px solid rgba(226, 232, 240, 0.8);
+}
+
+.landing-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 17px;
+  font-weight: 800;
+  color: #0f172a;
+  letter-spacing: -0.02em;
+}
+
+.landing-brand-icon {
+  font-size: 22px;
+  background: #eff6ff;
+  padding: 4px;
+  border-radius: 8px;
+  border: 1px solid #bfdbfe;
+}
+
+.landing-skip-btn {
+  background: #ffffff;
+  color: #2563eb;
+  border: 1.5px solid #bfdbfe;
+  border-radius: 10px;
+  padding: 8px 18px;
+  font-family: inherit;
+  font-size: 13.5px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 1px 3px rgba(37, 99, 235, 0.08);
+  transition: all 0.2s ease;
+}
+
+.landing-skip-btn:hover {
+  background: #eff6ff;
+  border-color: #93c5fd;
+  transform: translateX(2px);
+  box-shadow: 0 3px 8px rgba(37, 99, 235, 0.15);
+}
+
+.landing-header {
+  text-align: center;
+  max-width: 800px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.landing-topic-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #eff6ff;
+  color: #2563eb;
+  border: 1px solid #bfdbfe;
+  border-radius: 20px;
+  padding: 4px 14px;
+  font-size: 12px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.landing-title {
+  font-size: clamp(24px, 3.8vw, 36px);
+  font-weight: 800;
+  color: #0f172a;
+  margin: 0;
+  line-height: 1.25;
+  letter-spacing: -0.03em;
+}
+
+.landing-desc {
+  font-size: 15px;
+  line-height: 1.6;
+  color: #475569;
+  margin: 0;
+  max-width: 740px;
+}
+
+/* Light Dissolve Theater Card */
+.landing-theater {
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(226, 232, 240, 0.95);
+  border-radius: 22px;
+  padding: 18px;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  box-shadow: 0 20px 45px -10px rgba(15, 23, 42, 0.08), 0 0 0 1px rgba(255, 255, 255, 0.8) inset;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.landing-video-wrapper {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  background: #0f172a;
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 6px 20px rgba(15, 23, 42, 0.12);
+}
+
+.landing-video-wrapper video {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+}
+
+/* Light Explainer Cards */
+.landing-explainer-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+@media (max-width: 680px) {
+  .landing-explainer-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.landing-explainer-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  border-radius: 12px;
+  padding: 14px 16px;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);
+}
+
+.action-card {
+  background: #fff1f2;
+  border: 1.5px solid #fecdd3;
+  border-left: 4px solid #e11d48;
+}
+
+.reaction-card {
+  background: #ecfdf5;
+  border: 1.5px solid #a7f3d0;
+  border-left: 4px solid #059669;
+}
+
+.explainer-icon {
+  font-size: 20px;
+  line-height: 1.2;
+}
+
+.explainer-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.action-card .explainer-title {
+  font-size: 13.5px;
+  font-weight: 800;
+  color: #9f1239;
+}
+
+.reaction-card .explainer-title {
+  font-size: 13.5px;
+  font-weight: 800;
+  color: #065f46;
+}
+
+.action-card .explainer-p {
+  font-size: 12.5px;
+  color: #881337;
+  line-height: 1.45;
+  margin: 0;
+}
+
+.reaction-card .explainer-p {
+  font-size: 12.5px;
+  color: #064e3b;
+  line-height: 1.45;
+  margin: 0;
+}
+
+/* Action Buttons */
+.landing-footer-actions {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  margin-top: 4px;
+}
+
+.landing-cta-btn {
+  background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 60%, #10b981 100%);
+  color: #ffffff;
+  border: none;
+  border-radius: 12px;
+  padding: 14px 32px;
+  font-family: inherit;
+  font-size: 15.5px;
+  font-weight: 800;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 8px 20px -3px rgba(37, 99, 235, 0.4);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.landing-cta-btn:hover {
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 12px 28px -3px rgba(37, 99, 235, 0.5);
+}
+
+.landing-secondary-btn {
+  background: #ffffff;
+  color: #334155;
+  border: 1.5px solid #cbd5e1;
+  border-radius: 12px;
+  padding: 13px 20px;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.15s ease;
+}
+
+.landing-secondary-btn:hover {
+  background: #f8fafc;
+  border-color: #94a3b8;
+  color: #0f172a;
+}

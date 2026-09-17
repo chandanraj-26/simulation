@@ -1,0 +1,904 @@
+/* ==========================================================================
+   PhysicsLab — PhET-Inspired Student-Friendly Design System (Class 9-10)
+   Clean, intuitive, and welcoming for young learners and teachers.
+   ========================================================================== */
+
+:root {
+  --bg: #f4f7fb;
+  --bg-card: #ffffff;
+  --bg-subtle: #f8fafc;
+  --border: #e2e8f0;
+  --border-focus: #3b82f6;
+
+  --text-main: #0f172a;
+  --text-muted: #64748b;
+  --text-dim: #94a3b8;
+
+  /* Force Colors (Clear & High-Contrast) */
+  --thrust: #10b981;       /* Green for upward engine power */
+  --thrust-hover: #059669;
+  --thrust-light: #ecfdf5;
+  --thrust-border: #a7f3d0;
+
+  --weight: #f59e0b;       /* Warm Amber for downward gravity/weight */
+  --weight-hover: #d97706;
+  --weight-light: #fffbeb;
+  --weight-border: #fde68a;
+
+  --net: #0284c7;          /* Sky Blue for Net Resultant Force */
+  --net-light: #f0f9ff;
+  --net-border: #bae6fd;
+
+  --primary: #2563eb;
+  --primary-hover: #1d4ed8;
+  --primary-light: #eff6ff;
+
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+
+  --shadow-sm: 0 1px 3px rgba(15, 23, 42, 0.04);
+  --shadow-card: 0 4px 16px -2px rgba(15, 23, 42, 0.06), 0 2px 6px -2px rgba(15, 23, 42, 0.03);
+  --shadow-pop: 0 10px 25px -5px rgba(15, 23, 42, 0.1), 0 8px 10px -6px rgba(15, 23, 42, 0.05);
+
+  --font-main: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: var(--font-main);
+  background-color: var(--bg);
+  color: var(--text-main);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ==========================================================================
+   TOP APPLICATION HEADER
+   ========================================================================== */
+.app-header {
+  background: #ffffff;
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  box-shadow: var(--shadow-sm);
+}
+
+.header-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 12px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.brand-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.brand-icon {
+  font-size: 28px;
+  line-height: 1;
+  background: var(--primary-light);
+  padding: 8px;
+  border-radius: var(--radius-md);
+  border: 1px solid #bfdbfe;
+}
+
+.brand-title {
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--text-main);
+  margin: 0;
+  letter-spacing: -0.02em;
+}
+
+.brand-tag {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--primary);
+  background: var(--primary-light);
+  padding: 2px 8px;
+  border-radius: 12px;
+  margin-left: 6px;
+}
+
+.brand-sub {
+  font-size: 12.5px;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+/* MODE SWITCHER TABS (Simple Lab vs Explore & Graphs) */
+.mode-tabs {
+  display: flex;
+  background: #f1f5f9;
+  padding: 4px;
+  border-radius: var(--radius-md);
+  gap: 4px;
+}
+
+.mode-tab {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 18px;
+  border: none;
+  background: transparent;
+  color: var(--text-muted);
+  font-family: var(--font-main);
+  font-size: 13.5px;
+  font-weight: 700;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.mode-tab:hover {
+  color: var(--text-main);
+}
+
+.mode-tab.active {
+  background: #ffffff;
+  color: var(--primary);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.btn-header-action {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  font-size: 13px;
+  font-weight: 600;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: #ffffff;
+  color: var(--text-main);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.btn-header-action:hover {
+  background: var(--bg-subtle);
+  border-color: #cbd5e1;
+}
+
+.btn-header-video {
+  background: var(--primary-light);
+  color: var(--primary);
+  border-color: #bfdbfe;
+}
+
+.btn-header-video:hover {
+  background: #dbeafe;
+}
+
+/* ==========================================================================
+   MAIN LAYOUT CONTAINER
+   ========================================================================== */
+.lab-content-area {
+  max-width: 1400px;
+  margin: 20px auto 40px;
+  padding: 0 20px;
+}
+
+.two-col-grid {
+  display: grid;
+  grid-template-columns: 1.15fr 0.85fr;
+  gap: 22px;
+  align-items: start;
+}
+
+@media (max-width: 1080px) {
+  .two-col-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ==========================================================================
+   LEFT COLUMN: INTERACTIVE ROCKET STAGE & TEACHER CARD
+   ========================================================================== */
+.stage-card {
+  background: var(--bg-card);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-card);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Canvas stage header & floating toggles */
+.stage-toolbar {
+  padding: 12px 18px;
+  background: #ffffff;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.stage-status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 12.5px;
+  font-weight: 700;
+  background: #f1f5f9;
+  color: #475569;
+}
+
+.stage-status-badge.running {
+  background: var(--thrust-light);
+  color: var(--thrust-hover);
+  border: 1px solid var(--thrust-border);
+}
+
+.stage-status-badge.paused {
+  background: var(--weight-light);
+  color: var(--weight-hover);
+  border: 1px solid var(--weight-border);
+}
+
+.toggle-group {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.check-label {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--text-muted);
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.check-label input {
+  cursor: pointer;
+  accent-color: var(--primary);
+}
+
+/* Big Interactive Canvas */
+.canvas-wrapper {
+  position: relative;
+  width: 100%;
+  height: 480px;
+  background: #e0f2fe;
+  overflow: hidden;
+}
+
+#simCanvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* PLAYBACK CONTROLS (Big, Friendly, Colorful) */
+.stage-controls {
+  padding: 16px 20px;
+  background: #ffffff;
+  border-top: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 14px;
+}
+
+.playback-btn-group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.btn-play {
+  background: #10b981;
+  color: #ffffff;
+  border: none;
+  font-family: var(--font-main);
+  font-size: 15px;
+  font-weight: 700;
+  padding: 10px 22px;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 3px 12px rgba(16, 185, 129, 0.35);
+  transition: all 0.15s ease;
+}
+
+.btn-play:hover:not(:disabled) {
+  background: #059669;
+  transform: translateY(-1px);
+}
+
+.btn-play:disabled {
+  background: #cbd5e1;
+  box-shadow: none;
+  cursor: not-allowed;
+}
+
+.btn-play.ready-pulse {
+  animation: pulse-ready 2.2s infinite ease-in-out;
+}
+
+@keyframes pulse-ready {
+  0%, 100% {
+    box-shadow: 0 3px 12px rgba(16, 185, 129, 0.35);
+  }
+  50% {
+    box-shadow: 0 4px 20px rgba(16, 185, 129, 0.65);
+    transform: translateY(-1px);
+  }
+}
+
+.btn-pause {
+  background: #ffffff;
+  color: var(--text-main);
+  border: 1.5px solid var(--border);
+  font-family: var(--font-main);
+  font-size: 14px;
+  font-weight: 700;
+  padding: 9px 18px;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.15s ease;
+}
+
+.btn-pause:hover:not(:disabled) {
+  background: var(--bg-subtle);
+  border-color: #cbd5e1;
+}
+
+.btn-pause:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btn-step, .btn-reset {
+  background: #ffffff;
+  color: var(--text-muted);
+  border: 1.5px solid var(--border);
+  font-family: var(--font-main);
+  font-size: 13.5px;
+  font-weight: 600;
+  padding: 9px 14px;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  transition: all 0.15s ease;
+}
+
+.btn-step:hover, .btn-reset:hover {
+  background: var(--bg-subtle);
+  color: var(--text-main);
+  border-color: #cbd5e1;
+}
+
+.sim-speed-selector {
+  display: flex;
+  align-items: center;
+  background: #f1f5f9;
+  padding: 3px;
+  border-radius: 10px;
+  gap: 2px;
+}
+
+.speed-pill {
+  padding: 5px 12px;
+  border: none;
+  background: transparent;
+  font-family: var(--font-main);
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-muted);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.speed-pill.active {
+  background: #ffffff;
+  color: var(--primary);
+  box-shadow: var(--shadow-sm);
+}
+
+/* ==========================================================================
+   "WHAT'S HAPPENING?" TEACHER EXPLANATION CARD (Class 9-10 Focus)
+   ========================================================================== */
+.teacher-card {
+  margin-top: 18px;
+  background: #ffffff;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-card);
+  padding: 20px 24px;
+  border-left: 6px solid var(--primary);
+}
+
+.teacher-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.teacher-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--primary);
+  background: var(--primary-light);
+  padding: 5px 12px;
+  border-radius: 20px;
+  letter-spacing: -0.01em;
+}
+
+.teacher-title {
+  font-size: 16px;
+  font-weight: 800;
+  color: var(--text-main);
+  margin: 0;
+}
+
+.teacher-summary {
+  font-size: 15px;
+  color: #1e293b;
+  margin: 8px 0 14px 0;
+  line-height: 1.5;
+}
+
+.teacher-steps-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  background: #f8fafc;
+  padding: 14px;
+  border-radius: var(--radius-md);
+  border: 1px solid #e2e8f0;
+}
+
+@media (max-width: 680px) {
+  .teacher-steps-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.step-box {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.step-label {
+  font-size: 11.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--text-muted);
+}
+
+.step-val {
+  font-size: 15px;
+  font-weight: 800;
+  font-family: var(--font-mono);
+  color: var(--text-main);
+}
+
+.step-val.green { color: #059669; }
+.step-val.amber { color: #d97706; }
+.step-val.blue { color: #0284c7; }
+
+.step-sub {
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+/* ==========================================================================
+   RIGHT COLUMN: CLEAN, STUDENT-FRIENDLY CONTROLS
+   ========================================================================== */
+.controls-column {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.control-card {
+  background: var(--bg-card);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-card);
+  padding: 20px;
+}
+
+.control-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+}
+
+.control-card-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 15px;
+  font-weight: 800;
+  color: var(--text-main);
+  margin: 0;
+}
+
+.control-pill-val {
+  font-family: var(--font-mono);
+  font-size: 14px;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 8px;
+  background: #f1f5f9;
+  color: var(--text-main);
+}
+
+.control-pill-val.green {
+  background: var(--thrust-light);
+  color: var(--thrust-hover);
+  border: 1px solid var(--thrust-border);
+}
+
+.control-pill-val.amber {
+  background: var(--weight-light);
+  color: var(--weight-hover);
+  border: 1px solid var(--weight-border);
+}
+
+/* Big Touch-Friendly Sliders */
+.slider-container {
+  margin: 10px 0 16px 0;
+}
+
+.big-range-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 10px;
+  border-radius: 6px;
+  background: #e2e8f0;
+  outline: none;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.big-range-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: #2563eb;
+  border: 3px solid #ffffff;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+  cursor: pointer;
+  transition: transform 0.15s, background 0.15s;
+}
+
+.big-range-slider::-webkit-slider-thumb:hover {
+  transform: scale(1.15);
+}
+
+.big-range-slider.green-slider::-webkit-slider-thumb {
+  background: #10b981;
+}
+
+.big-range-slider.amber-slider::-webkit-slider-thumb {
+  background: #f59e0b;
+}
+
+/* Preset Quick Action Buttons */
+.preset-button-row {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.btn-preset {
+  flex: 1;
+  min-width: 80px;
+  padding: 8px 12px;
+  border-radius: 10px;
+  border: 1.5px solid var(--border);
+  background: #ffffff;
+  color: var(--text-main);
+  font-family: var(--font-main);
+  font-size: 12.5px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.btn-preset:hover {
+  background: var(--bg-subtle);
+  border-color: #cbd5e1;
+}
+
+.btn-preset.active {
+  background: var(--primary-light);
+  border-color: var(--primary);
+  color: var(--primary);
+}
+
+/* PLANET SELECTOR CARDS */
+.planet-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.planet-card-btn {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  background: #ffffff;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  text-align: left;
+}
+
+.planet-card-btn:hover {
+  border-color: #94a3b8;
+  background: var(--bg-subtle);
+}
+
+.planet-card-btn.active {
+  border-color: var(--primary);
+  background: var(--primary-light);
+  box-shadow: 0 0 0 1px var(--primary);
+}
+
+.planet-emoji {
+  font-size: 22px;
+}
+
+.planet-info-name {
+  font-size: 13.5px;
+  font-weight: 800;
+  color: var(--text-main);
+}
+
+.planet-info-g {
+  font-size: 11.5px;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+}
+
+.weight-formula-note {
+  margin-top: 12px;
+  font-size: 12px;
+  color: var(--text-muted);
+  background: #f8fafc;
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+}
+
+/* LIVE FLIGHT GAUGES (Height, Speed, Acceleration) */
+.flight-gauges-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-top: 10px;
+}
+
+@media (max-width: 540px) {
+  .flight-gauges-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+}
+
+/* LIVE FUEL TANK GAUGE BAR */
+.fuel-gauge-container {
+  margin: 12px 0 4px 0;
+  background: #f8fafc;
+  border-radius: 10px;
+  padding: 10px 12px;
+  border: 1.5px solid #e2e8f0;
+}
+
+.fuel-gauge-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-muted);
+  margin-bottom: 6px;
+}
+
+.fuel-track {
+  width: 100%;
+  height: 10px;
+  background: #e2e8f0;
+  border-radius: 6px;
+  overflow: hidden;
+  position: relative;
+}
+
+.fuel-bar {
+  height: 100%;
+  width: 100%;
+  background: linear-gradient(90deg, #10b981, #059669);
+  border-radius: 6px;
+  transition: width 0.08s linear, background 0.3s ease;
+}
+
+.fuel-bar.amber {
+  background: linear-gradient(90deg, #f59e0b, #d97706);
+}
+
+.fuel-bar.red {
+  background: linear-gradient(90deg, #ef4444, #dc2626);
+}
+
+.gauge-val.up {
+  color: #059669;
+}
+
+.gauge-val.down {
+  color: #ef4444;
+}
+
+.gauge-box {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: var(--radius-md);
+  padding: 10px 8px;
+  text-align: center;
+}
+
+.gauge-label {
+  font-size: 10.5px;
+  font-weight: 700;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  margin-bottom: 2px;
+}
+
+.gauge-val {
+  font-size: 16px;
+  font-weight: 800;
+  font-family: var(--font-mono);
+  color: var(--text-main);
+}
+
+.gauge-unit {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-dim);
+}
+
+/* ==========================================================================
+   SECONDARY VIEW: DATA & GRAPHS (Advanced Lab)
+   Hidden by default, shown when user clicks "Data & Graphs" tab
+   ========================================================================== */
+.advanced-view-container {
+  display: none;
+  flex-direction: column;
+  gap: 22px;
+}
+
+.advanced-view-container.active-view {
+  display: flex;
+}
+
+.graph-card {
+  background: #ffffff;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-card);
+  padding: 22px;
+}
+
+.graph-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.graph-container {
+  width: 100%;
+  height: 380px;
+  background: #ffffff;
+}
+
+#graphCanvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.export-csv-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #ffffff;
+  border: 1.5px solid var(--border);
+  color: var(--text-main);
+  padding: 8px 16px;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.export-csv-btn:hover {
+  background: var(--bg-subtle);
+  border-color: #cbd5e1;
+}
+
+/* ==========================================================================
+   RESPONSIVE ADJUSTMENTS
+   ========================================================================== */
+@media (max-width: 768px) {
+  .header-container {
+    padding: 10px 16px;
+  }
+  .canvas-wrapper {
+    height: 360px;
+  }
+  .stage-controls {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .playback-btn-group {
+    justify-content: center;
+  }
+  .sim-speed-selector {
+    justify-content: center;
+  }
+}
