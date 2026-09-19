@@ -1,0 +1,515 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>CircuitLab — Interactive Wheatstone Bridge & Meter Bridge Simulator</title>
+  <meta name="description" content="Interactive STEM physics simulation for Class 11–12 and AP Physics exploring Kirchhoff's laws, the Wheatstone bridge principle, unbalanced bridge solver, and practical meter bridge apparatus.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+  <!-- ================================================================= -->
+  <!-- MAIN APPLICATION HEADER                                           -->
+  <!-- ================================================================= -->
+  <header class="app-header">
+    <div class="header-container">
+      <div class="brand-wrapper">
+        <div class="brand-icon">⚖️</div>
+        <div>
+          <div style="display:flex; align-items:center;">
+            <h1 class="brand-title">CircuitLab</h1>
+            <span class="brand-tag">Class 11–12 &amp; AP Physics</span>
+          </div>
+          <div class="brand-sub">Wheatstone Bridge &amp; Meter Bridge Experiment Simulator</div>
+        </div>
+      </div>
+
+      <!-- Primary Mode Switcher -->
+      <div class="mode-selector-group">
+        <button id="btnModeWheatstone" class="mode-type-btn active" title="Classical 4-Resistor Diamond Network">
+          <span>⚖️</span> Classical Wheatstone
+        </button>
+        <button id="btnModeMeterBridge" class="mode-type-btn" title="Realistic 100 cm Slide-Wire Laboratory Bench">
+          <span>📏</span> Meter Bridge Lab
+        </button>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="header-actions">
+        <button id="btnOpenTheory" class="action-btn btn-primary" title="View Kirchhoff's Laws &amp; Bridge Derivations">
+          <span>📚</span> Theory &amp; Laws
+        </button>
+        <button id="btnResetAll" class="action-btn" title="Reset all parameters to default">
+          <span>↺</span> Reset All
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ================================================================= -->
+  <!-- MAIN LAYOUT (CANVAS + TELEMETRY + NOTEBOOK + SIDEBAR)             -->
+  <!-- ================================================================= -->
+  <main class="main-layout">
+
+    <!-- LEFT: Canvas Viewport, Live Telemetry & Educational Notebook -->
+    <div class="canvas-section">
+
+      <!-- Canvas Circuit Card -->
+      <div class="canvas-card">
+        <!-- Quick Preset Case Chips -->
+        <div class="canvas-header-bar">
+          <div style="font-size:12px; font-weight:700; color:#475569; display:flex; align-items:center; gap:6px;">
+            <span>⚡ Quick Cases:</span>
+          </div>
+          <div class="canvas-presets-wrapper">
+            <button class="preset-chip active" data-preset="balanced-1">Balanced 1:1 (P/Q = R/S = 1)</button>
+            <button class="preset-chip" data-preset="balanced-10">Balanced 10:1 Ratio</button>
+            <button class="preset-chip" data-preset="unbalanced-right">Unbalanced (Deflect Right)</button>
+            <button class="preset-chip" data-preset="unbalanced-left">Unbalanced (Deflect Left)</button>
+            <button class="preset-chip" data-preset="max-sensitivity">Max Sensitivity (P ≈ Q ≈ R ≈ S)</button>
+            <button class="preset-chip" data-preset="meter-center">Meter Null at 50.0 cm</button>
+            <button class="preset-chip" data-preset="meter-33">Meter Null at 33.3 cm</button>
+            <button class="preset-chip" data-preset="meter-66">Meter Null at 66.7 cm</button>
+          </div>
+
+          <!-- Integrated Header Status HUD (Never overlaps canvas!) -->
+          <div class="header-status-hud">
+            <span id="badgeBalance" class="hud-badge badge-balanced">✓ BALANCED (Null Point)</span>
+            <span id="badgeDirection" class="hud-badge badge-balanced">I_g = 0 (Null Deflection)</span>
+            <span id="badgeRatioText" class="hud-ratio-text">P/Q = 1.000 | R/S = 1.000</span>
+          </div>
+        </div>
+
+        <!-- Canvas Container -->
+        <div class="canvas-container">
+          <canvas id="circuitCanvas"></canvas>
+
+          <!-- Bench Helper Floating Controls -->
+          <div class="bench-controls-overlay">
+            <button id="btnToggleAutoBalance" class="bench-btn" title="Automatically calculate and set null balance condition">
+              <span>🎯</span> Auto-Balance Bridge
+            </button>
+            <button id="btnExpandCanvas" class="bench-btn" title="Toggle larger canvas height">
+              <span>⛶</span> Expand View
+            </button>
+            <span style="font-size:11px; color:#64748b; padding:4px 6px; display:flex; align-items:center;">
+              🖱️ Drag Jockey / Click Keys
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Live Electrical Telemetry Grid (6 Metrics) -->
+      <div class="telemetry-grid">
+        <div class="telemetry-card">
+          <span class="telemetry-label">Galvanometer Current (I<sub>g</sub>)</span>
+          <span id="readoutIg" class="telemetry-value">0.0 μA</span>
+        </div>
+        <div class="telemetry-card">
+          <span class="telemetry-label">Deflection Angle (θ)</span>
+          <span id="readoutDeflection" class="telemetry-value">0.0 div</span>
+        </div>
+        <div class="telemetry-card">
+          <span class="telemetry-label">Bridge Voltage (V<sub>BD</sub> = V<sub>B</sub> − V<sub>D</sub>)</span>
+          <span id="readoutVBD" class="telemetry-value">0.000 V</span>
+        </div>
+        <div class="telemetry-card">
+          <span class="telemetry-label">Arm Ratio 1 (P / Q)</span>
+          <span id="readoutRatioPQ" class="telemetry-value">1.000</span>
+        </div>
+        <div class="telemetry-card">
+          <span class="telemetry-label">Arm Ratio 2 (R / S)</span>
+          <span id="readoutRatioRS" class="telemetry-value">1.000</span>
+        </div>
+        <div class="telemetry-card">
+          <span class="telemetry-label">Total Current (I<sub>total</sub>)</span>
+          <span id="readoutItotal" class="telemetry-value">29.6 mA</span>
+        </div>
+      </div>
+
+      <!-- Step-by-Step Mathematical Explainer -->
+      <div class="math-explainer-card">
+        <div class="math-explainer-header">
+          <h3 class="math-header-title">
+            <span>📐</span> Live Kirchhoff's Laws &amp; Bridge Equations
+          </h3>
+          <span style="font-size:12px; color:#64748b; font-weight:500;">Exact Nodal &amp; Thévenin Analysis Active</span>
+        </div>
+        <div id="mathContainer" class="math-steps-wrapper">
+          <!-- Step cards inserted dynamically by ui.js -->
+        </div>
+      </div>
+
+      <!-- Laboratory Observation Notebook Card -->
+      <div class="lab-notebook-card">
+        <div class="notebook-header">
+          <div>
+            <h3 style="margin:0; font-size:15px; font-weight:800; color:#0f172a;">
+              📝 Laboratory Observation Notebook
+            </h3>
+            <span style="font-size:12px; color:#64748b;">Record trials, calculate mean unknown resistance, and export data</span>
+          </div>
+          <div class="notebook-actions">
+            <button id="btnRecordObs" class="action-btn btn-primary" title="Record current values to table">
+              <span>+</span> Record Observation
+            </button>
+            <button id="btnExportCSV" class="action-btn" title="Download observation table as CSV">
+              <span>⬇</span> Export CSV
+            </button>
+            <button id="btnClearObs" class="action-btn" title="Clear all rows">
+              <span>✕</span> Clear
+            </button>
+          </div>
+        </div>
+
+        <div class="notebook-table-wrapper">
+          <table class="obs-table">
+            <thead>
+              <tr>
+                <th>Obs #</th>
+                <th>Known Res. R (Ω)</th>
+                <th>Balancing Length l (cm)</th>
+                <th>(100 − l) (cm)</th>
+                <th>Unknown Res. X (Ω)</th>
+                <th>Time</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="obsTableBody">
+              <!-- Observation rows inserted dynamically -->
+            </tbody>
+          </table>
+        </div>
+
+        <div class="notebook-summary-bar">
+          <span>Mean Calculated Resistance (X&#772;):</span>
+          <span id="meanResistanceVal" style="font-family:var(--font-mono); font-size:15px;">-- Ω</span>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- RIGHT: Controls Sidebar -->
+    <aside class="sidebar-section">
+
+      <!-- Card: DC Power Supply & Circuit Keys -->
+      <div class="control-card">
+        <h3 class="card-heading">
+          <span>⚡ Power Source &amp; Keys</span>
+        </h3>
+
+        <div class="slider-group">
+          <!-- Voltage Slider -->
+          <div class="slider-item">
+            <div class="slider-header">
+              <span class="slider-title">Battery EMF (V)</span>
+              <span id="valVoltage" class="slider-val-badge">6.0 V</span>
+            </div>
+            <input type="range" id="sliderVoltage" min="1" max="15" step="0.5" value="6">
+          </div>
+
+          <!-- Keys Toggles -->
+          <div class="checkbox-list">
+            <div class="checkbox-row">
+              <label class="checkbox-label" for="chkKeyK1">
+                <span class="color-pip pip-emerald"></span>
+                <span>Battery Key (K₁)</span>
+              </label>
+              <label class="switch">
+                <input type="checkbox" id="chkKeyK1" checked>
+                <span class="switch-slider"></span>
+              </label>
+            </div>
+
+            <div class="checkbox-row">
+              <label class="checkbox-label" for="chkKeyK2">
+                <span class="color-pip pip-blue"></span>
+                <span>Galvanometer Key (K₂)</span>
+              </label>
+              <label class="switch">
+                <input type="checkbox" id="chkKeyK2" checked>
+                <span class="switch-slider"></span>
+              </label>
+            </div>
+
+            <div class="checkbox-row">
+              <label class="checkbox-label" for="chkShunt">
+                <span class="color-pip pip-amber"></span>
+                <span>Galvanometer Shunt (5Ω)</span>
+              </label>
+              <label class="switch">
+                <input type="checkbox" id="chkShunt">
+                <span class="switch-slider"></span>
+              </label>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card: Classical Wheatstone Arm Resistances (Visible in Wheatstone Mode) -->
+      <div id="cardWheatstoneArms" class="control-card">
+        <h3 class="card-heading">
+          <span>⚙️ Bridge Arm Resistances</span>
+        </h3>
+
+        <div class="slider-group">
+          <!-- Resistor P Slider -->
+          <div class="slider-item">
+            <div class="slider-header">
+              <span class="slider-title">Ratio Arm Resistor (P)</span>
+              <span id="valP" class="slider-val-badge">100.0 Ω</span>
+            </div>
+            <input type="range" id="sliderP" min="1" max="1000" step="1" value="100">
+          </div>
+
+          <!-- Resistor Q Slider -->
+          <div class="slider-item">
+            <div class="slider-header">
+              <span class="slider-title">Ratio Arm Resistor (Q)</span>
+              <span id="valQ" class="slider-val-badge">100.0 Ω</span>
+            </div>
+            <input type="range" id="sliderQ" min="1" max="1000" step="1" value="100">
+          </div>
+
+          <!-- Resistor R Slider -->
+          <div class="slider-item">
+            <div class="slider-header">
+              <span class="slider-title">Standard Resistance Box (R)</span>
+              <span id="valR" class="slider-val-badge">100.0 Ω</span>
+            </div>
+            <input type="range" id="sliderR" min="1" max="1000" step="1" value="100">
+            <div class="step-btn-group">
+              <button class="step-btn btn-r-step" data-step="-10">−10Ω</button>
+              <button class="step-btn btn-r-step" data-step="-1">−1Ω</button>
+              <button class="step-btn btn-r-step" data-step="1">+1Ω</button>
+              <button class="step-btn btn-r-step" data-step="10">+10Ω</button>
+            </div>
+          </div>
+
+          <!-- Resistor S Slider -->
+          <div class="slider-item">
+            <div class="slider-header">
+              <span class="slider-title">Unknown / Test Resistor (S)</span>
+              <span id="valS" class="slider-val-badge">100.0 Ω</span>
+            </div>
+            <input type="range" id="sliderS" min="1" max="1000" step="1" value="100">
+          </div>
+        </div>
+      </div>
+
+      <!-- Card: Practical Meter Bridge Controls (Visible in Meter Bridge Mode) -->
+      <div id="cardMeterBridge" class="control-card" style="display:none;">
+        <h3 class="card-heading">
+          <span>📏 Meter Bridge Controls</span>
+        </h3>
+
+        <div class="slider-group">
+          <!-- Jockey Position Slider -->
+          <div class="slider-item">
+            <div class="slider-header">
+              <span class="slider-title">Jockey Position (l from 0 cm)</span>
+              <span id="valJockey" class="slider-val-badge">50.0 cm</span>
+            </div>
+            <input type="range" id="sliderJockey" min="1" max="99" step="0.1" value="50">
+            <div class="step-btn-group">
+              <button class="step-btn btn-jockey-step" data-step="-10">−10cm</button>
+              <button class="step-btn btn-jockey-step" data-step="-1">−1cm</button>
+              <button class="step-btn btn-jockey-step" data-step="-0.1">−0.1cm</button>
+              <button class="step-btn btn-jockey-step" data-step="0.1">+0.1cm</button>
+              <button class="step-btn btn-jockey-step" data-step="1">+1cm</button>
+              <button class="step-btn btn-jockey-step" data-step="10">+10cm</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+      <!-- Card: Visual Physics Overlays -->
+      <div class="control-card">
+        <h3 class="card-heading">
+          <span>✨ Display &amp; Visual Physics</span>
+        </h3>
+
+        <div class="checkbox-list">
+          <div class="checkbox-row">
+            <label class="checkbox-label" for="chkElectrons">
+              <span class="color-pip pip-cyan"></span>
+              <span>Electron Flow Animation</span>
+            </label>
+            <label class="switch">
+              <input type="checkbox" id="chkElectrons" checked>
+              <span class="switch-slider"></span>
+            </label>
+          </div>
+
+          <div class="checkbox-row">
+            <label class="checkbox-label" for="chkHeatmap">
+              <span class="color-pip pip-rose"></span>
+              <span>Potential Heatmap</span>
+            </label>
+            <label class="switch">
+              <input type="checkbox" id="chkHeatmap" checked>
+              <span class="switch-slider"></span>
+            </label>
+          </div>
+        </div>
+      </div>
+
+    </aside>
+  </main>
+
+  <!-- ================================================================= -->
+  <!-- MODAL: THEORY, KIRCHHOFF'S LAWS & DERIVATIONS                     -->
+  <!-- ================================================================= -->
+  <div id="modalTheory" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="theoryTitle">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 id="theoryTitle" class="modal-title">📚 Wheatstone Bridge &amp; Meter Bridge Physics Guide</h3>
+        <button id="btnCloseTheory" class="modal-close-btn" aria-label="Close dialog">&times;</button>
+      </div>
+      <div>
+        <h4 style="font-size:14px; margin-top:0; color:#0f172a;">1. Principle of the Wheatstone Bridge</h4>
+        <p style="font-size:13px; color:#475569; line-height:1.6;">
+          The Wheatstone Bridge is an electrical network of four resistances <i>P</i>, <i>Q</i>, <i>R</i>, and <i>S</i> forming a closed diamond loop. A battery is connected across junctions <b>A</b> and <b>C</b>, and a sensitive center-zero galvanometer <b>G</b> is connected across junctions <b>B</b> and <b>D</b>.
+        </p>
+
+        <h4 style="font-size:14px; margin-top:14px; color:#0f172a;">2. Derivation Using Kirchhoff's Rules</h4>
+        <ul style="font-size:13px; color:#334155; line-height:1.7; padding-left:20px;">
+          <li><b>Kirchhoff's Junction Rule (KCL) at B &amp; D:</b> When balanced, no current flows through the galvanometer: <i>I<sub>g</sub> = 0</i>. Therefore, <i>I<sub>P</sub> = I<sub>Q</sub> = I₁</i> and <i>I<sub>R</sub> = I<sub>S</sub> = I₂</i>.</li>
+          <li><b>Kirchhoff's Loop Rule (KVL) for Loop ABDA:</b><br>
+            <i>−I₁·P + I₂·R = 0 &implies; I₁·P = I₂·R &emsp; ... (Eq. 1)</i>
+          </li>
+          <li><b>Kirchhoff's Loop Rule (KVL) for Loop BCDB:</b><br>
+            <i>−I₁·Q + I₂·S = 0 &implies; I₁·Q = I₂·S &emsp; ... (Eq. 2)</i>
+          </li>
+          <li>Dividing Eq. 1 by Eq. 2 yields the celebrated Wheatstone balance condition:
+            <br>
+            <b style="color:#2563eb; font-size:15px;">P / Q = R / S</b>
+          </li>
+        </ul>
+
+        <h4 style="font-size:14px; margin-top:14px; color:#0f172a;">3. The Meter Bridge (Slide-Wire Bridge)</h4>
+        <p style="font-size:13px; color:#475569; line-height:1.6;">
+          A Meter Bridge consists of a 1-meter (100 cm) uniform manganin wire stretched along a meter scale between thick brass strips. If <i>l</i> is the balancing length from end A:
+        </p>
+        <div style="background:#f8fafc; border:1px solid #e2e8f0; padding:10px 14px; border-radius:8px; font-family:var(--font-mono); font-size:13px; color:#1e40af;">
+          S = R &middot; (100 − l) / l
+        </div>
+
+        <h4 style="font-size:14px; margin-top:14px; color:#0f172a;">4. Why Bridge Sensitivity is Highest Near Center (50 cm)</h4>
+        <p style="font-size:13px; color:#475569; line-height:1.6;">
+          The fractional measurement error due to a reading uncertainty <i>&Delta;l</i> is given by:
+          <br>
+          <code style="font-family:var(--font-mono); color:#2563eb;">&Delta;S / S = 100·&Delta;l / [l·(100 − l)]</code>.
+          <br>
+          The product <i>l·(100 − l)</i> is maximized at <b>l = 50 cm</b>, making the fractional error minimal and sensitivity maximal.
+        </p>
+
+        <h4 style="font-size:14.5px; margin-top:22px; color:#0f172a; display:flex; align-items:center; gap:6px; border-top:1px solid #e2e8f0; padding-top:16px;">
+          <span>🏷️</span> 5. Apparatus Identification &amp; Memorization Guide
+        </h4>
+        <p style="font-size:12.5px; color:#64748b; margin-top:2px; margin-bottom:14px;">
+          Complete visual guide to laboratory instruments, schematic symbols, and key memory tips for CBSE/STEM physics practicals.
+        </p>
+
+        <div class="apparatus-grid">
+          <!-- Item 1: Resistance Box -->
+          <div class="apparatus-card">
+            <div class="apparatus-thumb">
+              <img src="assets/resistance_box.jpg" alt="Standard Resistance Box" loading="lazy">
+              <span class="apparatus-symbol-badge">Symbol: R</span>
+            </div>
+            <div class="apparatus-info">
+              <h4 class="apparatus-name">Standard Resistance Box</h4>
+              <span class="apparatus-role">Left Gap • Known Standard Arm</span>
+              <p class="apparatus-desc">A teakwood box with brass blocks and plugs. Unplugging a key inserts a calibrated known resistance <strong>R</strong> into the left gap to balance the bridge.</p>
+              <div class="apparatus-tip">💡 <strong>Memorize:</strong> Coils are wound double (non-inductive) to eliminate unwanted self-induction effects.</div>
+            </div>
+          </div>
+
+          <!-- Item 2: Unknown Resistance Coil -->
+          <div class="apparatus-card">
+            <div class="apparatus-thumb">
+              <img src="assets/resistor_coil.jpg" alt="Unknown Resistance Wire Coil" loading="lazy">
+              <span class="apparatus-symbol-badge">Symbol: X (S)</span>
+            </div>
+            <div class="apparatus-info">
+              <h4 class="apparatus-name">Unknown Resistance Coil</h4>
+              <span class="apparatus-role">Right Gap • Specimen Arm to Measure</span>
+              <p class="apparatus-desc">The test specimen wire wound on a bobbin whose resistance <strong>X</strong> is determined by <em>X = R·(100−l)/l</em>.</p>
+              <div class="apparatus-tip">💡 <strong>Memorize:</strong> Specific resistance <em>ρ = (X·π·d²)/(4·L)</em> using screw gauge for diameter <em>d</em> and meter rod for length <em>L</em>.</div>
+            </div>
+          </div>
+
+          <!-- Item 3: Center-Zero Galvanometer -->
+          <div class="apparatus-card">
+            <div class="apparatus-thumb">
+              <img src="assets/galvanometer.jpg" alt="Center-Zero Galvanometer" loading="lazy">
+              <span class="apparatus-symbol-badge">Symbol: G</span>
+            </div>
+            <div class="apparatus-info">
+              <h4 class="apparatus-name">Center-Zero Galvanometer</h4>
+              <span class="apparatus-role">Detector Arm BD • Null Indicator</span>
+              <p class="apparatus-desc">High-sensitivity detector with zero at center. Deflects left or right based on direction of current <em>I_g</em>; registers 0 at balance.</p>
+              <div class="apparatus-tip">💡 <strong>Memorize:</strong> Null-deflection method means accuracy does not depend on galvanometer internal resistance!</div>
+            </div>
+          </div>
+
+          <!-- Item 4: Sliding Jockey -->
+          <div class="apparatus-card">
+            <div class="apparatus-thumb">
+              <img src="assets/jockey.jpg" alt="Sliding Jockey" loading="lazy">
+              <span class="apparatus-symbol-badge">Symbol: J</span>
+            </div>
+            <div class="apparatus-info">
+              <h4 class="apparatus-name">Sliding Jockey (Knife-Edge)</h4>
+              <span class="apparatus-role">Movable Contact • Junction B / D</span>
+              <p class="apparatus-desc">A metal rod with a sharp brass knife-edge blade and insulated handle tapped along the wire to locate balancing length <strong>l</strong>.</p>
+              <div class="apparatus-tip">💡 <strong>Memorize:</strong> Never scrape the jockey along the wire; scraping causes non-uniform cross-sectional area <em>A</em>.</div>
+            </div>
+          </div>
+
+          <!-- Item 5: Uniform Bridge Wire -->
+          <div class="apparatus-card">
+            <div class="apparatus-thumb">
+              <div class="wire-placeholder-thumb">
+                <span style="font-size:24px;">📏</span>
+                <span style="font-size:10px; font-weight:800; color:#b45309;">100 cm Wire</span>
+              </div>
+              <span class="apparatus-symbol-badge">Wire AC</span>
+            </div>
+            <div class="apparatus-info">
+              <h4 class="apparatus-name">Manganin / Constantan Wire</h4>
+              <span class="apparatus-role">Stretched 100 cm • Ratio Arms P &amp; Q</span>
+              <p class="apparatus-desc">A 1-meter uniform wire divided by the jockey into segment <em>l</em> (Arm P) and <em>(100−l)</em> (Arm Q), giving <em>P/Q = l/(100−l)</em>.</p>
+              <div class="apparatus-tip">💡 <strong>Memorize:</strong> Manganin alloy has high resistivity and virtually zero temperature coefficient (<em>α ≈ 0</em>).</div>
+            </div>
+          </div>
+
+          <!-- Item 6: Battery Eliminator & Keys -->
+          <div class="apparatus-card">
+            <div class="apparatus-thumb">
+              <img src="assets/battery_eliminator.jpg" alt="Battery Eliminator" loading="lazy">
+              <span class="apparatus-symbol-badge">Source: E, K₁, K₂</span>
+            </div>
+            <div class="apparatus-info">
+              <h4 class="apparatus-name">Battery Eliminator &amp; Plug Keys</h4>
+              <span class="apparatus-role">External Supply Loop • Safety Switches</span>
+              <p class="apparatus-desc">Supplies steady low voltage DC (2.0 V). Plug key <em>K₁</em> controls battery loop; key <em>K₂</em> protects the sensitive galvanometer.</p>
+              <div class="apparatus-tip">💡 <strong>Memorize:</strong> Always close battery key <em>K₁</em> first and galvanometer key <em>K₂</em> second to prevent inductive kick.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- Core JavaScript Application -->
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>

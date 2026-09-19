@@ -1,0 +1,15 @@
+{
+  "version": 2,
+  "public": true,
+  "cleanUrls": true,
+  "routes": [
+    {
+      "src": "/simulation",
+      "dest": "/simulation.html"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/$1"
+    }
+  ]
+}
