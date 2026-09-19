@@ -425,7 +425,7 @@ export class LensRenderer {
     ctx.font = '600 11px "JetBrains Mono", monospace';
     ctx.textAlign = 'center';
     ctx.fillStyle = '#1e293b';
-    ctx.fillText(`u = ${optics.u.toFixed(1)} cm`, baseScreenX, baseScreenY + 22);
+    ctx.fillText(`u = ${optics.u.toFixed(1)} cm`, baseScreenX, baseScreenY + 28);
 
     ctx.restore();
   }
@@ -600,7 +600,7 @@ export class LensRenderer {
       ctx.font = '600 11px "JetBrains Mono", monospace';
       ctx.textAlign = 'center';
       ctx.fillStyle = '#dc2626';
-      ctx.fillText(`v = +${v.toFixed(1)} cm`, baseScreenX, baseScreenY + 22);
+      ctx.fillText(`v = +${v.toFixed(1)} cm`, baseScreenX, baseScreenY - 12);
     } else {
       // VIRTUAL IMAGE: Ghostly holographic translucent with dashed glow
       ctx.globalAlpha = 0.75;
@@ -623,7 +623,7 @@ export class LensRenderer {
       ctx.font = '600 11px "JetBrains Mono", monospace';
       ctx.textAlign = 'center';
       ctx.fillStyle = '#7c3aed';
-      ctx.fillText(`v = ${v.toFixed(1)} cm (Virtual)`, baseScreenX, baseScreenY + 22);
+      ctx.fillText(`v = ${v.toFixed(1)} cm (Virtual)`, baseScreenX, baseScreenY + 28);
     }
 
     ctx.restore();
@@ -632,9 +632,10 @@ export class LensRenderer {
   drawInvertedCandle(x, baseY, tipY, hi) {
     const { ctx } = this;
     const absHi = Math.abs(hi);
-    const candleWidth = Math.max(10, Math.min(20, absHi * 0.6 * state.zoom));
-    const wickHeight = 6;
-    const flameHeight = Math.max(14, Math.min(28, absHi * 0.8 * state.zoom));
+    const totalH = Math.max(10, Math.abs(tipY - baseY));
+    const candleWidth = Math.max(8, Math.min(20, absHi * 0.6 * state.zoom));
+    const flameHeight = Math.min(Math.max(12, Math.min(28, absHi * 0.8 * state.zoom)), totalH * 0.45);
+    const wickHeight = Math.min(6, totalH * 0.15);
     const dir = tipY > baseY ? 1 : -1; // inverted is usually downward (dir = +1)
 
     const bodyEnd = tipY - dir * (flameHeight + wickHeight);
@@ -714,14 +715,19 @@ export class LensRenderer {
     const { ctx } = this;
     const charHeight = Math.abs(tipY - baseY);
     const charWidth = charHeight * (324 / 768);
-    const dir = tipY > baseY ? 1 : -1;
+    const dir = tipY >= baseY ? 1 : -1;
 
     ctx.save();
     if (this.studentImgLoaded && this.studentImg.complete) {
-      // Invert vertically: feet anchor on principal axis baseY, finger points down to tipY
-      ctx.translate(x, baseY);
-      ctx.scale(1, -1);
-      ctx.drawImage(this.studentImg, -0.35185 * charWidth, 0, charWidth, charHeight);
+      if (dir === 1) {
+        // Invert vertically: feet anchor on principal axis baseY, finger points down to tipY
+        ctx.translate(x, tipY);
+        ctx.scale(1, -1);
+        ctx.drawImage(this.studentImg, -0.35185 * charWidth, 0, charWidth, charHeight);
+      } else {
+        // Upright upwards
+        ctx.drawImage(this.studentImg, x - 0.35185 * charWidth, tipY, charWidth, charHeight);
+      }
     } else {
       this.drawArrow(x, baseY, tipY, false, '#ef4444', "Real Image (A'B')");
     }
