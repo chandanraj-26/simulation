@@ -25,6 +25,8 @@ window.PhysicsLab = window.PhysicsLab || {};
     state.accelX = 0;
     state.accelY = 0;
     state.maxAltReached = 0;
+    state.camScale = null;
+    state.camMidX = null;
     const cfg = lab.getConfig();
     state.currentFuel = cfg.fuel || 100;
     state.currentMass = cfg.mass;
@@ -51,6 +53,8 @@ window.PhysicsLab = window.PhysicsLab || {};
     lab.state.historyData = [];
     lab.state.trajectoryPoints = [];
     lab.state.cameraManualLayer = null;
+    lab.state.camScale = null;
+    lab.state.camMidX = null;
     lab.autoReadyForLaunch();
   };
 

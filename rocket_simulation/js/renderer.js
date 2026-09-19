@@ -20,7 +20,7 @@ window.PhysicsLab = window.PhysicsLab || {};
     return { width: w / dpr, height: h / dpr, dpr };
   };
 
-  // Helper to draw clean rounded pill badge with shadow
+  // Helper to draw clean rounded pill badge with shadow (clamped to canvas borders)
   lab.drawStudentBadge = function(ctx, x, y, text, color) {
     ctx.save();
     ctx.font = 'bold 12px Plus Jakarta Sans, sans-serif';
@@ -28,6 +28,12 @@ window.PhysicsLab = window.PhysicsLab || {};
     const textW = ctx.measureText(text).width;
     const badgeW = textW + paddingX * 2;
     const badgeH = 24;
+
+    const W = ctx.canvas.width / (window.devicePixelRatio || 1);
+    const H = ctx.canvas.height / (window.devicePixelRatio || 1);
+    // Boundary safe clamping: badge will never be clipped off screen edges
+    const safeX = Math.max(badgeW / 2 + 6, Math.min(W - badgeW / 2 - 6, x));
+    const safeY = Math.max(badgeH / 2 + 6, Math.min(H - badgeH / 2 - 6, y));
 
     // Drop shadow
     ctx.shadowColor = 'rgba(15, 23, 42, 0.12)';
@@ -39,7 +45,7 @@ window.PhysicsLab = window.PhysicsLab || {};
     ctx.strokeStyle = color;
     ctx.lineWidth = 1.8;
     ctx.beginPath();
-    ctx.roundRect(x - badgeW / 2, y - badgeH / 2, badgeW, badgeH, 12);
+    ctx.roundRect(safeX - badgeW / 2, safeY - badgeH / 2, badgeW, badgeH, 12);
     ctx.fill();
     ctx.stroke();
 
@@ -48,7 +54,7 @@ window.PhysicsLab = window.PhysicsLab || {};
     ctx.fillStyle = color;
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
-    ctx.fillText(text, x, y);
+    ctx.fillText(text, safeX, safeY);
     ctx.restore();
   };
 
@@ -76,11 +82,11 @@ window.PhysicsLab = window.PhysicsLab || {};
     ctx.restore();
   };
 
-  // Draw Rocket (Aerodynamic White with Red fins and animated flame)
-  // Draw Rocket (Aerodynamic White with Red fins, animated flame, and landing gear)
-  lab.drawRocket = function(ctx, px, py, angleDeg = 0, p = null) {
+  lab.drawRocket = function(ctx, px, py, angleDeg = 0, p = null, zoomFactor = 1.0) {
     ctx.save();
     ctx.translate(px, py);
+    const z = Math.min(1.0, Math.max(0.65, zoomFactor));
+    ctx.scale(z, z);
     ctx.rotate((angleDeg * Math.PI) / 180);
 
     const cfg = lab.getConfig();
@@ -171,7 +177,7 @@ window.PhysicsLab = window.PhysicsLab || {};
   };
 
   // Draw Clear, Color-Coded Force & Velocity Arrows (PhET Style)
-  lab.drawVectors = function(ctx, px, py, p) {
+  lab.drawVectors = function(ctx, px, py, p, zoomFactor = 1.0) {
     const showForces = !$('chkForces') || $('chkForces').checked;
     if (!showForces) return;
 
@@ -179,61 +185,60 @@ window.PhysicsLab = window.PhysicsLab || {};
     const showReaction = $('chkReaction') && $('chkReaction').checked;
     const state = lab.state;
     const speed = Math.hypot(state.velX, state.velY);
+    const arrowScale = Math.min(1.0, Math.max(0.65, zoomFactor));
+    const arrowWidth = Math.max(2.5, 4 * arrowScale);
 
     // 1. UPWARD THRUST ARROW (Emerald Green) - only when fuel > 0
     if (p.effectiveThrust > 0) {
-      const tLen = Math.min(120, 25 + (p.effectiveThrust / 100000) * 85);
-      const tx = px - 35, ty1 = py, ty2 = ty1 - tLen;
-      lab.drawBoldArrow(ctx, tx, ty1, tx, ty2, '#10b981', 4);
+      const tLen = Math.min(110 * arrowScale, (22 + (p.effectiveThrust / 100000) * 80) * arrowScale);
+      const tx = px - 35 * arrowScale, ty1 = py, ty2 = ty1 - tLen;
+      lab.drawBoldArrow(ctx, tx, ty1, tx, ty2, '#10b981', arrowWidth);
       const thrustLabel = showValues ? `Thrust: ${lab.fmtNum(p.effectiveThrust, 0)} N` : `Thrust (Up)`;
       lab.drawStudentBadge(ctx, tx, ty2 - 16, thrustLabel, '#059669');
     }
 
     // 2. DOWNWARD WEIGHT / GRAVITY ARROW (Warm Amber)
     if (p.weight > 0) {
-      const wLen = Math.min(80, 20 + (p.weight / 100000) * 55);
-      const wx = px + 35, wy1 = py, wy2 = wy1 + wLen;
-      lab.drawBoldArrow(ctx, wx, wy1, wx, wy2, '#f59e0b', 4);
+      const wLen = Math.min(75 * arrowScale, (18 + (p.weight / 100000) * 50) * arrowScale);
+      const wx = px + 35 * arrowScale, wy1 = py, wy2 = wy1 + wLen;
+      lab.drawBoldArrow(ctx, wx, wy1, wx, wy2, '#f59e0b', arrowWidth);
       const weightLabel = showValues ? `Weight: ${lab.fmtNum(p.weight, 0)} N` : `Weight (Down)`;
       lab.drawStudentBadge(ctx, wx, wy2 + 14, weightLabel, '#d97706');
     }
 
     // 3. NET RESULTANT FORCE ARROW (Electric Blue)
     if (Math.abs(p.fy) > 50) {
-      const netLen = Math.min(120, 22 + (Math.abs(p.fy) / 100000) * 85);
-      const nx = px + 80, ny1 = py;
+      const netLen = Math.min(110 * arrowScale, (20 + (Math.abs(p.fy) / 100000) * 80) * arrowScale);
+      const nx = px + 75 * arrowScale, ny1 = py;
       const ny2 = p.fy > 0 ? ny1 - netLen : ny1 + netLen;
-      lab.drawBoldArrow(ctx, nx, ny1, nx, ny2, '#0284c7', 4);
+      lab.drawBoldArrow(ctx, nx, ny1, nx, ny2, '#0284c7', arrowWidth);
       const netLabel = showValues ? `Fnet: ${(p.fy > 0 ? '+' : '')}${lab.fmtNum(p.netForce, 0)} N` : `Net Force`;
       lab.drawStudentBadge(ctx, nx, p.fy > 0 ? ny2 - 16 : ny2 + 16, netLabel, '#0284c7');
     } else if (p.effectiveThrust > 0 && Math.abs(p.effectiveThrust - p.weight) <= 50) {
       // Balanced forces indicator badge
-      lab.drawStudentBadge(ctx, px + 80, py, 'Net Force = 0 N (Balanced ⚖️)', '#059669');
+      lab.drawStudentBadge(ctx, px + 75 * arrowScale, py, 'Net Force = 0 N (Balanced ⚖️)', '#059669');
     }
 
     // 4. ACTION-REACTION EXHAUST (Newton's 3rd Law Pair)
     if (showReaction && p.effectiveThrust > 0) {
-      const exLen = 42;
-      lab.drawBoldArrow(ctx, px, py + 26, px, py + 26 + exLen, '#ec4899', 3.5);
-      lab.drawStudentBadge(ctx, px, py + 26 + exLen + 14, 'Exhaust (Action)', '#db2777');
+      const exLen = 40 * arrowScale;
+      lab.drawBoldArrow(ctx, px, py + 22, px, py + 22 + exLen, '#ec4899', Math.max(2.5, 3.5 * arrowScale));
+      lab.drawStudentBadge(ctx, px, py + 22 + exLen + 14, 'Exhaust (Action)', '#db2777');
     }
 
     // 5. VELOCITY DIRECTION ARROW (Cyan) when in motion
     if (speed > 1.5 && state.posY > 0) {
-      const vLen = Math.min(70, 18 + speed * 1.1);
-      const vx = px - 78, vy1 = py;
-      const vAngle = Math.atan2(state.velY, state.velX); // angle in canvas coords (where down is positive Y)
-      // canvas Y is inverted from physics Y:
-      const vEndPx = vx + Math.cos(vAngle) * (state.velX !== 0 ? Math.sign(state.velX) * 15 : 0);
+      const vLen = Math.min(65 * arrowScale, (16 + speed * 0.9) * arrowScale);
+      const vx = px - 75 * arrowScale, vy1 = py;
       const vEndPy = state.velY >= 0 ? vy1 - vLen : vy1 + vLen;
-      lab.drawBoldArrow(ctx, vx, vy1, vx, vEndPy, '#06b6d4', 3.5);
+      lab.drawBoldArrow(ctx, vx, vy1, vx, vEndPy, '#06b6d4', Math.max(2.5, 3.5 * arrowScale));
       const velText = state.velY >= 0 ? `v: ↑ +${speed.toFixed(0)} m/s` : `v: ↓ -${speed.toFixed(0)} m/s`;
       lab.drawStudentBadge(ctx, vx, state.velY >= 0 ? vEndPy - 16 : vEndPy + 16, velText, '#0891b2');
     }
   };
 
-  // Draw Ground Launchpad & Cheerful Atmosphere (Stable Horizon for 15-30s Flight)
-  lab.drawFriendlyBackground = function(ctx, W, H, alt) {
+  // Draw Ground Launchpad & Cheerful Atmosphere (Stable Horizon with Dynamic Launchpad Alignment)
+  lab.drawFriendlyBackground = function(ctx, W, H, alt, padScreenX = W * 0.5, zoomFactor = 1.0) {
     // Dynamic Sky Gradient based on altitude
     const skyGrad = ctx.createLinearGradient(0, 0, 0, H);
     if (alt < 1000) {
@@ -277,7 +282,7 @@ window.PhysicsLab = window.PhysicsLab || {};
     // Ground Level on Canvas - stays anchored at bottom so the full ascent, peak, and fall are visible!
     const groundScreenY = H - 52;
     ctx.save();
-    // Green grassy meadow
+    // Green grassy meadow across entire width
     ctx.fillStyle = '#10b981';
     ctx.fillRect(0, groundScreenY, W, 12);
     ctx.fillStyle = '#059669';
@@ -287,8 +292,10 @@ window.PhysicsLab = window.PhysicsLab || {};
     ctx.fillStyle = '#5c4033';
     ctx.fillRect(0, groundScreenY + 14, W, H - groundScreenY);
 
-    // Clean Launchpad concrete deck
-    const padW = 110, padX = W * 0.5 - padW / 2;
+    // Clean Launchpad concrete deck (centered dynamically at padScreenX)
+    const z = Math.min(1.0, Math.max(0.65, zoomFactor));
+    const padW = 100 * z;
+    const padX = padScreenX - padW / 2;
     ctx.fillStyle = '#94a3b8';
     ctx.fillRect(padX, groundScreenY - 6, padW, 8);
 
@@ -298,14 +305,16 @@ window.PhysicsLab = window.PhysicsLab || {};
 
     // Gantry Tower
     ctx.strokeStyle = '#64748b';
-    ctx.lineWidth = 2;
-    ctx.strokeRect(padX - 22, groundScreenY - 100, 16, 96);
+    ctx.lineWidth = Math.max(1.5, 2 * z);
+    const gantryW = 16 * z;
+    const gantryH = 92 * z;
+    ctx.strokeRect(padX - gantryW - 4, groundScreenY - gantryH - 4, gantryW, gantryH);
     ctx.restore();
 
     return groundScreenY;
   };
 
-  // Main Canvas Draw Call (Calibrated for 15-30s Suborbital Flight & 2D Parabolic Arcs)
+  // Main Canvas Draw Call with Dynamic Self-Framing Bounding-Box Camera
   lab.drawScene = function() {
     const simCanvas = $('simCanvas');
     if (!simCanvas) return;
@@ -317,30 +326,85 @@ window.PhysicsLab = window.PhysicsLab || {};
     const state = lab.state;
     const alt = state.posY;
     const p = lab.calcPhysics();
+    const groundScreenY = H - 52;
 
-    // 1. Draw Cheerful & Friendly Scenery
-    const groundScreenY = lab.drawFriendlyBackground(simCtx, W, H, alt);
+    // 1. Compute World Bounding Box spanning launchpad (0, 0), current rocket, and trajectory
+    let minX = Math.min(0, state.posX);
+    let maxX = Math.max(0, state.posX);
+    let maxY = Math.max(140, state.posY);
 
-    // 2. Coordinate Scaling for complete 15-30s flight (0 to ~320m fits gracefully)
-    const maxExpectedAlt = Math.max(320, alt * 1.15);
-    const scaleY = (groundScreenY - 70) / maxExpectedAlt;
-    const scaleX = Math.min(scaleY * 0.75, 0.85);
+    if (state.trajectoryPoints && state.trajectoryPoints.length > 0) {
+      for (let i = 0; i < state.trajectoryPoints.length; i++) {
+        const pt = state.trajectoryPoints[i];
+        if (pt.x < minX) minX = pt.x;
+        if (pt.x > maxX) maxX = pt.x;
+        if (pt.y > maxY) maxY = pt.y;
+      }
+    }
 
-    const rocketScreenY = groundScreenY - 26 - (alt * scaleY);
-    const rocketScreenX = W * 0.5 + (state.posX * scaleX);
+    // 2. Compute Safe Target Zoom & Horizontal Midpoint
+    const marginSide = Math.min(100, Math.max(70, W * 0.12));
+    const availW = Math.max(120, W - marginSide * 2);
+    const spanX = Math.max(90, maxX - minX);
+    const scaleX = availW / spanX;
 
-    // 3. Draw Parabolic Flight Trajectory Arc
+    const marginTop = 135;
+    const availH = Math.max(120, groundScreenY - 26 - marginTop);
+    const scaleY = availH / Math.max(120, maxY);
+
+    // Uniform isotropic scaling (keeps true geometric proportions and angles)
+    const idealScale = Math.min(scaleX, scaleY, 1.15);
+    const midWorldX = (minX + maxX) * 0.5;
+
+    // Smooth camera tracking
+    if (state.camScale == null || state.camMidX == null) {
+      state.camScale = idealScale;
+      state.camMidX = midWorldX;
+    } else {
+      const zoomRate = idealScale < state.camScale ? 0.12 : 0.08;
+      state.camScale += (idealScale - state.camScale) * zoomRate;
+      state.camMidX += (midWorldX - state.camMidX) * 0.12;
+    }
+
+    // Hard Boundary Clamp: Absolute guarantee that rocket NEVER exceeds safe canvas frame
+    const maxAllowedOffsetX = (W * 0.5) - marginSide;
+    if ((state.posX - state.camMidX) * state.camScale > maxAllowedOffsetX) {
+      state.camMidX = state.posX - (maxAllowedOffsetX / state.camScale);
+    }
+    if ((state.posX - state.camMidX) * state.camScale < -maxAllowedOffsetX) {
+      state.camMidX = state.posX + (maxAllowedOffsetX / state.camScale);
+    }
+    if (state.posY * state.camScale > availH) {
+      state.camScale = availH / Math.max(1, state.posY);
+    }
+
+    const activeScale = state.camScale;
+    const activeMidX = state.camMidX;
+    const zoomFactor = Math.min(1.0, Math.max(0.65, activeScale / 1.0));
+
+    // World to Screen Coordinate Helpers
+    const worldToScreenX = wx => (W * 0.5) + ((wx - activeMidX) * activeScale);
+    const worldToScreenY = wy => groundScreenY - 26 - (wy * activeScale);
+
+    const padScreenX = worldToScreenX(0);
+    const rocketScreenX = worldToScreenX(state.posX);
+    const rocketScreenY = worldToScreenY(state.posY);
+
+    // 3. Draw Friendly Scenery with dynamically aligned launchpad
+    lab.drawFriendlyBackground(simCtx, W, H, alt, padScreenX, zoomFactor);
+
+    // 4. Draw Parabolic Flight Trajectory Arc
     const showTrail = !$('chkTrail') || $('chkTrail').checked;
-    if (showTrail && state.trajectoryPoints.length > 1) {
+    if (showTrail && state.trajectoryPoints && state.trajectoryPoints.length > 1) {
       simCtx.save();
-      simCtx.strokeStyle = 'rgba(37, 99, 235, 0.5)';
+      simCtx.strokeStyle = 'rgba(37, 99, 235, 0.55)';
       simCtx.lineWidth = 2.5;
       simCtx.setLineDash([4, 4]);
       simCtx.beginPath();
       for (let i = 0; i < state.trajectoryPoints.length; i++) {
         const pt = state.trajectoryPoints[i];
-        const tx = W * 0.5 + (pt.x * scaleX);
-        const ty = groundScreenY - 26 - (pt.y * scaleY);
+        const tx = worldToScreenX(pt.x);
+        const ty = worldToScreenY(pt.y);
         if (i === 0) simCtx.moveTo(tx, ty);
         else simCtx.lineTo(tx, ty);
       }
@@ -348,7 +412,7 @@ window.PhysicsLab = window.PhysicsLab || {};
       simCtx.restore();
     }
 
-    // 4. Calculate Rocket Rotation Angle:
+    // 5. Calculate Rocket Rotation Angle:
     // Ascent: matches launch angle θ.
     // Near apex & descent: smoothly tilts nose down to indicate falling back to Earth.
     let rocketDrawAngle = p.cfg.angle;
@@ -363,13 +427,13 @@ window.PhysicsLab = window.PhysicsLab || {};
       }
     }
 
-    // 5. Draw Rocket Body
-    lab.drawRocket(simCtx, rocketScreenX, rocketScreenY, rocketDrawAngle, p);
+    // 6. Draw Rocket Body
+    lab.drawRocket(simCtx, rocketScreenX, rocketScreenY, rocketDrawAngle, p, zoomFactor);
 
-    // 6. Draw Clean Force & Velocity Vectors
-    lab.drawVectors(simCtx, rocketScreenX, rocketScreenY, p);
+    // 7. Draw Clean Force & Velocity Vectors
+    lab.drawVectors(simCtx, rocketScreenX, rocketScreenY, p, zoomFactor);
 
-    // 7. Touchdown Celebration Badge when landed
+    // 8. Touchdown Celebration Badge when landed
     if (state.posY <= 0 && state.simTime > 2.0 && state.currentFuel <= 0) {
       lab.drawStudentBadge(simCtx, rocketScreenX, rocketScreenY - 45, '🛬 Landed Safely on Earth!', '#059669');
     }

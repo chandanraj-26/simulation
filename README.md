@@ -1,79 +1,51 @@
-# 🚀 PhysicsLab — Rocket Motion & Newton's Laws Simulator
+# Interactive Physics Simulations Suite
 
-An interactive, web-based physics simulation designed for Class 9–10 students and educators to explore **Newton's Laws of Motion**, **gravity ($W = mg$)**, **velocity**, **mass**, and **acceleration ($a = \frac{F_{\text{net}}}{m}$)**.
-
-![PhysicsLab Preview](simulation.html)
+A collection of interactive, client-side STEM physics simulations built with HTML5 Canvas, modern Vanilla CSS, and JavaScript.
 
 ---
 
-## ✨ Features
+## 🔬 Simulations Included
 
-- **🎬 Full-Page Video Landing Intro**: Features a 10-second introductory lesson video explaining how rockets fly using **Newton's Third Law** ($F_{\text{action}} = -F_{\text{reaction}}$), complete with interactive play/pause, un-mute audio controls, and a quick-action lab entry button.
-- **🌍 Realistic Earth Atmosphere & Crust Cross-Section**:
-  - **Crust Foundation (0 m)**: Bedrock cross-section with tectonic strata layers.
-  - **Troposphere (0–12 km)**: Daytime sky, cloud layers, and mountain summits.
-  - **Stratosphere (12–50 km)**: Weather balloons and protective ozone layer.
-  - **Mesosphere (50–85 km)**: Noctilucent clouds and burning meteors.
-  - **Thermosphere (85–600 km)**: Auroras and the **Kármán line (100 km)**, the official boundary of space.
-  - **Deep Outer Space (>600 km)**: Deep space starfields, orbital satellites, and Earth curvature.
-- **📐 2D Thrust Angle & Vector Resolution**:
-  - Direct slider control ($\theta \in [-60^\circ, +60^\circ]$) with rocket visual rotation.
-  - Trigonometric force component breakdown ($F_x = F_{\text{thrust}} \cdot \sin\theta$, $F_y = F_{\text{thrust}} \cdot \cos\theta$).
-  - Animated dashed flight path trajectory showing real-time 2D projectile arc.
-- **🎯 100% Non-Overlapping Force Badges**:
-  - Vector badges are dynamically spaced using a collision-resolution algorithm so labels never obscure one another.
-- **📈 Real-Time Multi-Trace Telemetry Graphs**:
-  - Synchronized plotting of velocity $v(t)$, acceleration $a(t)$, and altitude $y(t)$ with peak markers.
-- **💾 CSV Telemetry Export**:
-  - Download high-frequency time-series physics data for lab analysis in Excel, Google Sheets, or Python.
+### 1. 🔍 [Lens Simulation (`/lens_simulation`)](lens_simulation/)
+- **Convex & Concave Lenses**: Real-time ray tracing (Ray 1, Ray 2, Ray 3) and virtual ray back-extensions.
+- **Interactive Objects**: Upright Arrow, Candle Flame, and **Student Character** (with ray emissions from the raised index fingertip).
+- **Image Formation**: Real inverted images on projection screens vs. upright holographic virtual images.
+- **HUD & Bench Controls**: Live focal length ($f$), object distance ($u$), image distance ($v$), and magnification ($m$).
 
----
+### 2. 🌈 [Prism Simulation (`/prism_simulation`)](prism_simulation/)
+- **Light Refraction & Snell's Law**: $n_1 \sin(\theta_1) = n_2 \sin(\theta_2)$ with incident angle and prism apex angle controls.
+- **VIBGYOR Chromatic Dispersion**: Cauchy dispersion equation modeling wavelength-dependent refractive indices ($n(\lambda) = A + B/\lambda^2$).
+- **Total Internal Reflection (TIR)**: Critical angle $\theta_c$ calculation and visualization.
+- **Monochromatic & White Light Sources**: Real-time spectrum analysis.
 
-## 🛠️ Tech Stack
-
-- **HTML5 & Vanilla JavaScript**: Zero dependencies, fully client-side and ultra-fast.
-- **HTML5 2D Canvas**: Custom high-DPI rendering engine for atmospheric physics and telemetry graphs.
-- **Modern CSS3 Design System**: Clean light theme with curated typography (Google Fonts: *Plus Jakarta Sans* & *JetBrains Mono*).
+### 3. 🚀 [Rocket Simulation (`/rocket_simulation`)](rocket_simulation/)
+- **Newton's Laws of Motion**: $F_{\text{net}} = ma$, action-reaction pairs, weight ($W = mg$), and thrust.
+- **Atmospheric Layers & Karman Line**: Troposphere through Outer Space cross-section.
+- **2D Thrust Vectoring**: Real-time trajectory plotting and force resolution ($F_x, F_y$).
+- **Telemetry Graphs & CSV Export**: Real-time altitude, velocity, and acceleration plotting.
 
 ---
 
-## 🚀 Getting Started
+## 💻 Tech Stack
+- **Pure Web Standards**: HTML5, Canvas 2D API, CSS3, ES6+ JavaScript.
+- **Zero External Dependencies**: Works out-of-the-box locally or deployed to Vercel / GitHub Pages.
 
-Simply open `simulation.html` in any modern web browser:
+---
+
+## 🚀 Running Locally
+You can run any simulation using any static web server:
 
 ```bash
-# Clone the repository
-git clone https://github.com/chandanraj-03/sim.git
+# Lens Simulation
+cd lens_simulation
+python -m http.server 8085
 
-# Navigate to the folder
-cd sim
+# Prism Simulation
+cd prism_simulation
+python -m http.server 8099
 
-# Open simulation.html in your default browser
-# (Windows)
-start simulation.html
-
-# (macOS)
-open simulation.html
-
-# (Linux)
-xdg-open simulation.html
+# Rocket Simulation
+cd rocket_simulation
+python -m http.server 8080
 ```
-
----
-
-## 📚 Educational Core Formulas
-
-1. **Newton's First Law (Law of Inertia)**:
-   $$\Sigma F = 0 \implies v = \text{constant}$$
-2. **Newton's Second Law (Law of Force & Acceleration)**:
-   $$F_{\text{net}} = m \cdot a \implies a = \frac{F_{\text{thrust}} - W}{m}$$
-3. **Newton's Third Law (Action & Reaction)**:
-   $$\vec{F}_{\text{action}} = -\vec{F}_{\text{reaction}}$$
-4. **Weight Force**:
-   $$W = m \cdot g \quad (g \approx 9.8\text{ m/s}^2 \text{ at Earth surface})$$
-
----
-
-## 📄 License
-
-MIT License — Feel free to use and adapt for classrooms, STEM workshops, and physics education!
+Or simply open the `index.html` or `simulation.html` file in any modern web browser.

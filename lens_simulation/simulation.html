@@ -1,0 +1,383 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>OpticsLab — Interactive Lens Simulation & Ray Tracing</title>
+  <meta name="description" content="Interactive STEM physics simulation exploring image formation through convex and concave lenses, ray diagrams, Cartesian sign conventions, and thin lens formula.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+  <!-- ================================================================= -->
+  <!-- MAIN APPLICATION HEADER                                           -->
+  <!-- ================================================================= -->
+  <header class="app-header">
+    <div class="header-container">
+      <div class="brand-wrapper">
+        <div class="brand-icon">🔍</div>
+        <div>
+          <div style="display:flex; align-items:center;">
+            <h1 class="brand-title">OpticsLab</h1>
+            <span class="brand-tag">Class 8–12 Physics</span>
+          </div>
+          <div class="brand-sub">Interactive Lens Ray Tracing &amp; Image Formation</div>
+        </div>
+      </div>
+
+      <!-- Lens Type Toggle Selector -->
+      <div class="lens-selector-group">
+        <button id="btnTypeConvex" class="lens-type-btn active" title="Switch to Convex (Converging) Lens">
+          <span>⭕</span> Convex Lens (Converging)
+        </button>
+        <button id="btnTypeConcave" class="lens-type-btn" title="Switch to Concave (Diverging) Lens">
+          <span>⏳</span> Concave Lens (Diverging)
+        </button>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="header-actions">
+        <button id="btnOpenSign" class="action-btn btn-primary" title="Review New Cartesian Sign Convention">
+          <span>📐</span> Sign Convention
+        </button>
+        <button id="btnResetView" class="action-btn" title="Reset optical bench and parameters">
+          <span>↺</span> Reset
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ================================================================= -->
+  <!-- MAIN LAYOUT (CANVAS + STATS + SIDEBAR)                            -->
+  <!-- ================================================================= -->
+  <main class="main-layout">
+    
+    <!-- LEFT: Canvas Viewport & Mathematical Explainer -->
+    <div class="canvas-section">
+      
+      <!-- Canvas Optical Bench Card -->
+      <div class="canvas-card">
+        <!-- Quick Preset Case Chips -->
+        <div class="canvas-header-bar">
+          <div style="font-size:12px; font-weight:700; color:#475569; display:flex; align-items:center; gap:6px;">
+            <span>⚡ Quick Cases:</span>
+          </div>
+          <div class="canvas-presets-wrapper">
+            <button class="preset-chip" data-preset="convex-beyond-2f">Beyond 2F₁</button>
+            <button class="preset-chip" data-preset="convex-at-2f">At 2F₁ (1:1)</button>
+            <button class="preset-chip" data-preset="convex-between-f-2f">Between F₁ &amp; 2F₁</button>
+            <button class="preset-chip" data-preset="convex-at-f">At F₁ (Infinity)</button>
+            <button class="preset-chip" data-preset="convex-inside-f">Inside F₁ (Magnifier)</button>
+            <button class="preset-chip" data-preset="concave-distant">Concave Distant</button>
+            <button class="preset-chip" data-preset="concave-close">Concave Close</button>
+          </div>
+        </div>
+
+        <!-- Canvas Container -->
+        <div class="canvas-container">
+          <canvas id="opticsCanvas"></canvas>
+
+          <!-- Floating Image Nature HUD -->
+          <div class="floating-hud">
+            <div class="hud-title">Image Formation Character</div>
+            <div class="hud-badges-group">
+              <span id="badgeNature" class="hud-badge badge-real">Real Image</span>
+              <span id="badgeOrientation" class="hud-badge badge-inverted">Inverted</span>
+              <span id="badgeSize" class="hud-badge badge-same">Same Size (1.0×)</span>
+            </div>
+            <p id="badgeZone" class="hud-zone-text">Between F₂ and 2F₂</p>
+          </div>
+
+          <!-- Bench Helper Floating Controls -->
+          <div class="bench-controls-overlay">
+            <button id="btnToggleAutoFit" class="bench-btn active" title="Toggle automatic dynamic framing of all diagram elements">
+              <span>🎯</span> <span id="lblAutoFit">Auto-Fit: ON</span>
+            </button>
+            <button id="btnExpandCanvas" class="bench-btn" title="Toggle larger canvas height">
+              <span>⛶</span> Expand View
+            </button>
+            <span style="font-size:11px; color:#64748b; padding:4px 6px; display:flex; align-items:center;">
+              🖱️ Drag Object / Foci / Bench
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Live Optics Telemetry Grid -->
+      <div class="telemetry-grid">
+        <div class="telemetry-card">
+          <span class="telemetry-label">Object Distance (u)</span>
+          <span id="readoutU" class="telemetry-value">-40.0 cm</span>
+        </div>
+        <div class="telemetry-card">
+          <span class="telemetry-label">Image Distance (v)</span>
+          <span id="readoutV" class="telemetry-value">+40.0 cm</span>
+        </div>
+        <div class="telemetry-card">
+          <span class="telemetry-label">Focal Length (f)</span>
+          <span id="readoutF" class="telemetry-value">+20.0 cm</span>
+        </div>
+        <div class="telemetry-card">
+          <span class="telemetry-label">Magnification (m)</span>
+          <span id="readoutM" class="telemetry-value">-1.00</span>
+        </div>
+        <div class="telemetry-card">
+          <span class="telemetry-label">Lens Power (P)</span>
+          <span id="readoutP" class="telemetry-value">+5.00 D</span>
+        </div>
+        <div class="telemetry-card">
+          <span class="telemetry-label">Image Height (hᵢ)</span>
+          <span id="readoutHi" class="telemetry-value">-15.0 cm</span>
+        </div>
+      </div>
+
+      <!-- Step-by-Step Mathematical Explainer -->
+      <div class="math-explainer-card">
+        <div class="math-explainer-header">
+          <h3 class="math-header-title">
+            <span>📐</span> Live Thin Lens Calculations &amp; Sign Convention
+          </h3>
+          <span style="font-size:12px; color:#64748b; font-weight:500;">Cartesian Sign Convention Active</span>
+        </div>
+        <div id="mathContainer" class="math-steps-wrapper">
+          <!-- Step cards inserted dynamically by ui.js -->
+        </div>
+      </div>
+
+    </div>
+
+    <!-- RIGHT: Controls Sidebar -->
+    <aside class="sidebar-section">
+      
+      <!-- Card: Optical Bench Parameters -->
+      <div class="control-card">
+        <h3 class="card-heading">
+          <span>⚙️ Bench Parameters</span>
+        </h3>
+        
+        <div class="slider-group">
+          <!-- Focal Length Slider -->
+          <div class="slider-item">
+            <div class="slider-header">
+              <span class="slider-title">Focal Length (|f|)</span>
+              <span id="valFocal" class="slider-val-badge">20.0 cm</span>
+            </div>
+            <input type="range" id="sliderFocal" min="10" max="45" step="0.5" value="20">
+          </div>
+
+          <!-- Object Distance Slider -->
+          <div class="slider-item">
+            <div class="slider-header">
+              <span class="slider-title">Object Distance (|u|)</span>
+              <span id="valObjDist" class="slider-val-badge">40.0 cm</span>
+            </div>
+            <input type="range" id="sliderObjDist" min="4" max="95" step="0.5" value="40">
+          </div>
+
+          <!-- Object Height Slider -->
+          <div class="slider-item">
+            <div class="slider-header">
+              <span class="slider-title">Object Height (hₒ)</span>
+              <span id="valObjHeight" class="slider-val-badge">15.0 cm</span>
+            </div>
+            <input type="range" id="sliderObjHeight" min="5" max="25" step="0.5" value="15">
+          </div>
+
+          <!-- Object Type Segmented Control -->
+          <div class="slider-item">
+            <span class="slider-title">Object Graphic</span>
+            <div class="segmented-control">
+              <button id="btnObjStudent" class="segmented-btn active">🧍 Student</button>
+              <button id="btnObjCandle" class="segmented-btn">🕯️ Candle</button>
+              <button id="btnObjArrow" class="segmented-btn">⬆️ Arrow</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card: Principal Ray Tracing Toggles -->
+      <div class="control-card">
+        <h3 class="card-heading">
+          <span>⚡ Principal Light Rays</span>
+        </h3>
+
+        <div class="checkbox-list">
+          <div class="checkbox-row">
+            <label class="checkbox-label" for="chkRay1">
+              <span class="color-pip pip-cyan"></span>
+              <span>Ray 1: Parallel to Axis &rarr; Focus</span>
+            </label>
+            <label class="switch">
+              <input type="checkbox" id="chkRay1" checked>
+              <span class="switch-slider"></span>
+            </label>
+          </div>
+
+          <div class="checkbox-row">
+            <label class="checkbox-label" for="chkRay2">
+              <span class="color-pip pip-blue"></span>
+              <span>Ray 2: Through Optical Center (O)</span>
+            </label>
+            <label class="switch">
+              <input type="checkbox" id="chkRay2" checked>
+              <span class="switch-slider"></span>
+            </label>
+          </div>
+
+          <div class="checkbox-row">
+            <label class="checkbox-label" for="chkRay3">
+              <span class="color-pip pip-green"></span>
+              <span>Ray 3: Through Focus &rarr; Parallel</span>
+            </label>
+            <label class="switch">
+              <input type="checkbox" id="chkRay3" checked>
+              <span class="switch-slider"></span>
+            </label>
+          </div>
+
+          <div class="checkbox-row">
+            <label class="checkbox-label" for="chkVirtual">
+              <span class="color-pip pip-purple"></span>
+              <span>Virtual Ray Extensions (Dashed)</span>
+            </label>
+            <label class="switch">
+              <input type="checkbox" id="chkVirtual" checked>
+              <span class="switch-slider"></span>
+            </label>
+          </div>
+
+          <div class="checkbox-row">
+            <label class="checkbox-label" for="chkLightCone">
+              <span>🔦 Full Light Cone (Aperture)</span>
+            </label>
+            <label class="switch">
+              <input type="checkbox" id="chkLightCone">
+              <span class="switch-slider"></span>
+            </label>
+          </div>
+
+          <div class="checkbox-row">
+            <label class="checkbox-label" for="chkAnimate">
+              <span>✨ Flowing Photon Animation</span>
+            </label>
+            <label class="switch">
+              <input type="checkbox" id="chkAnimate" checked>
+              <span class="switch-slider"></span>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card: Overlays & Guides -->
+      <div class="control-card">
+        <h3 class="card-heading">
+          <span>📐 Overlays &amp; Grid</span>
+        </h3>
+
+        <div class="checkbox-list">
+          <div class="checkbox-row">
+            <label class="checkbox-label" for="chkGrid">
+              <span>Coordinate Grid Lines</span>
+            </label>
+            <label class="switch">
+              <input type="checkbox" id="chkGrid" checked>
+              <span class="switch-slider"></span>
+            </label>
+          </div>
+
+          <div class="checkbox-row">
+            <label class="checkbox-label" for="chkRuler">
+              <span>Metric Ruler Scale (cm)</span>
+            </label>
+            <label class="switch">
+              <input type="checkbox" id="chkRuler" checked>
+              <span class="switch-slider"></span>
+            </label>
+          </div>
+        </div>
+      </div>
+
+    </aside>
+  </main>
+
+  <!-- ================================================================= -->
+  <!-- MODAL: SIGN CONVENTION REFERENCE GUIDE                            -->
+  <!-- ================================================================= -->
+  <div id="modalSignConvention" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="signModalTitle">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 id="signModalTitle" class="modal-title">📐 New Cartesian Sign Convention</h3>
+        <button id="btnCloseSign" class="modal-close-btn" aria-label="Close dialog">&times;</button>
+      </div>
+      <div>
+        <p style="font-size:13px; color:#475569; line-height:1.6;">
+          According to the New Cartesian Sign Convention used internationally and across Class 9–12 physics textbooks:
+        </p>
+        <ul style="font-size:13px; color:#334155; line-height:1.7; padding-left:20px;">
+          <li>The <b>Optical Center (O)</b> of the lens is taken as the origin (0, 0).</li>
+          <li>The <b>Principal Axis</b> corresponds to the horizontal X-axis.</li>
+          <li>Incident light always travels from <b>Left to Right</b> (+x direction).</li>
+          <li>All distances measured to the right (+x) are <b>Positive (+)</b>.</li>
+          <li>All distances measured to the left (-x) are <b>Negative (-)</b>.</li>
+          <li>Heights measured perpendicularly upward (+y) are <b>Positive (+)</b>.</li>
+          <li>Heights measured perpendicularly downward (-y) are <b>Negative (-)</b>.</li>
+        </ul>
+
+        <h4 style="font-size:14px; margin-top:16px; margin-bottom:8px; color:#0f172a;">Sign Summary Table</h4>
+        <table class="sign-table">
+          <thead>
+            <tr>
+              <th>Parameter</th>
+              <th>Convex Lens (Converging)</th>
+              <th>Concave Lens (Diverging)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Focal Length (<i>f</i>)</td>
+              <td><b style="color:#16a34a;">Positive (+)</b></td>
+              <td><b style="color:#dc2626;">Negative (-)</b></td>
+            </tr>
+            <tr>
+              <td>Object Distance (<i>u</i>)</td>
+              <td><b>Negative (-)</b></td>
+              <td><b>Negative (-)</b></td>
+            </tr>
+            <tr>
+              <td>Real Image Distance (<i>v</i>)</td>
+              <td><b style="color:#16a34a;">Positive (+)</b> (Right side)</td>
+              <td><i>Never forms a real image</i></td>
+            </tr>
+            <tr>
+              <td>Virtual Image Distance (<i>v</i>)</td>
+              <td><b style="color:#7c3aed;">Negative (-)</b> (Left side)</td>
+              <td><b style="color:#7c3aed;">Negative (-)</b> (Left side)</td>
+            </tr>
+            <tr>
+              <td>Object Height (<i>h</i><sub>o</sub>)</td>
+              <td><b>Positive (+)</b></td>
+              <td><b>Positive (+)</b></td>
+            </tr>
+            <tr>
+              <td>Real Image Height (<i>h</i><sub>i</sub>)</td>
+              <td><b>Negative (-)</b> (Inverted)</td>
+              <td><i>N/A</i></td>
+            </tr>
+            <tr>
+              <td>Virtual Image Height (<i>h</i><sub>i</sub>)</td>
+              <td><b>Positive (+)</b> (Upright)</td>
+              <td><b>Positive (+)</b> (Upright)</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Core JavaScript Modules -->
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>

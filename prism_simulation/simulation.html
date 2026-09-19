@@ -1,0 +1,430 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>PhysicsLab — Prism Light Refraction, Dispersion (VIBGYOR) & Snell's Law Simulator</title>
+<meta name="description" content="Interactive STEM physics simulation for Class 9–12 exploring refraction of light through a glass prism, Snell's law, chromatic dispersion, rainbow spectrum, and minimum deviation.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/styles.css">
+<link rel="stylesheet" href="css/landing.css">
+</head>
+<body>
+
+<!-- ================================================================= -->
+<!-- INTRODUCTORY LESSON MODAL (Dispersion of Light & Prism Physics)   -->
+<!-- ================================================================= -->
+<div id="videoLandingOverlay" class="landing-overlay" role="dialog" aria-modal="true" aria-label="Introductory Optics Lesson">
+  <div class="landing-content">
+    <div class="landing-top-bar">
+      <div class="landing-brand">
+        <span class="landing-brand-icon">🌈</span>
+        <span>PhysicsLab <span style="font-size:13px; font-weight:500; color:#94a3b8;">| Class 9–12 Physics</span></span>
+      </div>
+      <button class="landing-skip-btn" id="btnSkipToLab" title="Enter the interactive optics lab">Enter Optics Lab &rarr;</button>
+    </div>
+
+    <div class="landing-header">
+      <div class="landing-topic-badge">Refraction &amp; Chromatic Dispersion</div>
+      <h1 class="landing-title">Why Does White Light Split into Rainbow Colors?</h1>
+      <p class="landing-desc">
+        When white light enters a transparent glass prism, light doesn't just bend — it separates! Different colors travel at different speeds in glass. <b>Violet light slows down the most</b> (speed <i>v</i> = <i>c</i> / <i>n</i>) and bends the most, while <b>Red light travels fastest</b> and bends the least, revealing the magnificent <b>VIBGYOR</b> spectrum discovered by Sir Isaac Newton in 1666!
+      </p>
+    </div>
+
+    <div class="landing-theater">
+      <div class="landing-video-wrapper">
+        <canvas id="theaterCanvas"></canvas>
+      </div>
+
+      <div class="landing-explainer-grid">
+        <div class="landing-explainer-card">
+          <div class="explainer-icon">⚡</div>
+          <div class="explainer-info">
+            <div class="explainer-title">1. Surface 1 Refraction</div>
+            <p class="explainer-p">Snell's Law: <b><i>n</i>₁ · sin(<i>i</i>) = <i>n</i>₂ · sin(<i>r</i>₁)</b>. Light bends toward the normal as it enters the denser glass medium.</p>
+          </div>
+        </div>
+        <div class="landing-explainer-card">
+          <div class="explainer-icon">🌈</div>
+          <div class="explainer-info">
+            <div class="explainer-title">2. Cauchy Dispersion</div>
+            <p class="explainer-p">Because refractive index for violet is higher than red (<b><i>n</i><sub>violet</sub> &gt; <i>n</i><sub>red</sub></b>), each color bends at a different angle.</p>
+          </div>
+        </div>
+        <div class="landing-explainer-card">
+          <div class="explainer-icon">📐</div>
+          <div class="explainer-info">
+            <div class="explainer-title">3. Total Deviation (&delta;)</div>
+            <p class="explainer-p">Emergent rays bend away from the normal into air, producing total deviation <b>&delta; = <i>i</i> + <i>e</i> &minus; <i>A</i></b> onto the observation screen.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="landing-footer-actions">
+        <button id="btnEnterLab" class="landing-cta-btn">Start Exploring the Optics Lab &rarr;</button>
+        <button id="btnReplayVideo" class="landing-secondary-btn">↺ Replay Lesson &amp; Audio</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ================================================================= -->
+<!-- MAIN APPLICATION HEADER                                           -->
+<!-- ================================================================= -->
+<header class="app-header">
+  <div class="header-container">
+    <div class="brand-wrapper">
+      <div class="brand-icon">🌈</div>
+      <div>
+        <div style="display:flex; align-items:center;">
+          <h1 class="brand-title">PhysicsLab</h1>
+          <span class="brand-tag">Class 9–12</span>
+        </div>
+        <div class="brand-sub">Light Refraction, Dispersion (VIBGYOR) &amp; Snell's Law</div>
+      </div>
+    </div>
+
+    <!-- Mode Switcher: Simple Lab vs Data & Graphs -->
+    <div class="mode-tabs">
+      <button id="tabSimple" class="mode-tab active" title="Interactive tactile prism ray tracing">
+        <span>🌈</span> Interactive Prism Lab
+      </button>
+      <button id="tabAdvanced" class="mode-tab" title="Deviation curves, Cauchy spectrum and analytics">
+        <span>📊</span> Spectrum &amp; Deviation Analytics
+      </button>
+    </div>
+
+    <div class="header-actions">
+      <button id="btnOpenIntroVideo" class="btn-header-action btn-header-video">
+        <span>🎬</span> Watch Lesson
+      </button>
+      <button id="btnResetDefaults" class="btn-header-action" title="Reset all settings to default">
+        <span>🔄</span> Reset All
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- ================================================================= -->
+<!-- MAIN INTERACTIVE CONTENT AREA                                     -->
+<!-- ================================================================= -->
+<main class="lab-content-area">
+
+  <!-- ========================================== -->
+  <!-- 1. SIMPLE LAB VIEW (Default for Students)   -->
+  <!-- ========================================== -->
+  <div id="simpleLabView">
+    <div class="two-col-grid">
+
+      <!-- LEFT COLUMN: PRISM CANVAS & TEACHER CARD -->
+      <div class="stage-column">
+        <div class="stage-card">
+          <!-- Toolbar with Clean Toggles -->
+          <div class="stage-toolbar">
+            <span id="simStatus" class="stage-status-badge active">⚡ RAY TRACING ACTIVE</span>
+            <div class="toggle-group">
+              <label class="check-label">
+                <input type="checkbox" id="chkNormals" checked> Normal Lines (N₁, N₂)
+              </label>
+              <label class="check-label">
+                <input type="checkbox" id="chkAngles" checked> Angles (i, r₁, r₂, e)
+              </label>
+              <label class="check-label">
+                <input type="checkbox" id="chkVirtualRays" checked> Deviation Ray (&delta;)
+              </label>
+              <label class="check-label">
+                <input type="checkbox" id="chkProtractor"> Protractor
+              </label>
+              <label class="check-label">
+                <input type="checkbox" id="chkScreen" checked> Screen
+              </label>
+            </div>
+          </div>
+
+          <!-- The Canvas Stage -->
+          <div class="canvas-wrapper">
+            <canvas id="simCanvas"></canvas>
+            <div class="canvas-overlay-hint">
+              <span>💡 Tip: Click and drag the light torch or observation screen directly on canvas!</span>
+            </div>
+          </div>
+
+          <!-- Big Tactile Playback Controls -->
+          <div class="stage-controls">
+            <div class="playback-btn-group">
+              <button id="btnPlay" class="btn-play active-beam">⚡ Light Beam ON</button>
+              <button id="btnStep" class="btn-step" title="Advance angle by +2°">⏭ Step (+2°)</button>
+              <button id="btnReset" class="btn-reset" title="Reset to standard defaults">🔄 Reset</button>
+            </div>
+            <div class="sim-speed-selector">
+              <button class="speed-pill" data-speed="0.5">0.5x Slow</button>
+              <button class="speed-pill active" data-speed="1.0">1x Normal</button>
+              <button class="speed-pill" data-speed="2.0">2x Fast</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- "What's Happening?" Live Teacher Card (Plain English Class 9-12 Physics) -->
+        <div class="teacher-card">
+          <div class="teacher-header">
+            <span id="teacherBadge" class="teacher-badge">🌈 Chromatic Dispersion of White Light</span>
+            <span style="font-size:12.5px; color:var(--text-muted); font-weight:600;">Live Concept Explainer</span>
+          </div>
+          <div id="teacherExplanation" class="teacher-summary">
+            White light is made of all colors. In glass, <b>Violet light travels slower</b> (speed <i>v</i> = <i>c</i> / <i>n</i>) and has a higher refractive index, bending the most, while <b>Red light travels faster</b> and bends the least!
+          </div>
+          <div class="teacher-steps-grid">
+            <div class="step-box">
+              <span class="step-label">1. Surface 1 Refraction</span>
+              <span id="stepIncidence" class="step-val green">48.0°</span>
+              <span id="stepRefractionSub" class="step-sub">r₁ = 29.2° (Snell's Law)</span>
+            </div>
+            <div class="step-box">
+              <span class="step-label">2. Face 2 Internal Angle</span>
+              <span id="stepInternal" class="step-val amber">30.8°</span>
+              <span id="stepInternalSub" class="step-sub">r₂ = A - r₁ (30.8° &lt; θ_c)</span>
+            </div>
+            <div class="step-box">
+              <span class="step-label">3. Total Net Deviation</span>
+              <span id="stepDeviation" class="step-val purple">39.2°</span>
+              <span id="stepDeviationSub" class="step-sub">&delta; = i + e - A</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- RIGHT COLUMN: STUDENT CONTROLS -->
+      <div class="controls-column">
+
+        <!-- CARD 1: LIGHT SOURCE & WAVELENGTH -->
+        <div class="control-card">
+          <div class="control-card-header">
+            <h2 class="control-card-title"><span>💡</span> Light Source Type</h2>
+            <div class="light-type-tabs">
+              <button id="tabLightWhite" class="light-type-tab active">🌈 White Light</button>
+              <button id="tabLightLaser" class="light-type-tab">🔴 Laser</button>
+            </div>
+          </div>
+
+          <!-- Laser wavelength controls (shown when laser mode is active) -->
+          <div id="laserWavelengthControl" style="display:none; margin-top:8px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+              <span style="font-size:12.5px; font-weight:700; color:var(--text-muted);">Laser Wavelength (&lambda;)</span>
+              <span id="outWavelength" class="control-pill-val" style="color:#10b981;">532 nm</span>
+            </div>
+            <div class="slider-container">
+              <input type="range" id="slWavelength" class="big-range-slider spectrum-slider" min="380" max="750" step="1" value="532">
+            </div>
+          </div>
+
+          <!-- Quick Wavelength Presets -->
+          <div class="preset-button-row" style="margin-top:6px;">
+            <button class="btn-preset" data-wl="685" style="border-left:3px solid #ef4444;" title="Red Light">Red (685nm)</button>
+            <button class="btn-preset" data-wl="589" style="border-left:3px solid #eab308;" title="Sodium D-Line">Yellow (589nm)</button>
+            <button class="btn-preset" data-wl="532" style="border-left:3px solid #10b981;" title="Green Laser">Green (532nm)</button>
+            <button class="btn-preset" data-wl="450" style="border-left:3px solid #3b82f6;" title="Blue Light">Blue (450nm)</button>
+            <button class="btn-preset" data-wl="405" style="border-left:3px solid #7e22ce;" title="Violet Light">Violet (405nm)</button>
+          </div>
+        </div>
+
+        <!-- CARD 2: ANGLE OF INCIDENCE (i) -->
+        <div class="control-card">
+          <div class="control-card-header">
+            <h2 class="control-card-title"><span>📐</span> Angle of Incidence (i)</h2>
+            <span id="outAngle" class="control-pill-val green">48.0°</span>
+          </div>
+          <div class="slider-container">
+            <input type="range" id="slAngle" class="big-range-slider green-slider" min="15" max="80" step="0.5" value="48">
+          </div>
+          <div class="preset-button-row">
+            <button class="btn-preset" data-angle="30">30°</button>
+            <button class="btn-preset" data-angle="45">45°</button>
+            <button id="btnAngleMinDev" class="btn-preset active" title="Automatically align to minimum deviation position">🎯 Min Dev (D_min)</button>
+            <button class="btn-preset" data-angle="60">60°</button>
+            <button class="btn-preset" data-angle="75">75° Grazing</button>
+          </div>
+        </div>
+
+        <!-- CARD 3: PRISM MATERIAL & REFRACTIVE INDEX (n) -->
+        <div class="control-card">
+          <div class="control-card-header">
+            <h2 class="control-card-title"><span>💎</span> Prism Material &amp; Index (n)</h2>
+            <span id="outN" class="control-pill-val blue">1.520</span>
+          </div>
+          <div class="material-grid">
+            <button class="material-card-btn active" data-material="crownglass">
+              <span class="material-emoji">💎</span>
+              <div>
+                <div class="material-info-name">Crown Glass</div>
+                <div class="material-info-n">n = 1.520</div>
+              </div>
+            </button>
+            <button class="material-card-btn" data-material="flintglass">
+              <span class="material-emoji">✨</span>
+              <div>
+                <div class="material-info-name">Flint Glass</div>
+                <div class="material-info-n">n = 1.660</div>
+              </div>
+            </button>
+            <button class="material-card-btn" data-material="water">
+              <span class="material-emoji">💧</span>
+              <div>
+                <div class="material-info-name">Water</div>
+                <div class="material-info-n">n = 1.333</div>
+              </div>
+            </button>
+            <button class="material-card-btn" data-material="diamond">
+              <span class="material-emoji">💠</span>
+              <div>
+                <div class="material-info-name">Diamond</div>
+                <div class="material-info-n">n = 2.420</div>
+              </div>
+            </button>
+          </div>
+          <div class="slider-container" style="margin-top:6px;">
+            <input type="range" id="slN" class="big-range-slider" min="1.200" max="2.500" step="0.005" value="1.520">
+          </div>
+          <div id="opticsFormulaNote" class="optics-formula-note">
+            💡 <b>CROWN GLASS</b>: Refractive Index n = <b>1.520</b> | Critical Angle θ<sub>c</sub> = <b>41.1°</b>
+          </div>
+        </div>
+
+        <!-- CARD 4: PRISM APEX ANGLE (A) -->
+        <div class="control-card">
+          <div class="control-card-header">
+            <h2 class="control-card-title"><span>🔺</span> Prism Apex Angle (A)</h2>
+            <span id="outPrismAngle" class="control-pill-val amber">60°</span>
+          </div>
+          <div class="slider-container">
+            <input type="range" id="slPrismAngle" class="big-range-slider amber-slider" min="30" max="90" step="1" value="60">
+          </div>
+          <div class="preset-button-row">
+            <button class="btn-preset" data-apex="30">30° (Littrow)</button>
+            <button class="btn-preset" data-apex="45">45° (Right Isosceles)</button>
+            <button class="btn-preset active" data-apex="60">60° (Equilateral)</button>
+            <button class="btn-preset" data-apex="75">75° (Acute)</button>
+          </div>
+        </div>
+
+        <!-- CARD 5: LIVE OPTICAL TELEMETRY GAUGES -->
+        <div class="control-card">
+          <div class="control-card-header">
+            <h2 class="control-card-title"><span>⏱️</span> Optical Telemetry &amp; Angles</h2>
+            <span style="font-size:12px; color:var(--text-muted); font-weight:600;">SI Angular Degrees</span>
+          </div>
+          <div class="flight-gauges-grid">
+            <div class="gauge-box">
+              <div class="gauge-label">Incidence i</div>
+              <div id="gaugeIncidence" class="gauge-val" style="color:#059669;">48.0°</div>
+            </div>
+            <div class="gauge-box">
+              <div class="gauge-label">Refract r₁</div>
+              <div id="gaugeRefraction" class="gauge-val" style="color:#0284c7;">29.2°</div>
+            </div>
+            <div class="gauge-box">
+              <div class="gauge-label">Internal r₂</div>
+              <div id="gaugeInternal" class="gauge-val" style="color:#0284c7;">30.8°</div>
+            </div>
+            <div class="gauge-box">
+              <div class="gauge-label">Emergent e</div>
+              <div id="gaugeEmergence" class="gauge-val" style="color:#d97706;">51.2°</div>
+            </div>
+          </div>
+          <div class="flight-gauges-grid" style="grid-template-columns: 1fr 1fr; margin-top:8px;">
+            <div class="gauge-box" style="background:#f5f3ff; border-color:#ddd6fe;">
+              <div class="gauge-label">Total Deviation &delta;</div>
+              <div id="gaugeDeviation" class="gauge-val" style="color:#7c3aed; font-size:17px;">39.2°</div>
+            </div>
+            <div class="gauge-box" style="background:#fffbeb; border-color:#fde68a;">
+              <div class="gauge-label">Critical Angle &theta;<sub>c</sub></div>
+              <div id="gaugeCritical" class="gauge-val" style="color:#d97706; font-size:17px;">41.1°</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- 2. ADVANCED DATA & GRAPHS VIEW (Secondary) -->
+  <!-- ========================================== -->
+  <div id="advancedLabView" class="advanced-view-container">
+    <div class="graph-card">
+      <div class="graph-card-header">
+        <div>
+          <h2 style="margin:0; font-size:18px; font-weight:800; color:var(--text-main);">📈 Real-Time Optics &amp; Spectrometry Graphs</h2>
+          <p style="margin:4px 0 0 0; font-size:13px; color:var(--text-muted);">
+            Analyze the Angle of Deviation &delta;(i) curve to locate Minimum Deviation (D<sub>min</sub>) and explore Cauchy Chromatic Dispersion n(&lambda;).
+          </p>
+        </div>
+        <button id="exportCsvBtn" class="export-csv-btn">
+          <span>💾</span> Export Experiment Data to CSV
+        </button>
+      </div>
+
+      <!-- Dual Graphs Grid -->
+      <div class="graph-dual-grid">
+        <!-- Graph 1: δ vs i -->
+        <div class="graph-box">
+          <div class="graph-box-title">📐 Deviation &delta; vs Angle of Incidence i</div>
+          <div class="graph-canvas-wrapper">
+            <canvas id="graphCanvasDelta" class="graph-canvas"></canvas>
+          </div>
+        </div>
+
+        <!-- Graph 2: Cauchy Dispersion n vs λ -->
+        <div class="graph-box">
+          <div class="graph-box-title">🌈 Cauchy Dispersion Curve: Refractive Index n(&lambda;)</div>
+          <div class="graph-canvas-wrapper">
+            <canvas id="graphCanvasCauchy" class="graph-canvas"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <!-- Spectrometer Readout Card -->
+      <div class="spectrometer-card" style="margin-top:20px;">
+        <div style="font-size:14px; font-weight:800; color:var(--text-main);">🌈 Visible Spectrum Band Analysis (VIBGYOR)</div>
+        <div class="spectrum-ribbon">
+          <span>Violet (380nm)</span>
+          <span>Indigo</span>
+          <span>Blue</span>
+          <span>Green</span>
+          <span>Yellow</span>
+          <span>Orange</span>
+          <span>Red (750nm)</span>
+        </div>
+        <div class="spectrum-stats-grid">
+          <div class="gauge-box">
+            <div class="gauge-label">Angular Dispersion (&Delta;&theta; = &delta;<sub>v</sub> - &delta;<sub>r</sub>)</div>
+            <div id="statAngDisp" class="gauge-val" style="color:#7c3aed;">1.82°</div>
+          </div>
+          <div class="gauge-box">
+            <div class="gauge-label">Dispersive Power (&omega;)</div>
+            <div id="statDispersivePower" class="gauge-val" style="color:#0284c7;">0.0275</div>
+          </div>
+          <div class="gauge-box">
+            <div class="gauge-label">Minimum Deviation (D<sub>min</sub>)</div>
+            <div id="statDeltaMin" class="gauge-val" style="color:#059669;">37.2°</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<!-- Modular Optics Engine, Renderer, Graphs & Simulation Controllers -->
+<script src="js/state.js"></script>
+<script src="js/optics.js"></script>
+<script src="js/renderer.js"></script>
+<script src="js/graphs.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/simulation.js"></script>
+<script src="js/landing.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>
