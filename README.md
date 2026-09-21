@@ -24,6 +24,17 @@ A collection of interactive, client-side STEM physics simulations built with HTM
 - **2D Thrust Vectoring**: Real-time trajectory plotting and force resolution ($F_x, F_y$).
 - **Telemetry Graphs & CSV Export**: Real-time altitude, velocity, and acceleration plotting.
 
+### 4. ⚖️ [Wheatstone Bridge Simulation (`/wheatstone_bridge_simulation`)](wheatstone_bridge_simulation/)
+- **Classical 4-Resistor Network**: Nodal analysis, Thévenin equivalent circuit, galvanometer null-deflection.
+- **Meter Bridge Laboratory Bench**: 100 cm slide-wire apparatus, draggable jockey, and end error corrections.
+- **Resistivity Determination**: Specific resistance ($\rho$) calculation from wire gauge and length.
+
+### 5. 🌊 [Archimedes' Principle Simulation (`/archimedes_simulation`)](archimedes_simulation/)
+- **Eureka Overflow Can**: Spring balance tension ($W_{\text{apparent}}$), overflow spout fluid displacement into a digital-scale graduated catch cylinder.
+- **Hydrostatic Depth Pressure & FBD**: Pressure vectors $P(y) = P_0 + \rho g y$ acting on all surfaces, proving $F_B = \Delta P \cdot A$, plus Free Body Diagram vectors.
+- **Flotation, Boat Cargo & Crown Mystery**: Damped harmonic bobbing, Plimsoll line cargo capacity, and King Hiero's golden crown density test.
+- **Telemetry & Lab Notebook**: Real-time Apparent Weight Loss vs Displaced Fluid Weight logger with CSV export.
+
 ---
 
 ## 💻 Tech Stack
@@ -36,6 +47,10 @@ A collection of interactive, client-side STEM physics simulations built with HTM
 You can run any simulation using any static web server:
 
 ```bash
+# Archimedes' Principle Simulation
+cd archimedes_simulation
+python -m http.server 8088
+
 # Lens Simulation
 cd lens_simulation
 python -m http.server 8085
@@ -47,5 +62,10 @@ python -m http.server 8099
 # Rocket Simulation
 cd rocket_simulation
 python -m http.server 8080
+
+# Wheatstone Bridge Simulation
+cd wheatstone_bridge_simulation
+python -m http.server 8082
 ```
 Or simply open the `index.html` or `simulation.html` file in any modern web browser.
+

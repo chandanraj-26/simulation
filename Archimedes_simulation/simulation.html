@@ -1,0 +1,588 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ArchimedesLab — Interactive Archimedes' Principle &amp; Buoyancy Simulator</title>
+  <meta name="description" content="Interactive STEM physics simulation exploring Archimedes' principle, buoyant force, hydrostatic pressure distribution, apparent weight loss, and the classic Eureka displacement can experiment.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+  <!-- ================================================================= -->
+  <!-- MAIN APPLICATION HEADER                                           -->
+  <!-- ================================================================= -->
+  <header class="app-header">
+    <div class="header-container">
+      <div class="brand-wrapper">
+        <div class="brand-icon">🌊</div>
+        <div>
+          <div style="display:flex; align-items:center;">
+            <h1 class="brand-title">ArchimedesLab</h1>
+            <span class="brand-tag">Class 9–12 &amp; AP Physics</span>
+          </div>
+          <div class="brand-sub">Archimedes’ Principle, Buoyancy &amp; Fluid Hydrostatics Simulator</div>
+        </div>
+      </div>
+
+      <!-- Primary Mode Switcher -->
+      <div class="mode-selector-group">
+        <button id="btnModeEureka" class="mode-type-btn active" title="Classic Displacement Vessel &amp; Spring Balance">
+          <span>🧪</span> Eureka Overflow Lab
+        </button>
+        <button id="btnModePressure" class="mode-type-btn" title="Hydrostatic Depth Vectors &amp; Free Body Diagram">
+          <span>📐</span> Hydrostatic &amp; FBD
+        </button>
+        <button id="btnModeFlotation" class="mode-type-btn" title="Freely Floating Bodies &amp; Crown Mystery">
+          <span>🚢</span> Flotation &amp; Boat Lab
+        </button>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="header-actions">
+        <button id="btnOpenQuests" class="action-btn" style="border-color:#f59e0b; color:#d97706; font-weight:700;" title="Interactive Student Quests">
+          <span>⭐</span> Lab Quests
+        </button>
+        <button id="btnOpenChallenge" class="action-btn" title="Solve the Golden Crown Mystery">
+          <span>👑</span> Crown Mystery
+        </button>
+        <button id="btnOpenTheory" class="action-btn btn-primary" title="View Archimedes' Laws &amp; Derivations">
+          <span>📚</span> Theory &amp; Laws
+        </button>
+        <button id="btnResetAll" class="action-btn" title="Reset all parameters to default">
+          <span>↺</span> Reset All
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ================================================================= -->
+  <!-- MAIN LAYOUT (CANVAS + TELEMETRY + NOTEBOOK + SIDEBAR)             -->
+  <!-- ================================================================= -->
+  <main class="main-layout">
+
+    <!-- LEFT: Canvas Viewport, Live Telemetry & Educational Notebook -->
+    <div class="canvas-section">
+
+      <!-- Canvas Card -->
+      <div class="canvas-card">
+        <!-- Quick Preset Case Chips -->
+        <div class="canvas-header-bar">
+          <div style="font-size:12px; font-weight:700; color:#475569; display:flex; align-items:center; gap:6px;">
+            <span>⚡ Quick Cases:</span>
+          </div>
+          <div class="canvas-presets-wrapper">
+            <button class="preset-chip active" data-preset="heavy-sink">Heavy Sinking (Iron in Water)</button>
+            <button class="preset-chip" data-preset="classic-float">Classic Flotation (Wood in Water)</button>
+            <button class="preset-chip" data-preset="rubber-duck">🦆 Rubber Ducky (Floats!)</button>
+            <button class="preset-chip" data-preset="tip-iceberg">Tip of Iceberg (90% Submerged)</button>
+            <button class="preset-chip" data-preset="mercury-iron">Mercury Float (Iron on Hg)</button>
+            <button class="preset-chip" data-preset="neutral-buoy">Neutral Buoyancy (Diver in Water)</button>
+            <button class="preset-chip" data-preset="crown-mystery">King's Crown Mystery (Eureka!)</button>
+            <button class="preset-chip" data-preset="cargo-boat">Cargo Boat (Load &amp; Waterline)</button>
+          </div>
+
+          <!-- Header Status HUD -->
+          <div class="header-status-hud">
+            <span id="badgeCharacter" class="hud-badge badge-sinking">Sinking Density</span>
+            <span id="badgeVerification" class="hud-badge badge-verified">✓ F_B = W_fluid</span>
+            <span id="badgeLossRatio" class="hud-ratio-text">W_loss = 0.00 N | W_disp = 0.00 N</span>
+          </div>
+        </div>
+
+        <!-- Canvas Container -->
+        <div class="canvas-container">
+          <canvas id="hydroCanvas"></canvas>
+
+          <!-- Floating Bench Controls Overlay -->
+          <div class="bench-controls-overlay">
+            <button id="btnToggleTap" class="bench-btn" title="Click to open or close the water refill tap">
+              <span>🚰</span> Open Tap
+            </button>
+            <button id="btnTareScale" class="bench-btn" title="Tare scale and empty displaced beaker">
+              <span>⚖️</span> Empty Beaker
+            </button>
+            <button id="btnExpandCanvas" class="bench-btn" title="Toggle larger canvas height">
+              <span>⛶</span> Expand View
+            </button>
+            <span style="font-size:11px; color:#64748b; padding:2px 6px; display:flex; align-items:center;">
+              🖱️ Click Tap &bull; Drag Cylinder
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Live Hydrodynamic Telemetry Grid (6 Metrics) -->
+      <div class="telemetry-grid">
+        <div class="telemetry-card">
+          <span class="telemetry-label">Weight in Air (W₀ = mg)</span>
+          <span id="readoutW0" class="telemetry-value">38.60 N</span>
+          <span class="telemetry-sub">True Gravitational Weight</span>
+        </div>
+        <div class="telemetry-card">
+          <span class="telemetry-label">Buoyant Force (F<sub>B</sub>)</span>
+          <span id="readoutFB" class="telemetry-value">2.45 N</span>
+          <span class="telemetry-sub">Upward Fluid Thrust</span>
+        </div>
+        <div class="telemetry-card">
+          <span class="telemetry-label">Apparent Weight (W<sub>app</sub> = T)</span>
+          <span id="readoutWapp" class="telemetry-value">36.15 N</span>
+          <span class="telemetry-sub">Spring Balance Tension</span>
+        </div>
+        <div class="telemetry-card">
+          <span class="telemetry-label">Submerged Volume (V<sub>sub</sub>)</span>
+          <span id="readoutVsub" class="telemetry-value">250.0 cm³</span>
+          <span class="telemetry-sub">Displaced Fluid Volume</span>
+        </div>
+        <div class="telemetry-card">
+          <span class="telemetry-label">Displaced Fluid Weight (W<sub>disp</sub>)</span>
+          <span id="readoutWdisp" class="telemetry-value">2.45 N</span>
+          <span class="telemetry-sub">Weight in Catch Cylinder</span>
+        </div>
+        <div class="telemetry-card">
+          <span class="telemetry-label">Base Pressure (P<sub>bottom</sub>)</span>
+          <span id="readoutPbase" class="telemetry-value">0.98 kPa</span>
+          <span class="telemetry-sub">Gauge Hydrostatic Pressure</span>
+        </div>
+      </div>
+
+      <!-- Step-by-Step Mathematical Explainer -->
+      <div class="math-explainer-card">
+        <div class="math-explainer-header">
+          <h3 class="math-header-title">
+            <span>📐</span> Live Hydrostatic &amp; Buoyant Calculations
+          </h3>
+          <span style="font-size:12px; color:#64748b; font-weight:500;">Archimedes' Law Active Verification</span>
+        </div>
+        <div id="mathContainer" class="math-steps-wrapper">
+          <!-- Step cards inserted dynamically by ui.js -->
+        </div>
+      </div>
+
+      <!-- Laboratory Observation Notebook -->
+      <div class="notebook-card">
+        <div class="notebook-header">
+          <h3 class="math-header-title">
+            <span>📝</span> Experimental Observation Notebook
+          </h3>
+          <div class="notebook-actions">
+            <button id="btnRecordObs" class="action-btn btn-primary" title="Record current apparatus measurements">
+              <span>➕</span> Log Current Trial
+            </button>
+            <button id="btnExportCSV" class="action-btn" title="Download laboratory data table as CSV">
+              <span>📥</span> Export CSV
+            </button>
+            <button id="btnClearObs" class="action-btn" title="Clear recorded rows">
+              <span>🗑️</span> Clear
+            </button>
+          </div>
+        </div>
+
+        <div class="notebook-table-container">
+          <table class="obs-table">
+            <thead>
+              <tr>
+                <th>Trial #</th>
+                <th>Material</th>
+                <th>Fluid</th>
+                <th>Volume</th>
+                <th>Weight in Air (W₀)</th>
+                <th>Apparent W (W_app)</th>
+                <th>Displaced Fluid W</th>
+                <th>Weight Loss (ΔW)</th>
+                <th>Error %</th>
+              </tr>
+            </thead>
+            <tbody id="obsTableBody">
+              <tr>
+                <td colspan="9" class="table-empty-notice">
+                  No observations recorded yet. Submerge the object and click "Log Current Trial" above.
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Summary Statistics Bar -->
+        <div class="obs-summary-bar">
+          <div>Mean Apparent Weight Loss (ΔW): <strong id="meanLossVal">--</strong></div>
+          <div>Mean Displaced Fluid Weight (W_disp): <strong id="meanDispVal">--</strong></div>
+          <div style="color:#059669; font-weight:700;">Principle Status: Exact Agreement Verified</div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- RIGHT: Controls Sidebar -->
+    <aside class="sidebar-section">
+
+      <!-- Card: Submersion & Depth -->
+      <div class="control-card" id="cardSubmersion">
+        <h3 class="card-heading">
+          <span>🤿 Submersion Depth</span>
+        </h3>
+        <div class="slider-group">
+          <div class="slider-item">
+            <div class="slider-header">
+              <span>Submersion Percentage</span>
+              <span id="valSubmersion" class="slider-val-badge">50.0%</span>
+            </div>
+            <input type="range" id="sliderSubmersion" min="0" max="100" step="0.5" value="50">
+            <div class="submersion-quick-bar-inline">
+              <button class="submersion-quick-btn" data-pct="0">0% (Air)</button>
+              <button class="submersion-quick-btn" data-pct="25">25%</button>
+              <button class="submersion-quick-btn" data-pct="50">50%</button>
+              <button class="submersion-quick-btn" data-pct="75">75%</button>
+              <button class="submersion-quick-btn" data-pct="100">100%</button>
+            </div>
+          </div>
+
+          <div class="slider-item">
+            <div class="slider-header">
+              <span>Object Volume (V)</span>
+              <span id="valVolume" class="slider-val-badge">500 cm³</span>
+            </div>
+            <input type="range" id="sliderVolume" min="100" max="1200" step="20" value="500">
+          </div>
+        </div>
+      </div>
+
+      <!-- Card: Immersed Object & Material -->
+      <div class="control-card">
+        <h3 class="card-heading">
+          <span>🧱 Immersed Object &amp; Character</span>
+        </h3>
+
+        <!-- Object Shape Selector -->
+        <div class="slider-item">
+          <span style="font-size:12px; font-weight:600; color:var(--text-muted);">Geometric Shape &amp; Character</span>
+          <div class="segmented-control" style="grid-template-columns: repeat(3, 1fr);">
+            <button class="segmented-btn shape-btn" data-shape="duck">🦆 Duck</button>
+            <button class="segmented-btn shape-btn" data-shape="diver">🤿 Diver</button>
+            <button class="segmented-btn shape-btn" data-shape="crown">👑 Crown</button>
+            <button class="segmented-btn shape-btn" data-shape="boat">🚢 Boat</button>
+            <button class="segmented-btn shape-btn" data-shape="iceberg">🧊 Iceberg</button>
+            <button class="segmented-btn shape-btn" data-shape="anvil">🪙 Anvil</button>
+            <button class="segmented-btn shape-btn active" data-shape="cylinder">Cylinder</button>
+            <button class="segmented-btn shape-btn" data-shape="cube">Cube</button>
+            <button class="segmented-btn shape-btn" data-shape="sphere">Sphere</button>
+          </div>
+        </div>
+
+        <!-- Material Presets -->
+        <div class="slider-item">
+          <span style="font-size:12px; font-weight:600; color:var(--text-muted);">Material Presets</span>
+          <div class="material-chips-grid">
+            <div class="mat-chip active" data-mat="iron">
+              <span>Iron / Steel</span>
+              <span class="mat-chip-density">7870 kg/m³</span>
+            </div>
+            <div class="mat-chip" data-mat="aluminum">
+              <span>Aluminum</span>
+              <span class="mat-chip-density">2700 kg/m³</span>
+            </div>
+            <div class="mat-chip" data-mat="gold">
+              <span>Pure Gold</span>
+              <span class="mat-chip-density">19300 kg/m³</span>
+            </div>
+            <div class="mat-chip" data-mat="lead">
+              <span>Lead</span>
+              <span class="mat-chip-density">11340 kg/m³</span>
+            </div>
+            <div class="mat-chip" data-mat="duck">
+              <span>Rubber Ducky</span>
+              <span class="mat-chip-density">180 kg/m³</span>
+            </div>
+            <div class="mat-chip" data-mat="wood_pine">
+              <span>Pine Wood</span>
+              <span class="mat-chip-density">500 kg/m³</span>
+            </div>
+            <div class="mat-chip" data-mat="ice">
+              <span>Glacial Ice</span>
+              <span class="mat-chip-density">917 kg/m³</span>
+            </div>
+            <div class="mat-chip" data-mat="crown_pure">
+              <span>Royal Crown</span>
+              <span class="mat-chip-density">19300 kg/m³</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Custom Object Density Slider -->
+        <div class="slider-item">
+          <div class="slider-header">
+            <span>Object Density (ρ<sub>obj</sub>)</span>
+            <span id="valObjDensity" class="slider-val-badge">7870 kg/m³</span>
+          </div>
+          <input type="range" id="sliderObjDensity" min="150" max="21000" step="50" value="7870">
+        </div>
+      </div>
+
+      <!-- Card: Boat Cargo Controls (Conditional) -->
+      <div class="control-card" id="cardBoatCargo" style="display:none;">
+        <h3 class="card-heading">
+          <span>📦 Cargo Barge Load</span>
+        </h3>
+        <div class="slider-group">
+          <div class="slider-item">
+            <div class="slider-header">
+              <span>Added Cargo Mass</span>
+              <span id="valBoatCargo" class="slider-val-badge">0 g</span>
+            </div>
+            <input type="range" id="sliderBoatCargo" min="0" max="400" step="10" value="0">
+          </div>
+        </div>
+      </div>
+
+      <!-- Card: Fluid Environment -->
+      <div class="control-card">
+        <h3 class="card-heading">
+          <span>💧 Fluid Environment</span>
+        </h3>
+        <div class="slider-group">
+          <div class="slider-item">
+            <span style="font-size:12px; font-weight:600; color:var(--text-muted);">Fluid Type</span>
+            <select id="selectFluid" class="fluid-select">
+              <option value="water" selected>Fresh Water (1000 kg/m³)</option>
+              <option value="saltwater">Sea Water (1025 kg/m³)</option>
+              <option value="deadsea">Dead Sea Hyper-Saline (1240 kg/m³)</option>
+              <option value="oil">Olive Oil (920 kg/m³)</option>
+              <option value="alcohol">Ethyl Alcohol (789 kg/m³)</option>
+              <option value="glycerin">Glycerin (1260 kg/m³)</option>
+              <option value="mercury">Liquid Mercury (13600 kg/m³)</option>
+              <option value="custom">Custom Fluid Density</option>
+            </select>
+          </div>
+
+          <div class="slider-item">
+            <div class="slider-header">
+              <span>Fluid Density (ρ<sub>fluid</sub>)</span>
+              <span id="valFluidDensity" class="slider-val-badge">1000 kg/m³</span>
+            </div>
+            <input type="range" id="sliderFluidDensity" min="500" max="14000" step="20" value="1000">
+          </div>
+
+          <div class="slider-item">
+            <span style="font-size:12px; font-weight:600; color:var(--text-muted);">Planetary Gravitational Field (g)</span>
+            <select id="selectGravity" class="fluid-select">
+              <option value="earth" selected>Earth (9.81 m/s²)</option>
+              <option value="moon">Moon (1.62 m/s²)</option>
+              <option value="mars">Mars (3.71 m/s²)</option>
+              <option value="jupiter">Jupiter (24.79 m/s²)</option>
+              <option value="zero">Zero-G Space (0.00 m/s²)</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card: Visual Vectors & Overlays -->
+      <div class="control-card">
+        <h3 class="card-heading">
+          <span>👁️ Visual Vectors &amp; Overlays</span>
+        </h3>
+        <div class="checkbox-list">
+          <div class="checkbox-row">
+            <label class="checkbox-label" for="chkPressureVectors">
+              <span class="color-pip pip-cyan"></span>
+              <span>Hydrostatic Pressure Vectors (ΔP)</span>
+            </label>
+            <label class="switch">
+              <input type="checkbox" id="chkPressureVectors" checked>
+              <span class="switch-slider"></span>
+            </label>
+          </div>
+
+          <div class="checkbox-row">
+            <label class="checkbox-label" for="chkFBD">
+              <span class="color-pip pip-rose"></span>
+              <span>Free Body Diagram (FBD Vectors)</span>
+            </label>
+            <label class="switch">
+              <input type="checkbox" id="chkFBD" checked>
+              <span class="switch-slider"></span>
+            </label>
+          </div>
+
+          <div class="checkbox-row">
+            <label class="checkbox-label" for="chkGrid">
+              <span>Laboratory Coordinate Grid</span>
+            </label>
+            <label class="switch">
+              <input type="checkbox" id="chkGrid" checked>
+              <span class="switch-slider"></span>
+            </label>
+          </div>
+        </div>
+      </div>
+
+    </aside>
+  </main>
+
+  <!-- ================================================================= -->
+  <!-- STUDENT LAB QUESTS MODAL                                          -->
+  <!-- ================================================================= -->
+  <div id="modalQuests" class="modal-backdrop">
+    <div class="modal-container">
+      <div class="modal-header">
+        <h2 class="modal-title">
+          <span>⭐</span> Interactive Student Lab Quests
+        </h2>
+        <button id="btnCloseQuests" class="modal-close-btn" title="Close dialog">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p style="margin-top:0; font-size:13px; color:#475569;">
+          Complete all 5 laboratory missions to earn your Master Physicist Badge! Follow the hints and perform experiments to discover Archimedes' principle firsthand.
+        </p>
+        <div id="questsListContainer">
+          <!-- Populated dynamically by ui.js -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================================================================= -->
+  <!-- THEORY & DERIVATIONS MODAL                                        -->
+  <!-- ================================================================= -->
+  <div id="modalTheory" class="modal-backdrop">
+    <div class="modal-container">
+      <div class="modal-header">
+        <h2 class="modal-title">
+          <span>📚</span> Archimedes’ Principle &amp; Hydrostatics Theory
+        </h2>
+        <button id="btnCloseTheory" class="modal-close-btn" title="Close theory dialog">&times;</button>
+      </div>
+      <div class="modal-body">
+        <h3>1. The Principle of Archimedes</h3>
+        <p>
+          Formulated by Archimedes of Syracuse in the 3rd century BCE:
+        </p>
+        <div class="formula-highlight-box">
+          "Any body wholly or partially submerged in a fluid experiences an upward buoyant force equal to the weight of the fluid displaced by the body."
+          <br><br>
+          F_B = m_fluid · g = ρ_fluid · V_submerged · g
+        </div>
+
+        <h3>2. Hydrostatic Origin of Buoyancy</h3>
+        <p>
+          Buoyant force is not a mysterious upward suction; it is the <strong>net resultant vector of hydrostatic pressure forces</strong> acting over the entire surface area of the immersed body.
+        </p>
+        <p>
+          Since fluid pressure increases linearly with depth according to:
+        </p>
+        <div class="formula-highlight-box">
+          P(h) = P₀ + ρ_fluid · g · h
+        </div>
+        <p>
+          The bottom surface of the object is at a greater depth ($h_2$) than the top surface ($h_1$). Consequently, the upward pressure against the bottom exceeds the downward pressure on the top:
+        </p>
+        <div class="formula-highlight-box">
+          ΔP = P_bottom - P_top = ρ_fluid · g · (h₂ - h₁) = ρ_fluid · g · H
+          <br><br>
+          F_buoyant = ΔP · Area = ρ_fluid · g · (H · Area) = ρ_fluid · g · V_submerged
+        </div>
+        <p>
+          Lateral pressure forces acting on opposite sides cancel each other out completely due to symmetry, leaving only a net vertical upward force!
+        </p>
+
+        <h3>3. Apparent Weight Loss</h3>
+        <p>
+          When an object is weighed while immersed in a fluid using a spring balance, the scale reads the string tension $T$:
+        </p>
+        <div class="formula-highlight-box">
+          T = W_apparent = W_true - F_B
+          <br><br>
+          Loss in Weight = W_true - W_apparent = F_B = W_displaced fluid
+        </div>
+        <p>
+          In the classic <strong>Eureka Can experiment</strong>, water displaced through the overflow spout is collected in a graduated cylinder. Its measured weight identically matches the apparent loss in weight measured by the spring balance.
+        </p>
+
+        <h3>4. The Law of Flotation</h3>
+        <p>
+          A freely floating body sinks until the weight of the fluid it displaces equals its own total weight:
+        </p>
+        <div class="formula-highlight-box">
+          W_object = F_B &implies; (ρ_object · V_total · g) = (ρ_fluid · V_submerged · g)
+          <br><br>
+          Fraction Submerged = V_submerged / V_total = ρ_object / ρ_fluid
+        </div>
+        <p>
+          - <strong>Floating</strong>: $\rho_{\text{object}} &lt; \rho_{\text{fluid}}$ (e.g. ice in water, 91.7% submerged)<br>
+          - <strong>Neutral Buoyancy</strong>: $\rho_{\text{object}} = \rho_{\text{fluid}}$ (suspends without sinking or rising)<br>
+          - <strong>Sinking</strong>: $\rho_{\text{object}} &gt; \rho_{\text{fluid}}$ (sinks to the container floor)
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================================================================= -->
+  <!-- KING HIERO'S CROWN MYSTERY MODAL                                 -->
+  <!-- ================================================================= -->
+  <div id="modalChallenge" class="modal-backdrop">
+    <div class="modal-container">
+      <div class="modal-header">
+        <h2 class="modal-title">
+          <span>👑</span> The Mystery of King Hiero's Crown
+        </h2>
+        <button id="btnCloseChallenge" class="modal-close-btn" title="Close dialog">&times;</button>
+      </div>
+      <div class="modal-body">
+        <h3>Archimedes' Famous "Eureka!" Discovery</h3>
+        <p>
+          King Hiero II of Syracuse gave a goldsmith a specific weight of pure gold to make a sacred votive crown.
+          Suspecting that the goldsmith had kept some gold and substituted an equal mass of cheaper silver, Hiero challenged Archimedes to determine if the crown was pure gold—<strong>without damaging the crown!</strong>
+        </p>
+        <p>
+          While stepping into a full public bath, Archimedes noticed the water spilling over the edge. In a flash of genius, he realized that a crown adulterated with silver would have a larger volume (because silver is less dense than gold, $\rho_{\text{Ag}} \approx 10500\text{ kg/m}^3$ vs $\rho_{\text{Au}} = 19300\text{ kg/m}^3$) and would therefore displace more water!
+        </p>
+
+        <div class="crown-test-grid">
+          <div class="crown-card gold">
+            <h4 style="margin:0 0 6px 0; color:#ca8a04;">Case A: Pure Gold Crown</h4>
+            <p style="margin:0; font-size:12px;">
+              Density: <strong>19,300 kg/m³</strong><br>
+              Volume: <strong>Smallest</strong><br>
+              Displaced Water: <strong>Minimal</strong><br>
+              Weight Loss: <strong>Minimal</strong>
+            </p>
+            <button id="btnTestPureGold" class="action-btn btn-primary" style="margin-top:10px; width:100%; justify-content:center;">
+              Test Pure Gold Crown
+            </button>
+          </div>
+
+          <div class="crown-card">
+            <h4 style="margin:0 0 6px 0; color:#475569;">Case B: Goldsmith's Alloy Crown</h4>
+            <p style="margin:0; font-size:12px;">
+              Density: <strong>13,800 kg/m³</strong> (Gold + Silver)<br>
+              Volume: <strong>39.8% Larger</strong><br>
+              Displaced Water: <strong>Significantly Greater!</strong><br>
+              Weight Loss: <strong>Much Higher!</strong>
+            </p>
+            <button id="btnTestFakeCrown" class="action-btn" style="margin-top:10px; width:100%; justify-content:center; border-color:#ef4444; color:#ef4444;">
+              Test Goldsmith's Suspect Crown
+            </button>
+          </div>
+        </div>
+
+        <p style="font-size:12px; color:#64748b;">
+          💡 <strong>Experiment Tip:</strong> In Eureka Overflow mode, observe the reading on the catch beaker scale when you immerse each crown. The alloy crown displaces noticeably more water, exposing the fraud!
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Celebratory Quest Toast Notification -->
+  <div id="questToastNotif" class="quest-toast-notif"></div>
+
+  <!-- Footer -->
+  <footer class="app-footer">
+    ArchimedesLab — Interactive STEM Physics Simulation Suite &bull; Built with HTML5 Canvas 2D, Modern Vanilla CSS &amp; ES6 JavaScript.
+  </footer>
+
+  <!-- Main JavaScript Orchestrator -->
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>
