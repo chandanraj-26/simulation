@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PhotosynthesisLab — Interactive Elodea Bubble Counter & Limiting Factors Simulator</title>
+  <meta name="description" content="Investigate photosynthesis with an interactive Elodea bubble counter. Explore the inverse square law of light, action spectrum filters, CO2 concentration, temperature denaturation, and chloroplast molecular dynamics.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+  <!-- Top Navigation Bar -->
+  <header class="navbar">
+    <div class="brand-wrap">
+      <div class="brand-icon">🌱</div>
+      <div class="brand-title">
+        <span>PhotosynthesisLab</span>
+        <span class="brand-badge">Biology Pro</span>
+      </div>
+    </div>
+
+    <!-- Mode Selectors -->
+    <nav class="nav-center-modes" aria-label="Simulation view modes">
+      <button id="btnModeApparatus" class="mode-type-btn active" title="Laboratory Bench Apparatus with Elodea sprig and bubble photogate">
+        <span>🌿</span> Apparatus Bench
+      </button>
+      <button id="btnModeChloroplast" class="mode-type-btn" title="Molecular thylakoid photolysis & Calvin cycle view">
+        <span>🔬</span> Chloroplast View
+      </button>
+      <button id="btnModeGraph" class="mode-type-btn" title="Live Photosynthetic Rate vs Distance / Factor curves">
+        <span>📈</span> Kinetic Curves
+      </button>
+    </nav>
+
+    <!-- Header Actions -->
+    <div class="nav-actions">
+      <button id="btnOpenQuests" class="btn-header accent" title="Laboratory Challenges">
+        <span>⭐</span> Quests
+      </button>
+      <button id="btnOpenTheory" class="btn-header" title="Photosynthesis & Limiting Factors Theory">
+        <span>📖</span> Theory
+      </button>
+      <button id="btnAudioToggle" class="btn-header" title="Toggle audio synthesizer">
+        🔊 Sound: ON
+      </button>
+      <button id="btnResetAll" class="btn-header" title="Reset all simulation values">
+        ↺ Reset
+      </button>
+    </div>
+  </header>
+
+  <!-- Main Viewport Layout -->
+  <main class="main-layout">
+    
+    <!-- Left Canvas & Telemetry Panel -->
+    <section class="viewport-panel">
+      
+      <!-- Interactive 2D Canvas Container -->
+      <div class="canvas-container">
+        <canvas id="simCanvas"></canvas>
+
+        <!-- Floating HUD Overlays on Canvas -->
+        <div class="canvas-hud-top">
+          <div class="hud-pill-group">
+            <span class="hud-pill-label">Bubble Rate:</span>
+            <span id="hudBpm" class="hud-pill-val">24.5 BPM</span>
+            <span class="hud-pill-label" style="margin-left: 6px;">Intensity:</span>
+            <span id="hudIntensity" class="hud-pill-val">44%</span>
+          </div>
+
+          <!-- In-Canvas Zoom Controls -->
+          <div class="zoom-controls">
+            <button id="btnZoomOut" class="btn-zoom" title="Zoom out">🔍−</button>
+            <span id="lblZoomLevel" class="zoom-label">90%</span>
+            <button id="btnZoomIn" class="btn-zoom" title="Zoom in">🔍+</button>
+            <button id="btnZoomFit" class="btn-zoom" title="Reset zoom to 90%">Fit</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Live Biophysics Telemetry Cards -->
+      <div class="telemetry-grid">
+        <div class="telemetry-card">
+          <span class="card-label">Photosynthetic Rate</span>
+          <span id="cardBpm" class="card-value" style="color: #047857;">24.5</span>
+          <span class="card-subtext">Oxygen bubbles per minute</span>
+        </div>
+
+        <div class="telemetry-card">
+          <span class="card-label">Collected O₂ Volume</span>
+          <span id="cardO2Vol" class="card-value" style="color: #0284c7;">0.00 mL</span>
+          <span class="card-subtext">Gas pocket in inverted tube</span>
+        </div>
+
+        <div class="telemetry-card">
+          <span class="card-label">Total Bubbles Counted</span>
+          <span id="cardCounted" class="card-value">0</span>
+          <span class="card-subtext">Optical photogate detections</span>
+        </div>
+
+        <div class="telemetry-card">
+          <span class="card-label">Digital Stopwatch</span>
+          <span id="lblStopwatchTime" class="card-value" style="color: #0f172a;">00:00</span>
+          <span class="card-subtext">Active recording interval</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Right Control Sidebar (300px locked) -->
+    <aside class="control-sidebar">
+
+      <!-- Section: Lamp & Distance (Light Intensity) -->
+      <div class="sidebar-section">
+        <div class="section-title">
+          <span>Lamp & Light Intensity</span>
+          <span>I ∝ 1/d²</span>
+        </div>
+
+        <div class="control-group">
+          <div class="control-label-row">
+            <span>Lamp Distance:</span>
+            <div class="num-input-wrap">
+              <input type="number" id="distNumber" class="num-input" min="10" max="100" step="1" value="30">
+              <span class="num-unit">cm</span>
+            </div>
+          </div>
+          <input type="range" id="distSlider" class="range-slider" min="10" max="100" step="1" value="30">
+          <div class="slider-ticks">
+            <span>10cm (Max)</span>
+            <span>30cm</span>
+            <span>60cm</span>
+            <span>100cm (Min)</span>
+          </div>
+        </div>
+
+        <button id="btnLampToggle" class="btn-stopwatch active" style="width: 100%; text-align: center;">
+          💡 Lamp: ON
+        </button>
+      </div>
+
+      <!-- Section: Optical Color Filters -->
+      <div class="sidebar-section">
+        <div class="section-title">
+          <span>Optical Filter (Wavelength)</span>
+          <span>Action Spectrum</span>
+        </div>
+
+        <div class="filter-grid">
+          <button id="btnFilter_white" class="filter-btn active" title="Sunlight / White Light (Yellow Rays, Full PAR Spectrum 400-700nm)">
+            <span class="filter-color-dot" style="background: #facc15; border-color: #ca8a04;"></span>
+            Sunlight
+          </button>
+          <button id="btnFilter_blue" class="filter-btn" title="Blue Filter (450nm - High Chlorophyll Absorption)">
+            <span class="filter-color-dot" style="background: #38bdf8;"></span>
+            Blue
+          </button>
+          <button id="btnFilter_red" class="filter-btn" title="Red Filter (660nm - High Chlorophyll Absorption)">
+            <span class="filter-color-dot" style="background: #f87171;"></span>
+            Red
+          </button>
+          <button id="btnFilter_green" class="filter-btn" title="Green Filter (530nm - Reflected by Chlorophyll / Low Rate)">
+            <span class="filter-color-dot" style="background: #4ade80;"></span>
+            Green
+          </button>
+          <button id="btnFilter_uv" class="filter-btn" title="UV Rays (350nm - Ultraviolet Photoinhibition)">
+            <span class="filter-color-dot" style="background: #a855f7; border-color: #7c3aed;"></span>
+            UV
+          </button>
+        </div>
+      </div>
+
+      <!-- Section: Chemical & Environmental Factors -->
+      <div class="sidebar-section">
+        <div class="section-title">
+          <span>Limiting Factors</span>
+          <span>CO₂ & Temperature</span>
+        </div>
+
+        <!-- Dissolved NaHCO3 (CO2) -->
+        <div class="control-group">
+          <div class="control-label-row">
+            <span>Dissolved NaHCO₃:</span>
+            <div class="num-input-wrap">
+              <input type="number" id="nahco3Number" class="num-input" min="0.0" max="2.0" step="0.1" value="0.5">
+              <span class="num-unit">%</span>
+            </div>
+          </div>
+          <input type="range" id="nahco3Slider" class="range-slider" min="0.0" max="2.0" step="0.1" value="0.5">
+          <div class="slider-ticks">
+            <span>0% (Starvation)</span>
+            <span>0.5%</span>
+            <span>1.0%</span>
+            <span>2.0%</span>
+          </div>
+        </div>
+
+        <!-- Temperature -->
+        <div class="control-group">
+          <div class="control-label-row">
+            <span>Water Temperature:</span>
+            <div class="num-input-wrap">
+              <input type="number" id="tempNumber" class="num-input" min="5" max="50" step="1" value="25">
+              <span class="num-unit">°C</span>
+            </div>
+          </div>
+          <input type="range" id="tempSlider" class="range-slider" min="5" max="50" step="1" value="25">
+          <div class="slider-ticks">
+            <span>5°C</span>
+            <span>25°C (Optimum)</span>
+            <span>50°C (Denature)</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section: Digital Bubble Counter & Stopwatch -->
+      <div class="sidebar-section">
+        <div class="section-title">
+          <span>Digital Stopwatch Counter</span>
+          <span>Optical Gate</span>
+        </div>
+
+        <div class="stopwatch-box">
+          <span id="lblStopwatchTime" class="stopwatch-display">00:00</span>
+          <div class="stopwatch-actions">
+            <button id="btnStartStopwatch" class="btn-stopwatch" title="Start or pause stopwatch timer">
+              ▶ Start Timer
+            </button>
+            <button id="btnResetStopwatch" class="btn-stopwatch" title="Reset stopwatch and bubble count">
+              ↺ Reset
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section: Biological Key -->
+      <div class="sidebar-section">
+        <div class="section-title">
+          <span>Apparatus Key</span>
+          <span>Info</span>
+        </div>
+        <div style="font-size: 0.76rem; color: var(--text-muted); display: flex; flex-direction: column; gap: 6px;">
+          <div><strong style="color: #047857;">● Elodea Densa:</strong> Submerged freshwater aquatic sprig</div>
+          <div><strong style="color: #0284c7;">● O₂ Bubbles:</strong> Gaseous oxygen from water photolysis</div>
+          <div><strong style="color: #dc2626;">● Red Photogate:</strong> Optical infrared bubble counter sensor</div>
+          <div><strong style="color: #d97706;">● Inverted Tube:</strong> Graduated oxygen gas collector</div>
+        </div>
+      </div>
+
+    </aside>
+  </main>
+
+  <!-- Quests Modal -->
+  <div id="modalQuests" class="modal-wrapper">
+    <div class="modal-backdrop"></div>
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title">⭐ Laboratory Quests & Challenges</h3>
+        <button class="modal-close">✕</button>
+      </div>
+      <div class="modal-body">
+        <p style="color: var(--text-muted); font-size: 0.85rem;">
+          Complete these 5 hands-on experiments to master the limiting factors of photosynthesis:
+        </p>
+        <div id="questsListContainer" class="quests-list">
+          <!-- Dynamically populated by PhotosynthesisUI -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Theory Modal -->
+  <div id="modalTheory" class="modal-wrapper">
+    <div class="modal-backdrop"></div>
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title">📖 Photosynthesis & Limiting Factors Theory</h3>
+        <button class="modal-close">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="theory-block">
+          <div class="theory-title">1. Overall Photosynthesis Reaction</div>
+          <div class="theory-formula">6 CO₂ + 6 H₂O  +  Light Energy  →  C₆H₁₂O₆ (Glucose)  +  6 O₂ ↑</div>
+          <p>Oxygen gas released in the waterweed bubbler originates entirely from the photolysis (splitting) of water molecules in the thylakoid lumen during the light-dependent stage.</p>
+        </div>
+
+        <div class="theory-block">
+          <div class="theory-title">2. Inverse-Square Law of Light (I ∝ 1/d²)</div>
+          <div class="theory-formula">I = I₀ / (d / d₀)²</div>
+          <p>As the distance ($d$) between the lamp and the Elodea increases, light intensity drops geometrically. Halving the distance quadruples the light intensity reaching the chloroplasts.</p>
+        </div>
+
+        <div class="theory-block">
+          <div class="theory-title">3. Action Spectrum & The Green Light Paradox</div>
+          <p>Chlorophyll pigments ($a$ and $b$) absorb light primarily in the blue (~450 nm) and red (~660 nm) regions. <strong>Green light (~530 nm) is largely reflected or transmitted</strong>, producing very few oxygen bubbles despite high illumination.</p>
+        </div>
+
+        <div class="theory-block">
+          <div class="theory-title">4. Blackman's Principle of Limiting Factors</div>
+          <p><em>"When a process is conditioned as to its rapidity by a number of separate factors, the rate of the process is limited by the pace of the slowest factor."</em> — F.F. Blackman (1905).</p>
+          <p>At low carbon dioxide (0% NaHCO₃) or extreme temperatures (>42°C enzyme denaturation), increasing light intensity cannot increase the rate of photosynthesis.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="js/sound.js"></script>
+  <script src="js/biology.js"></script>
+  <script src="js/state.js"></script>
+  <script src="js/renderer.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>

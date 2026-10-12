@@ -1,0 +1,379 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PendulumLab — Simple Pendulum &amp; Galileo's Isochronism Simulator</title>
+  <meta name="description"
+    content="Interactive STEM physics laboratory exploring the simple pendulum, Galileo's discovery of isochronism, small-angle vs large-angle periods, string tension, and energy conservation.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+
+<body>
+
+  <!-- MAIN APPLICATION HEADER -->
+  <header class="app-header">
+    <div class="header-container">
+      <div class="brand-wrapper">
+        <div class="brand-icon">🕰️</div>
+        <div>
+          <div style="display:flex; align-items:center;">
+            <h1 class="brand-title">PendulumLab</h1>
+            <span class="brand-tag">Class 9–12 &amp; AP Physics</span>
+          </div>
+          <div class="brand-sub">Simple Pendulum &amp; Galileo's Isochronism Simulator</div>
+        </div>
+      </div>
+
+      <!-- Mode Selector -->
+      <div class="mode-selector-group">
+        <button id="btnModeSingle" class="mode-type-btn active" title="Single pendulum free exploration">
+          <span>🕰️</span> Single Pendulum
+        </button>
+        <button id="btnModeIsochronism" class="mode-type-btn" title="Dual pendulums with same length comparing different amplitudes">
+          <span>⚖️</span> Galileo's Isochronism
+        </button>
+        <button id="btnModePhase" class="mode-type-btn" title="Phase space portrait and energy potential well">
+          <span>🌀</span> Phase Space
+        </button>
+        <button id="btnModeLargeAngle" class="mode-type-btn" title="Examine large-angle period deviation from small-angle formula">
+          <span>📐</span> Large Angles
+        </button>
+      </div>
+
+      <!-- Header Actions -->
+      <div class="header-actions">
+        <button id="btnOpenQuests" class="action-btn" title="Complete Student Laboratory Quests">
+          <span>⭐</span> Lab Quests
+        </button>
+        <button id="btnOpenTheory" class="action-btn btn-primary" title="View Pendulum &amp; Isochronism Formulas">
+          <span>📚</span> Theory &amp; Laws
+        </button>
+        <button id="btnAudioToggle" class="action-btn active" title="Toggle Sound FX">
+          🔊 Sound: ON
+        </button>
+        <button id="btnResetAll" class="action-btn" title="Reset all laboratory parameters to default">
+          <span>↺</span> Reset All
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN WORKSPACE LAYOUT -->
+  <main class="main-layout">
+
+    <!-- LEFT: Canvas Viewport & Live Telemetry -->
+    <div class="canvas-section">
+
+      <!-- Canvas Card -->
+      <div class="canvas-card">
+        <!-- Canvas Top Bar -->
+        <div class="canvas-header-bar">
+          <div class="quick-actions-bar">
+            <button id="btnRelease" class="btn-action-primary" title="Release bob(s) from initial release angle">
+              <span>🚀</span> Release Swing
+            </button>
+            <button id="btnStop" class="action-btn" title="Bring pendulum smoothly to vertical equilibrium rest">
+              <span>⏸️</span> Stop / Rest
+            </button>
+          </div>
+
+          <!-- Status & Zoom HUD -->
+          <div class="header-status-hud">
+            <div class="view-scale-group" title="Adjust simulation view zoom">
+              <button id="btnZoomOut" class="bench-zoom-btn" title="Zoom out">🔍−</button>
+              <span id="lblZoomLevel" class="zoom-level-text">90%</span>
+              <button id="btnZoomIn" class="bench-zoom-btn" title="Zoom in">🔍+</button>
+              <button id="btnZoomFit" class="bench-zoom-btn" title="Reset zoom">Fit</button>
+            </div>
+            <span id="hudBadgeAngle" class="hud-badge badge-blue">30.0°</span>
+            <span id="hudPeriod" class="hud-badge badge-orange">T = 2.01 s</span>
+            <span id="hudBadgeG" class="hud-badge">g = 9.81 m/s²</span>
+          </div>
+        </div>
+
+        <!-- Canvas Container -->
+        <div class="canvas-container">
+          <canvas id="pendulumCanvas"></canvas>
+        </div>
+      </div>
+
+      <!-- Live Telemetry Grid -->
+      <div class="telemetry-grid">
+        <div class="telemetry-card">
+          <div class="telemetry-card-title">Small-Angle Period (T₀)</div>
+          <div id="hudPeriod" class="telemetry-card-val">2.01 s</div>
+          <div class="telemetry-card-sub">T₀ = 2π√(L / g)</div>
+        </div>
+
+        <div class="telemetry-card">
+          <div class="telemetry-card-title">Photogate Period</div>
+          <div id="hudPhotogate" class="telemetry-card-val">-- s</div>
+          <div class="telemetry-card-sub">Measured at θ = 0°</div>
+        </div>
+
+        <div class="telemetry-card">
+          <div class="telemetry-card-title">Frequency (f₀)</div>
+          <div id="hudFreq" class="telemetry-card-val">0.50 Hz</div>
+          <div class="telemetry-card-sub">f₀ = 1 / T₀</div>
+        </div>
+
+        <div class="telemetry-card">
+          <div class="telemetry-card-title">Pendulum Length (L)</div>
+          <div id="hudLength" class="telemetry-card-val">100 cm (1.00 m)</div>
+          <div class="telemetry-card-sub">Pivot to bob center</div>
+        </div>
+
+        <div class="telemetry-card">
+          <div class="telemetry-card-title">String Tension (T)</div>
+          <div id="hudTension" class="telemetry-card-val">4.3 N</div>
+          <div class="telemetry-card-sub">T = m(g·cosθ + L·ω²)</div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- RIGHT: Control Sidebar -->
+    <aside class="control-sidebar">
+
+      <!-- CARD 1: Pendulum 1 Properties -->
+      <div class="sidebar-card">
+        <div class="sidebar-card-title">
+          <span>🕰️ PENDULUM 1</span>
+          <span class="sidebar-badge">Primary</span>
+        </div>
+
+        <!-- Length 1 -->
+        <div class="control-group">
+          <div class="control-label-row">
+            <span>Length (L₁):</span>
+            <input type="number" id="len1Number" min="0.20" max="2.50" step="0.05" value="1.00"
+              style="width:54px; padding:2px 4px; font-family:var(--font-mono); font-size:11px; border:1px solid var(--border); border-radius:4px; font-weight:700;">
+          </div>
+          <input type="range" id="len1Slider" class="custom-range" min="0.20" max="2.50" step="0.05" value="1.00">
+          <div style="display:flex; justify-content:space-between; font-size:9.5px; color:#64748b; margin-top:2px; font-family:var(--font-mono);">
+            <span>0.20 m</span>
+            <span>1.00 m</span>
+            <span>2.50 m</span>
+          </div>
+        </div>
+
+        <!-- Mass 1 -->
+        <div class="control-group">
+          <div class="control-label-row">
+            <span>Bob Mass (m₁):</span>
+            <input type="number" id="mass1Number" min="0.10" max="2.00" step="0.05" value="0.50"
+              style="width:54px; padding:2px 4px; font-family:var(--font-mono); font-size:11px; border:1px solid var(--border); border-radius:4px; font-weight:700;">
+          </div>
+          <input type="range" id="mass1Slider" class="custom-range" min="0.10" max="2.00" step="0.05" value="0.50">
+        </div>
+
+        <!-- Release Angle 1 -->
+        <div class="control-group">
+          <div class="control-label-row">
+            <span>Release Angle (θ₁):</span>
+            <input type="number" id="angle1Number" min="0" max="90" step="1" value="30.0"
+              style="width:54px; padding:2px 4px; font-family:var(--font-mono); font-size:11px; border:1px solid var(--border); border-radius:4px; font-weight:700;">
+          </div>
+          <input type="range" id="angle1Slider" class="custom-range" min="0" max="90" step="1" value="30.0">
+        </div>
+      </div>
+
+      <!-- CARD 2: Pendulum 2 (Dual Isochronism Mode Only) -->
+      <div id="grpPendulum2" class="sidebar-card hidden">
+        <div class="sidebar-card-title">
+          <span>⚖️ PENDULUM 2</span>
+          <span class="sidebar-badge">Comparison</span>
+        </div>
+
+        <!-- Length 2 -->
+        <div class="control-group">
+          <div class="control-label-row">
+            <span>Length (L₂):</span>
+            <input type="number" id="len2Number" min="0.20" max="2.50" step="0.05" value="1.00"
+              style="width:54px; padding:2px 4px; font-family:var(--font-mono); font-size:11px; border:1px solid var(--border); border-radius:4px; font-weight:700;">
+          </div>
+          <input type="range" id="len2Slider" class="custom-range" min="0.20" max="2.50" step="0.05" value="1.00">
+        </div>
+
+        <!-- Mass 2 -->
+        <div class="control-group">
+          <div class="control-label-row">
+            <span>Bob Mass (m₂):</span>
+            <input type="number" id="mass2Number" min="0.10" max="2.00" step="0.05" value="1.00"
+              style="width:54px; padding:2px 4px; font-family:var(--font-mono); font-size:11px; border:1px solid var(--border); border-radius:4px; font-weight:700;">
+          </div>
+          <input type="range" id="mass2Slider" class="custom-range" min="0.10" max="2.00" step="0.05" value="1.00">
+        </div>
+
+        <!-- Release Angle 2 -->
+        <div class="control-group">
+          <div class="control-label-row">
+            <span>Release Angle (θ₂):</span>
+            <input type="number" id="angle2Number" min="0" max="90" step="1" value="10.0"
+              style="width:54px; padding:2px 4px; font-family:var(--font-mono); font-size:11px; border:1px solid var(--border); border-radius:4px; font-weight:700;">
+          </div>
+          <input type="range" id="angle2Slider" class="custom-range" min="0" max="90" step="1" value="10.0">
+        </div>
+      </div>
+
+      <!-- CARD 3: Environment & Damping -->
+      <div class="sidebar-card">
+        <div class="sidebar-card-title">
+          <span>🌍 GRAVITY &amp; FRICTION</span>
+          <span class="sidebar-badge">Environment</span>
+        </div>
+
+        <div class="control-group">
+          <div class="control-label-row">
+            <span>Celestial Gravity:</span>
+          </div>
+          <select id="selGravity" class="custom-select">
+            <option value="earth">Earth (g = 9.81 m/s²)</option>
+            <option value="moon">The Moon (g = 1.62 m/s²)</option>
+            <option value="mars">Mars (g = 3.71 m/s²)</option>
+            <option value="jupiter">Jupiter (g = 24.79 m/s²)</option>
+            <option value="zerog">Zero-G (g = 0 m/s²)</option>
+          </select>
+        </div>
+
+        <div class="control-group">
+          <div class="control-label-row">
+            <span>Air Resistance (b): <span id="dampValue" style="font-family:var(--font-mono); font-weight:700;">0.015</span></span>
+          </div>
+          <input type="range" id="dampSlider" class="custom-range" min="0" max="0.10" step="0.005" value="0.015">
+        </div>
+      </div>
+
+      <!-- CARD 4: Visuals & Speed -->
+      <div class="sidebar-card">
+        <div class="sidebar-card-title">
+          <span>👁️ DISPLAY OPTIONS</span>
+          <span class="sidebar-badge">Vectors</span>
+        </div>
+
+        <label class="checkbox-row">
+          <input type="checkbox" id="chkForces" checked>
+          <span>Show Force Vectors (Tension, Weight)</span>
+        </label>
+
+        <label class="checkbox-row">
+          <input type="checkbox" id="chkVelocity" checked>
+          <span>Show Velocity Vector (v)</span>
+        </label>
+
+        <label class="checkbox-row">
+          <input type="checkbox" id="chkProtractor" checked>
+          <span>Show Angle Protractor Arc</span>
+        </label>
+
+        <label class="checkbox-row">
+          <input type="checkbox" id="chkPhotogate" checked>
+          <span>Show Photogate Sensor (at θ = 0°)</span>
+        </label>
+
+        <label class="checkbox-row">
+          <input type="checkbox" id="chkTrails" checked>
+          <span>Show Swing Path Trajectory Trace</span>
+        </label>
+
+        <label class="checkbox-row">
+          <input type="checkbox" id="chkEnergy" checked>
+          <span>Show Mechanical Energy Bar Chart</span>
+        </label>
+
+        <div class="control-group" style="margin-top:8px;">
+          <div class="control-label-row">
+            <span>Simulation Speed:</span>
+          </div>
+          <div class="speed-btn-group">
+            <button class="speed-btn active" data-speed="1.0">1.0×</button>
+            <button class="speed-btn" data-speed="0.5">0.5×</button>
+            <button class="speed-btn" data-speed="0.25">0.25×</button>
+          </div>
+        </div>
+      </div>
+
+    </aside>
+
+  </main>
+
+  <!-- MODAL 1: STUDENT LABORATORY QUESTS -->
+  <div id="modalQuests" class="modal-wrapper">
+    <div class="modal-backdrop"></div>
+    <div class="modal-container">
+      <div class="modal-header">
+        <h3 class="modal-title">⭐ Student Pendulum Quests &amp; Missions</h3>
+        <button class="modal-close">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p style="margin-top:0;">
+          Recreate Galileo's historical discoveries in the Cathedral of Pisa and verify the laws of isochronism!
+        </p>
+        <div id="questsListContainer">
+          <!-- Populated dynamically -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL 2: THEORY & FORMULAS -->
+  <div id="modalTheory" class="modal-wrapper">
+    <div class="modal-backdrop"></div>
+    <div class="modal-container">
+      <div class="modal-header">
+        <h3 class="modal-title">📚 Simple Pendulum &amp; Isochronism Theory</h3>
+        <button class="modal-close">&times;</button>
+      </div>
+      <div class="modal-body">
+        <h4 style="color:#0284c7; margin-top:0;">1. Galileo's Discovery of Isochronism (1581)</h4>
+        <p>
+          While observing a bronze chandelier swinging in the Cathedral of Pisa, young Galileo Galilei used his own pulse to time its swings and discovered that <strong>for small angles, the period of a pendulum is independent of its amplitude</strong>!
+        </p>
+
+        <h4 style="color:#0284c7; margin-top:16px;">2. Small-Angle Period Formula</h4>
+        <p>
+          Using the small-angle approximation ($\sin\theta \approx \theta$ in radians), the restoring torque yields simple harmonic motion:
+        </p>
+        <div style="background:#f8fafc; border-left:4px solid #0284c7; padding:10px 14px; font-family:var(--font-mono); margin:10px 0;">
+          T₀ = 2π · √(L / g)
+        </div>
+        <p>
+          Key physical implications:
+        </p>
+        <ul>
+          <li><strong>Mass Independence</strong>: Period $T_0$ does not depend on the mass $m$ of the bob!</li>
+          <li><strong>Length Dependence</strong>: Period is proportional to $\sqrt{L}$. To double the period, you must quadruple the string length!</li>
+          <li><strong>Gravity Dependence</strong>: Period is inversely proportional to $\sqrt{g}$. On the Moon ($g = 1.62\text{ m/s}^2$), a pendulum swings much slower.</li>
+        </ul>
+
+        <h4 style="color:#0284c7; margin-top:16px;">3. Exact Large-Angle Nonlinear Breakdown</h4>
+        <p>
+          When the initial release angle $\theta_0$ is large, the period increases according to the Legendre elliptic series expansion:
+        </p>
+        <div style="background:#f8fafc; border-left:4px solid #0284c7; padding:10px 14px; font-family:var(--font-mono); margin:10px 0;">
+          T = T₀ · (1 + 1/16 · θ₀² + 11/3072 · θ₀⁴ + ...)
+        </div>
+        <p>
+          At $\theta_0 = 30^\circ$, the actual period is only ~1.7% longer than $T_0$. But at $\theta_0 = 90^\circ$, it is over ~18% longer!
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="js/sound.js"></script>
+  <script src="js/physics.js"></script>
+  <script src="js/state.js"></script>
+  <script src="js/renderer.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/main.js"></script>
+</body>
+
+</html>

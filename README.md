@@ -35,6 +35,47 @@ A collection of interactive, client-side STEM physics simulations built with HTM
 - **Flotation, Boat Cargo & Crown Mystery**: Damped harmonic bobbing, Plimsoll line cargo capacity, and King Hiero's golden crown density test.
 - **Telemetry & Lab Notebook**: Real-time Apparent Weight Loss vs Displaced Fluid Weight logger with CSV export.
 
+### 6. 🧪 [Acid-Base Indicator Simulation (`/acid_base_simulation`)](acid_base_simulation/)
+- **Spot Plate & Test Tubes Lab**: 4 glass test tubes on wooden rack, 6-well porcelain spot plate, 14 reagents, and detective mystery analytes.
+- **Interactive Reagent Pipettes & Litmus Strips**: Reagent dropper bottles with falling drops, Blue/Red litmus strips, universal pH test paper, and draggable benchtop digital pH meter probe.
+- **Analytical Acid-Base Titration Lab**: 50 mL glass burette with working stopcock, Erlenmeyer flask on active magnetic stirrer with spinning bar and liquid vortex, and live real-time Titration Curve ($pH$ vs. $V_{\text{titrant}}$) graph.
+- **Microscopic Molecular Equilibrium**: Real-time Brownian motion of $[HIn]$ and $[In^-]$ molecules demonstrating Henderson-Hasselbalch relation ($pH = pK_a + \log([In^-]/[HIn])$).
+- **9 Supported Indicators**: Universal Indicator, Phenolphthalein, Bromothymol Blue, Methyl Orange, Litmus Solution, Red Cabbage (Anthocyanin), Turmeric (Curcumin), Phenol Red, Thymol Blue.
+- **Interactive Student Quests & Lab Notebook**: 5 gamified STEM missions, synthesized Web Audio sound FX, and CSV export.
+
+### 7. 🎯 [Projectile Motion Simulation (`/projectile_simulation`)](projectile_simulation/)
+- **2D Kinematics Engine**: Analytical trajectory equations & numerical quadratic air drag ($F_{\text{drag}} = \frac{1}{2} C_d \rho A v^2$).
+- **Live Vector Overlays**: Real-time velocity decomposition ($\vec{v}, \vec{v}_x, \vec{v}_y$) and downward acceleration ($\vec{g}$).
+- **Interactive Modes**: Firing Range (free physics exploration), Target Challenge (bullseye mini-game with scoring), and Multi-Angle Plot (complementary angles symmetry visualization).
+- **Celestial Gravity & Projectiles**: Earth, Moon, Mars, Jupiter gravity environments with 5 projectiles (Cannonball, Baseball, Golf Ball, Tank Shell, Grand Piano).
+- **In-App Zoom & Synthesized Sound**: Centered smooth scaling HUD controls, recoil animation, and Web Audio API blast and hit sounds.
+
+### 8. ⚖️ [Hooke's Law & Spring-Mass Scale (`/spring_simulation`)](spring_simulation/)
+- **Linear Elasticity & Spring Scale**: Hooke's law $F_s = -k \Delta x$ and mass weighing balance $m = \frac{k \Delta x}{g}$.
+- **Simple Harmonic Motion (SHM)**: 60 FPS Runge-Kutta 4th Order (RK4) numerical integrator, natural frequency $\omega_0 = \sqrt{k/m}$, period $T_0 = 2\pi\sqrt{m/k}$, and critical damping controls.
+- **Series & Parallel Linkages**: Dynamic effective stiffness ($k_{\text{eff}} = k_1 + k_2$ in parallel vs. $k_{\text{eff}} = \frac{k_1 k_2}{k_1 + k_2}$ in series).
+- **Laboratory Bench Apparatus**: Realistic 3D metallic spring coils, slotted brass weights (50g–1000g), mystery objects (Royal Crown, Quartz Gem, Wood Block), metric ruler, and digital stopwatch with photogate timer.
+- **Waveforms & Energy Conservation**: Live displacement wave oscilloscope $x(t)$, real-time mechanical energy bar chart ($E_k, E_p, E_{\text{total}}$), and force vector arrows.
+
+### 9. 🕰️ [Simple Pendulum & Galileo's Isochronism (`/pendulum_simulation`)](pendulum_simulation/)
+- **Galileo's Isochronism (1581)**: Dual pendulum comparison proving period is independent of amplitude for small angles and independent of bob mass.
+- **Nonlinear Kinematics Engine**: 60 FPS RK4 solver for $\ddot{\theta} + \frac{b}{mL^2}\dot{\theta} + \frac{g}{L}\sin\theta = 0$, Legendre elliptic series expansion for large angles ($T = T_0(1 + \frac{1}{16}\theta_0^2 + \dots)$), and dynamic string tension resolution.
+- **Optical Photogate & Protractor**: Interactive angle protractor arc, laser diode photogate sensor at $\theta = 0$ measuring period automatically with sound feedback.
+- **Phase Space & Waveforms**: Real-time oscilloscope waveform $\theta(t)$, closed-orbit Phase Space Portrait ($\theta$ vs. $\omega$), and Mechanical Energy Bar Chart ($E_k, E_p, E_{\text{total}}$).
+
+### 10. 🌿 [Osmosis & Cell Plasmolysis Lab (`/osmosis_simulation`)](osmosis_simulation/)
+- **Onion Epidermal Plant Cell**: Rigid outer cellulose cell wall, dynamic protoplast and central vacuole, turgor pressure ($\Psi_p$ up to 0.8 MPa) in hypotonic solution, and corner detachment (**plasmolysis**) in hypertonic salt solution ($\ge 7.0\%$).
+- **Red Blood Cell (Animal Cell)**: Normal biconcave disc in physiological 0.9% saline, spiky crenation in hypertonic, and osmotic burst (**hemolysis**) in hypotonic solutions ($\le 0.2\%$).
+- **U-Tube Osmometer**: Semi-permeable membrane demonstrating hydrostatic column height rise ($\Delta h$) proportional to solute concentration gradient.
+- **Aquaporin Molecular View**: Lipid bilayer channel proteins facilitating single-file water flux while blocking solute particles.
+- **Biophysics Engine**: Real-time solute potential $\Psi_s = -iCRT$, pressure potential $\Psi_p$, 5 gamified laboratory quests, and zero-blowout layout at 100% zoom.
+
+### 11. 🌱 [Photosynthesis & Elodea Bubble Counter (`/photosynthesis_simulation`)](photosynthesis_simulation/)
+- **Apparatus Bench**: Movable illuminating lamp on metric ruler bench, submerged fresh *Elodea densa* waterweed sprig, inverted glass funnel, graduated collection tube accumulating oxygen gas volume ($V_{O_2}$ in mL), and flashing optical infrared bubble photogate.
+- **Limiting Factors (Blackman's Law)**: Inverse-square light intensity ($I \propto 1/d^2$), Engelmann's action spectrum (White, Blue 450nm, Red 660nm, Green 530nm paradox), $\text{NaHCO}_3$ saturation curve, and temperature enzyme kinetics (optimum vs denaturation).
+- **Interactive Modes**: Laboratory apparatus bench, thylakoid photolysis & Calvin cycle molecular view, and real-time kinetic curves graph.
+- **Strict Light Theme**: Clean, bright, professional laboratory aesthetic with digital stopwatch and 5 gamified quests.
+
 ---
 
 ## 💻 Tech Stack
@@ -47,6 +88,30 @@ A collection of interactive, client-side STEM physics simulations built with HTM
 You can run any simulation using any static web server:
 
 ```bash
+# Photosynthesis & Elodea Bubble Counter Lab
+cd photosynthesis_simulation
+python -m http.server 8094
+
+# Osmosis & Cell Plasmolysis Lab
+cd osmosis_simulation
+python -m http.server 8093
+
+# Simple Pendulum & Galileo's Isochronism Simulation
+cd pendulum_simulation
+python -m http.server 8092
+
+# Hooke's Law & Spring-Mass Scale Simulation
+cd spring_simulation
+python -m http.server 8091
+
+# Projectile Motion Simulation
+cd projectile_simulation
+python -m http.server 8090
+
+# Acid-Base Indicator Simulation
+cd acid_base_simulation
+python -m http.server 8089
+
 # Archimedes' Principle Simulation
 cd archimedes_simulation
 python -m http.server 8088
@@ -68,4 +133,7 @@ cd wheatstone_bridge_simulation
 python -m http.server 8082
 ```
 Or simply open the `index.html` or `simulation.html` file in any modern web browser.
+
+
+
 

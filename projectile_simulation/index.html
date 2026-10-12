@@ -1,0 +1,345 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ProjectileLab — Interactive Projectile Motion &amp; Kinematics Simulator</title>
+  <meta name="description"
+    content="Interactive STEM physics simulation exploring projectile motion kinematics, launch angles, time of flight, maximum height, aerodynamic drag, and bullseye artillery challenges.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+
+<body>
+
+  <!-- MAIN APPLICATION HEADER -->
+  <header class="app-header">
+    <div class="header-container">
+      <div class="brand-wrapper">
+        <div class="brand-icon">🎯</div>
+        <div>
+          <div style="display:flex; align-items:center;">
+            <h1 class="brand-title">ProjectileLab</h1>
+            <span class="brand-tag">Class 9–12 &amp; AP Physics</span>
+          </div>
+          <div class="brand-sub">Interactive Projectile Motion &amp; Kinematics Simulator</div>
+        </div>
+      </div>
+
+      <!-- Mode Selector -->
+      <div class="mode-selector-group">
+        <button id="btnModeFree" class="mode-type-btn active" title="Free exploration with full vector overlays">
+          <span>🏹</span> Firing Range
+        </button>
+        <button id="btnModeTarget" class="mode-type-btn" title="Hit the bullseye target at various distances">
+          <span>🎯</span> Target Challenge
+        </button>
+        <button id="btnModeMulti" class="mode-type-btn" title="Overlay multiple launch angles (15° to 75°)">
+          <span>🌈</span> Multi-Angle Plot
+        </button>
+      </div>
+
+      <!-- Header Actions -->
+      <div class="header-actions">
+        <button id="btnOpenQuests" class="action-btn" title="Complete Student Laboratory Quests">
+          <span>⭐</span> Lab Quests
+        </button>
+        <button id="btnOpenTheory" class="action-btn btn-primary" title="View Kinematics Formulas &amp; Derivations">
+          <span>📚</span> Theory &amp; Laws
+        </button>
+        <button id="btnAudioToggle" class="action-btn active" title="Toggle Sound FX">
+          🔊 Sound: ON
+        </button>
+        <button id="btnResetAll" class="action-btn" title="Reset all parameters to default">
+          <span>↺</span> Reset All
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN WORKSPACE LAYOUT -->
+  <main class="main-layout">
+
+    <!-- LEFT: Canvas Viewport & Live Telemetry -->
+    <div class="canvas-section">
+
+      <!-- Canvas Card -->
+      <div class="canvas-card">
+        <!-- Canvas Top Bar -->
+        <div class="canvas-header-bar">
+          <div class="quick-actions-bar">
+            <button id="btnFire" class="btn-fire-main" title="Launch projectile (Shortcut: Spacebar)">
+              <span>🚀</span> FIRE CANNON!
+            </button>
+            <button id="btnClearTrails" class="action-btn" title="Clear all previous flight trails">
+              <span>↺</span> Clear Trails
+            </button>
+          </div>
+
+          <!-- Status & Zoom HUD -->
+          <div class="header-status-hud">
+            <div class="view-scale-group" title="Adjust simulation view zoom">
+              <button id="btnZoomOut" class="bench-zoom-btn" title="Zoom out">🔍−</button>
+              <span id="lblZoomLevel" class="zoom-level-text">90%</span>
+              <button id="btnZoomIn" class="bench-zoom-btn" title="Zoom in">🔍+</button>
+              <button id="btnZoomFit" class="bench-zoom-btn" title="Reset zoom">Fit</button>
+            </div>
+            <span id="hudBadgeAngle" class="hud-badge badge-orange">45.0°</span>
+            <span id="hudBadgeVelocity" class="hud-badge badge-blue">20.0 m/s</span>
+            <span id="hudBadgeG" class="hud-badge">g = 9.81 m/s²</span>
+          </div>
+        </div>
+
+        <!-- Canvas Container -->
+        <div class="canvas-container">
+          <canvas id="projectileCanvas"></canvas>
+        </div>
+      </div>
+
+      <!-- Live Telemetry Grid -->
+      <div class="telemetry-grid">
+        <div class="telemetry-card">
+          <div class="telemetry-card-title">Horizontal Range (R)</div>
+          <div id="hudRange" class="telemetry-card-val">40.77 m</div>
+          <div class="telemetry-card-sub">Total landing distance</div>
+        </div>
+
+        <div class="telemetry-card">
+          <div class="telemetry-card-title">Peak Height (H_max)</div>
+          <div id="hudHeight" class="telemetry-card-val">10.19 m</div>
+          <div class="telemetry-card-sub">Maximum altitude</div>
+        </div>
+
+        <div class="telemetry-card">
+          <div class="telemetry-card-title">Flight Time (t)</div>
+          <div id="hudTime" class="telemetry-card-val">2.88 s</div>
+          <div class="telemetry-card-sub">Total time in air</div>
+        </div>
+
+        <div class="telemetry-card">
+          <div class="telemetry-card-title">Horizontal Velocity</div>
+          <div id="hudVx" class="telemetry-card-val">14.1 m/s</div>
+          <div class="telemetry-card-sub">v_x = v₀ · cos(θ)</div>
+        </div>
+
+        <div class="telemetry-card">
+          <div class="telemetry-card-title">Vertical Velocity</div>
+          <div id="hudVy" class="telemetry-card-val">14.1 m/s</div>
+          <div class="telemetry-card-sub">v_0y = v₀ · sin(θ)</div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- RIGHT: Control Sidebar -->
+    <aside class="control-sidebar">
+
+      <!-- CARD 1: Launch Parameters -->
+      <div class="sidebar-card">
+        <div class="sidebar-card-title">
+          <span>🎯 CANNON CONTROLS</span>
+          <span class="sidebar-badge">Kinematics</span>
+        </div>
+
+        <!-- Angle Slider -->
+        <div class="control-group">
+          <div class="control-label-row">
+            <span>Launch Angle (θ):</span>
+            <input type="number" id="angleNumber" min="0" max="90" step="0.5" value="45.0"
+              style="width:54px; padding:2px 4px; font-family:var(--font-mono); font-size:11px; border:1px solid var(--border); border-radius:4px; font-weight:700;">
+          </div>
+          <input type="range" id="angleSlider" class="custom-range" min="0" max="90" step="0.5" value="45.0">
+          <div style="display:flex; justify-content:space-between; font-size:9.5px; color:#64748b; margin-top:3px; font-family:var(--font-mono);">
+            <span>0° (Flat)</span>
+            <span>45° (Max Range)</span>
+            <span>90° (Vertical)</span>
+          </div>
+        </div>
+
+        <!-- Velocity Slider -->
+        <div class="control-group">
+          <div class="control-label-row">
+            <span>Initial Velocity (v₀):</span>
+            <input type="number" id="velocityNumber" min="5" max="60" step="1" value="20.0"
+              style="width:54px; padding:2px 4px; font-family:var(--font-mono); font-size:11px; border:1px solid var(--border); border-radius:4px; font-weight:700;">
+          </div>
+          <input type="range" id="velocitySlider" class="custom-range" min="5" max="60" step="1" value="20.0">
+        </div>
+
+        <!-- Launch Height Slider -->
+        <div class="control-group">
+          <div class="control-label-row">
+            <span>Platform Height (y₀):</span>
+            <input type="number" id="heightNumber" min="0" max="40" step="1" value="0.0"
+              style="width:54px; padding:2px 4px; font-family:var(--font-mono); font-size:11px; border:1px solid var(--border); border-radius:4px; font-weight:700;">
+          </div>
+          <input type="range" id="heightSlider" class="custom-range" min="0" max="40" step="1" value="0.0">
+        </div>
+      </div>
+
+      <!-- CARD 2: Environment & Projectile -->
+      <div class="sidebar-card">
+        <div class="sidebar-card-title">
+          <span>🌍 ENVIRONMENT &amp; MASS</span>
+          <span class="sidebar-badge">Gravity</span>
+        </div>
+
+        <div class="control-group">
+          <div class="control-label-row">
+            <span>Celestial Gravity:</span>
+          </div>
+          <select id="selGravity" class="custom-select">
+            <option value="earth">Earth (g = 9.81 m/s²)</option>
+            <option value="moon">The Moon (g = 1.62 m/s²)</option>
+            <option value="mars">Mars (g = 3.71 m/s²)</option>
+            <option value="jupiter">Jupiter (g = 24.79 m/s²)</option>
+          </select>
+        </div>
+
+        <div class="control-group">
+          <div class="control-label-row">
+            <span>Projectile Type:</span>
+          </div>
+          <select id="selProjectile" class="custom-select">
+            <option value="cannonball">Steel Cannonball (5.0 kg)</option>
+            <option value="baseball">Baseball (0.145 kg)</option>
+            <option value="golfball">Golf Ball (0.046 kg)</option>
+            <option value="tank_shell">Tank Shell (8.5 kg)</option>
+            <option value="piano">Grand Piano (300 kg)</option>
+          </select>
+        </div>
+
+        <label class="checkbox-row">
+          <input type="checkbox" id="chkAirDrag">
+          <span>Enable Air Resistance (Quadratic Drag)</span>
+        </label>
+      </div>
+
+      <!-- CARD 3: Target & Visual Options -->
+      <div class="sidebar-card">
+        <div class="sidebar-card-title">
+          <span>👁️ VISUALS &amp; TARGET</span>
+          <span class="sidebar-badge">Display</span>
+        </div>
+
+        <!-- Target Distance Slider (Target Mode) -->
+        <div id="grpTargetDistance" class="control-group hidden">
+          <div class="control-label-row">
+            <span>Target Distance:</span>
+            <input type="number" id="targetNumber" min="10" max="150" step="1" value="38.0"
+              style="width:54px; padding:2px 4px; font-family:var(--font-mono); font-size:11px; border:1px solid var(--border); border-radius:4px; font-weight:700;">
+          </div>
+          <input type="range" id="targetSlider" class="custom-range" min="10" max="150" step="1" value="38.0">
+        </div>
+
+        <label class="checkbox-row">
+          <input type="checkbox" id="chkVelocityVec" checked>
+          <span>Show Velocity Vectors (v, v_x, v_y)</span>
+        </label>
+
+        <label class="checkbox-row">
+          <input type="checkbox" id="chkAccelVec">
+          <span>Show Acceleration Vector (g)</span>
+        </label>
+
+        <label class="checkbox-row">
+          <input type="checkbox" id="chkTrail" checked>
+          <span>Show Flight Trajectory Trail</span>
+        </label>
+
+        <div class="control-group" style="margin-top:10px;">
+          <div class="control-label-row">
+            <span>Simulation Speed:</span>
+          </div>
+          <div class="speed-btn-group">
+            <button class="speed-btn active" data-speed="1.0">1.0×</button>
+            <button class="speed-btn" data-speed="0.5">0.5×</button>
+            <button class="speed-btn" data-speed="0.25">0.25×</button>
+          </div>
+        </div>
+      </div>
+
+    </aside>
+
+  </main>
+
+  <!-- MODAL 1: STUDENT LABORATORY QUESTS -->
+  <div id="modalQuests" class="modal-wrapper">
+    <div class="modal-backdrop"></div>
+    <div class="modal-container">
+      <div class="modal-header">
+        <h3 class="modal-title">⭐ Student Projectile Quests &amp; Missions</h3>
+        <button class="modal-close">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p style="margin-top:0;">
+          Master classical kinematics by solving artillery missions, discovering complementary angle symmetry, and navigating low-gravity environments!
+        </p>
+        <div id="questsListContainer">
+          <!-- Populated dynamically -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL 2: THEORY & KINEMATICS FORMULAS -->
+  <div id="modalTheory" class="modal-wrapper">
+    <div class="modal-backdrop"></div>
+    <div class="modal-container">
+      <div class="modal-header">
+        <h3 class="modal-title">📚 Projectile Motion Theory &amp; Derivations</h3>
+        <button class="modal-close">&times;</button>
+      </div>
+      <div class="modal-body">
+        <h4 style="color:#ea580c; margin-top:0;">1. Velocity Decomposition</h4>
+        <p>
+          A projectile moves under constant downward gravitational acceleration ($a_y = -g$) with zero horizontal acceleration ($a_x = 0$ in vacuum). The initial velocity decomposes into orthogonal components:
+        </p>
+        <div style="background:#f8fafc; border-left:4px solid #ea580c; padding:10px 14px; font-family:var(--font-mono); margin:10px 0;">
+          v_0x = v₀ · cos(θ)<br>
+          v_0y = v₀ · sin(θ)
+        </div>
+
+        <h4 style="color:#ea580c; margin-top:16px;">2. Peak Height Derivation</h4>
+        <p>
+          At maximum height, vertical velocity momentarily reaches zero ($v_y = 0$):
+        </p>
+        <div style="background:#f8fafc; border-left:4px solid #ea580c; padding:10px 14px; font-family:var(--font-mono); margin:10px 0;">
+          v_y² = v_0y² - 2g(H - y₀)  ⟹  H_max = y₀ + (v₀² · sin²(θ)) / (2g)
+        </div>
+
+        <h4 style="color:#ea580c; margin-top:16px;">3. Time of Flight &amp; Maximum Range</h4>
+        <p>
+          For a flat launch surface ($y_0 = 0$):
+        </p>
+        <div style="background:#f8fafc; border-left:4px solid #ea580c; padding:10px 14px; font-family:var(--font-mono); margin:10px 0;">
+          t_flight = 2 · v_0y / g = (2v₀ · sin(θ)) / g<br>
+          R = v_0x · t_flight = (v₀² · 2 sin(θ) cos(θ)) / g = (v₀² · sin(2θ)) / g
+        </div>
+        <p>
+          Since $\sin(2\theta)$ has a maximum value of $1$ when $2\theta = 90^\circ$, <strong>maximum horizontal range always occurs at θ = 45°</strong>!
+        </p>
+
+        <h4 style="color:#ea580c; margin-top:16px;">4. Complementary Angles Symmetry</h4>
+        <p>
+          Because $\sin(2(90^\circ - \theta)) = \sin(180^\circ - 2\theta) = \sin(2\theta)$, any pair of complementary launch angles (such as $30^\circ$ and $60^\circ$, or $15^\circ$ and $75^\circ$) produces the <strong>exact same landing range</strong>!
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="js/sound.js"></script>
+  <script src="js/physics.js"></script>
+  <script src="js/state.js"></script>
+  <script src="js/renderer.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/main.js"></script>
+</body>
+
+</html>

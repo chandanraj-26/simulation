@@ -1,0 +1,446 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AcidBaseLab — Interactive Acid-Base Indicator &amp; pH Titration Simulator</title>
+  <meta name="description"
+    content="Interactive STEM chemistry simulation exploring acid-base indicators, Henderson-Hasselbalch equilibrium, pH spectra, litmus testing, and precision dropwise titrations.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+
+<body>
+
+  <!-- MAIN APPLICATION HEADER -->
+  <header class="app-header">
+    <div class="header-container">
+      <div class="brand-wrapper">
+        <div class="brand-icon">🧪</div>
+        <div>
+          <div style="display:flex; align-items:center;">
+            <h1 class="brand-title">AcidBaseLab</h1>
+            <span class="brand-tag">Class 9–12 &amp; AP Chemistry</span>
+          </div>
+          <div class="brand-sub">Acid-Base Indicators, pH Spectrum &amp; Titration Simulator</div>
+        </div>
+      </div>
+
+      <!-- Primary Mode Switcher -->
+      <div class="mode-selector-group">
+        <button id="btnModeSpot" class="mode-type-btn active" title="Test Tubes &amp; Spot Plate Reagent Lab">
+          <span>🔬</span> Spot &amp; Tubes Lab
+        </button>
+        <button id="btnModeTitration" class="mode-type-btn" title="Burette, Flask &amp; Dynamic Titration Curve">
+          <span>⚗️</span> Titration Lab
+        </button>
+        <button id="btnModeMolecular" class="mode-type-btn" title="Microscopic Equilibrium &amp; Henderson-Hasselbalch">
+          <span>⚛️</span> Molecular View
+        </button>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="header-actions">
+        <button id="btnOpenQuests" class="action-btn" title="Complete Student Laboratory Quests">
+          <span>⭐</span> Lab Quests
+        </button>
+        <button id="btnOpenTheory" class="action-btn btn-primary" title="View Indicator Theory &amp; Formulas">
+          <span>📚</span> Theory &amp; Laws
+        </button>
+        <button id="btnOpenLabReport" class="action-btn" title="View &amp; Export Lab Observation Notebook">
+          <span>📝</span> Lab Notebook
+        </button>
+        <button id="btnAudioToggle" class="action-btn active" title="Toggle Sound FX">
+          🔊 Sound: ON
+        </button>
+        <button id="btnResetAll" class="action-btn" title="Reset all apparatus to default">
+          <span>↺</span> Reset All
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN LAYOUT -->
+  <main class="main-layout">
+
+    <!-- LEFT: Canvas Viewport & Live Chemical Telemetry -->
+    <div class="canvas-section">
+
+      <!-- Canvas Card -->
+      <div class="canvas-card">
+        <!-- Quick Preset Substance Chips Bar -->
+        <div class="canvas-header-bar">
+          <div style="font-size:12px; font-weight:700; color:#475569; display:flex; align-items:center; gap:6px;">
+            <span>⚡ Substances:</span>
+          </div>
+          <div class="canvas-presets-wrapper">
+            <button class="preset-chip" data-substance="hcl">0.1M HCl (pH 1.0)</button>
+            <button class="preset-chip active" data-substance="lemon">Lemon Juice (pH 2.2)</button>
+            <button class="preset-chip" data-substance="vinegar">Vinegar (pH 2.8)</button>
+            <button class="preset-chip" data-substance="water">Pure Water (pH 7.0)</button>
+            <button class="preset-chip" data-substance="blood">Blood (pH 7.4)</button>
+            <button class="preset-chip" data-substance="baking_soda">Baking Soda (pH 8.5)</button>
+            <button class="preset-chip" data-substance="ammonia">Ammonia (pH 11.5)</button>
+            <button class="preset-chip" data-substance="naoh_01m">0.1M NaOH (pH 13.0)</button>
+            <button class="preset-chip chip-mystery" data-substance="mystery_a">❓ Mystery A</button>
+            <button class="preset-chip chip-mystery" data-substance="mystery_b">❓ Mystery B</button>
+          </div>
+
+          <!-- Header Status HUD -->
+          <div class="header-status-hud">
+            <div class="view-scale-group" title="Adjust simulation view scale">
+              <button id="btnZoomOut" class="bench-zoom-btn" title="Zoom out apparatus">🔍−</button>
+              <span id="lblZoomLevel" class="zoom-level-text">90%</span>
+              <button id="btnZoomIn" class="bench-zoom-btn" title="Zoom in apparatus">🔍+</button>
+              <button id="btnZoomFit" class="bench-zoom-btn" title="Reset to default fit">Fit</button>
+            </div>
+            <span id="hudBadgePH" class="hud-badge badge-ph">pH 2.20</span>
+            <span id="hudBadgePOH" class="hud-badge">pOH 11.80</span>
+            <span id="hudBadgeIndicator" class="hud-badge badge-indicator">Universal</span>
+            <span id="hudColorSwatch" class="color-swatch-box" title="Current indicator solution color"></span>
+          </div>
+        </div>
+
+        <!-- Canvas Container -->
+        <div class="canvas-container">
+          <canvas id="indicatorCanvas"></canvas>
+        </div>
+      </div>
+
+      <!-- Live Chemical Telemetry Grid -->
+      <div class="telemetry-grid">
+        <div class="telemetry-card">
+          <div class="telemetry-card-title">Hydronium Ion Conc.</div>
+          <div id="hudBadgeHConc" class="telemetry-card-val">6.31 × 10^(-3) M</div>
+          <div class="telemetry-card-sub">[H⁺] = 10^(-pH)</div>
+        </div>
+
+        <div class="telemetry-card">
+          <div class="telemetry-card-title">Hydroxide Ion Conc.</div>
+          <div id="hudBadgeOHConc" class="telemetry-card-val">1.58 × 10^(-12) M</div>
+          <div class="telemetry-card-sub">[OH⁻] = 10^(-pOH)</div>
+        </div>
+
+        <div class="telemetry-card">
+          <div class="telemetry-card-title">Henderson-Hasselbalch</div>
+          <div class="telemetry-card-val">pH = pKₐ + log([In⁻]/[HIn])</div>
+          <div class="telemetry-card-sub">Equilibrium indicator ratio</div>
+        </div>
+
+        <div class="telemetry-card">
+          <div class="telemetry-card-title">Interactive Apparatus</div>
+          <div class="telemetry-card-val" style="font-size:14px; font-weight:700;">Drag Strips &amp; Probe</div>
+          <div class="telemetry-card-sub">Click tubes to add drops</div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- RIGHT: Control Sidebar -->
+    <aside class="control-sidebar">
+
+      <!-- SECTION 1: Spot & Tubes Controls -->
+      <div id="secSpotControls" class="sidebar-card">
+        <div class="sidebar-card-title">
+          <span>🧪 REAGENTS &amp; pH SLIDER</span>
+          <span class="sidebar-badge">Workbench</span>
+        </div>
+
+        <!-- Continuous pH Slider -->
+        <div class="control-group">
+          <div class="control-label-row">
+            <span>Solution pH Value:</span>
+            <input type="number" id="inputPHNumber" min="0" max="14" step="0.05" value="2.20"
+              style="width:54px; padding:2px 4px; font-family:var(--font-mono); font-size:11px; border:1px solid var(--border); border-radius:4px; font-weight:700;">
+          </div>
+          <input type="range" id="inputPHSlider" class="custom-range ph-spectrum-track" min="0" max="14" step="0.05" value="2.20">
+          <div style="display:flex; justify-content:space-between; font-size:9.5px; color:#64748b; margin-top:3px; font-family:var(--font-mono);">
+            <span>0 (Acid)</span>
+            <span>7 (Neutral)</span>
+            <span>14 (Base)</span>
+          </div>
+        </div>
+
+        <!-- 9 Indicators Selection Grid -->
+        <div class="control-group">
+          <div class="control-label-row">
+            <span>Choose Active Indicator:</span>
+          </div>
+          <div class="indicator-grid">
+            <button class="indicator-btn active" data-indicator="universal" title="Universal Indicator (Full pH 1–14 Spectrum)">
+              <span class="ind-dot" style="background:#10b981;"></span> Universal
+            </button>
+            <button class="indicator-btn" data-indicator="phenolphthalein" title="Phenolphthalein (pH 8.2–10.0)">
+              <span class="ind-dot" style="background:#e11d48;"></span> Phenol. (8.2–10)
+            </button>
+            <button class="indicator-btn" data-indicator="bromothymol_blue" title="Bromothymol Blue (pH 6.0–7.6)">
+              <span class="ind-dot" style="background:#2563eb;"></span> Bromothymol
+            </button>
+            <button class="indicator-btn" data-indicator="methyl_orange" title="Methyl Orange (pH 3.1–4.4)">
+              <span class="ind-dot" style="background:#ea580c;"></span> Methyl Orange
+            </button>
+            <button class="indicator-btn" data-indicator="litmus_solution" title="Litmus Solution (pH 4.5–8.3)">
+              <span class="ind-dot" style="background:#7c3aed;"></span> Litmus Sol.
+            </button>
+            <button class="indicator-btn" data-indicator="red_cabbage" title="Red Cabbage Extract (Anthocyanin, pH 1–14)">
+              <span class="ind-dot" style="background:#9333ea;"></span> Red Cabbage
+            </button>
+            <button class="indicator-btn" data-indicator="turmeric" title="Turmeric Extract (Curcumin, pH 7.4–8.8)">
+              <span class="ind-dot" style="background:#eab308;"></span> Turmeric
+            </button>
+            <button class="indicator-btn" data-indicator="phenol_red" title="Phenol Red (pH 6.8–8.2)">
+              <span class="ind-dot" style="background:#f43f5e;"></span> Phenol Red
+            </button>
+          </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <button id="btnAddDrop" class="btn-block-action btn-primary-action">
+          <span>💧</span> Add 1 Drop Indicator to Selected
+        </button>
+
+        <button id="btnRinse" class="btn-block-action btn-secondary-action">
+          <span>🧽</span> Rinse All Vessels (DI Water)
+        </button>
+
+        <button id="btnLogObservation" class="btn-block-action btn-secondary-action">
+          <span>📋</span> Log Current to Notebook
+        </button>
+      </div>
+
+      <!-- SECTION 2: Titration Lab Controls -->
+      <div id="secTitrationControls" class="sidebar-card hidden">
+        <div class="sidebar-card-title">
+          <span>⚗️ TITRATION APPARATUS</span>
+          <span class="sidebar-badge">Burette &amp; Flask</span>
+        </div>
+
+        <div class="control-group">
+          <div class="control-label-row">
+            <span>Analyte Solution in Flask:</span>
+          </div>
+          <select id="selAnalyteType"
+            style="width:100%; padding:8px 10px; border-radius:6px; border:1px solid var(--border); font-size:12px; font-weight:600; font-family:var(--font-main);">
+            <option value="strong_acid">25.0 mL of 0.1 M HCl (Strong Acid)</option>
+            <option value="weak_acid">25.0 mL of 0.1 M Acetic Acid (Weak Acid, pKa 4.76)</option>
+          </select>
+        </div>
+
+        <div class="control-group">
+          <div class="control-label-row">
+            <span>Indicator in Flask:</span>
+          </div>
+          <select id="selTitrantIndicator"
+            style="width:100%; padding:8px 10px; border-radius:6px; border:1px solid var(--border); font-size:12px; font-weight:600; font-family:var(--font-main);">
+            <option value="phenolphthalein">Phenolphthalein (8.2 – 10.0)</option>
+            <option value="bromothymol_blue">Bromothymol Blue (6.0 – 7.6)</option>
+            <option value="methyl_orange">Methyl Orange (3.1 – 4.4)</option>
+          </select>
+        </div>
+
+        <div class="control-group">
+          <div class="control-label-row">
+            <span>Stopcock Flow:</span>
+          </div>
+          <button id="btnStopcockToggle" class="btn-block-action btn-primary-action">
+            <span>⏹</span> Stopcock: <strong>CLOSED</strong>
+          </button>
+        </div>
+
+        <div class="control-group">
+          <div class="control-label-row">
+            <span>Magnetic Stirrer Speed:</span>
+            <span id="stirrerSpeedVal" class="control-val-pill">45%</span>
+          </div>
+          <input type="range" id="stirrerSpeedSlider" class="custom-range" min="0" max="100" value="45">
+        </div>
+
+        <button id="btnRefillBurette" class="btn-block-action btn-secondary-action">
+          <span>🔄</span> Refill Burette (Reset to 0.0 mL)
+        </button>
+      </div>
+
+      <!-- SECTION 3: Molecular Controls -->
+      <div id="secMolecularControls" class="sidebar-card hidden">
+        <div class="sidebar-card-title">
+          <span>⚛️ EQUILIBRIUM DYNAMICS</span>
+          <span class="sidebar-badge">Microscopic</span>
+        </div>
+        <p style="font-size:12px; color:var(--text-muted); line-height:1.5;">
+          Observe individual indicator dye molecules in Brownian motion. Shift the pH slider to witness Le Chatelier's equilibrium principle in action:
+        </p>
+        <div style="background:#f1f5f9; padding:10px 12px; border-radius:8px; font-family:var(--font-mono); font-size:12px; margin-bottom:12px; color:#0f172a; text-align:center;">
+          HIn (Acid Color) ⇌ H⁺ + In⁻ (Base Color)
+        </div>
+        <p style="font-size:11px; color:#64748b;">
+          • At low pH (high [H⁺]): equilibrium shifts left, protonating [In⁻] into [HIn].<br>
+          • At high pH (low [H⁺]): protons dissociate, generating vivid [In⁻] base hue!
+        </p>
+      </div>
+
+    </aside>
+
+  </main>
+
+  <!-- MODAL 1: QUESTS -->
+  <div id="modalQuests" class="modal-wrapper">
+    <div class="modal-backdrop"></div>
+    <div class="modal-container">
+      <div class="modal-header">
+        <h3 class="modal-title">⭐ Student Laboratory Quests &amp; Missions</h3>
+        <button class="modal-close">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p style="margin-top:0;">
+          Put your STEM chemistry skills to the test! Complete all 5 guided laboratory missions to master indicators, litmus testing, and precision analytical titrations.
+        </p>
+        <div id="questsListContainer"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL 2: THEORY -->
+  <div id="modalTheory" class="modal-wrapper">
+    <div class="modal-backdrop"></div>
+    <div class="modal-container">
+      <div class="modal-header">
+        <h3 class="modal-title">📚 Acid-Base Indicator Theory &amp; Formulations</h3>
+        <button class="modal-close">&times;</button>
+      </div>
+      <div class="modal-body" style="font-size:13px;">
+        <h4 style="color:#0284c7; margin-top:0;">1. What is an Acid-Base Indicator?</h4>
+        <p>
+          An acid-base indicator is a weak organic acid ($HIn$) or weak organic base whose conjugate acid and base forms possess distinctly different colors due to structural rearrangement of their chromophore $\pi$-electron system:
+        </p>
+        <div style="background:#f8fafc; border-left:4px solid #0284c7; padding:10px 14px; font-family:var(--font-mono); margin:10px 0;">
+          HIn (Acid Form Color) ⇌ H⁺(aq) + In⁻ (Conjugate Base Color)
+        </div>
+
+        <h4 style="color:#0284c7; margin-top:16px;">2. Henderson-Hasselbalch Equation for Indicators</h4>
+        <p>The equilibrium dissociation constant is given by:</p>
+        <div style="background:#f8fafc; border-left:4px solid #0284c7; padding:10px 14px; font-family:var(--font-mono); margin:10px 0;">
+          K_In = [H⁺][In⁻] / [HIn]  ⟹  pH = pK_In + log([In⁻] / [HIn])
+        </div>
+        <p>
+          The human eye perceives the acid color when $[HIn] \ge 10 \times [In^-]$ ($pH \le pK_{In} - 1$), and the base color when $[In^-] \ge 10 \times [HIn]$ ($pH \ge pK_{In} + 1$). The effective color transition interval is:
+        </p>
+        <div style="background:#f8fafc; border-left:4px solid #0284c7; padding:10px 14px; font-family:var(--font-mono); margin:10px 0;">
+          ΔpH = pK_In ± 1.0 (Span of ~2.0 pH units)
+        </div>
+
+        <h4 style="color:#0284c7; margin-top:16px;">3. Common Indicators and Color Transitions</h4>
+        <table class="report-table">
+          <thead>
+            <tr>
+              <th>Indicator</th>
+              <th>pK_In</th>
+              <th>Transition Range</th>
+              <th>Acid Color</th>
+              <th>Base Color</th>
+              <th>Primary Laboratory Use</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Phenolphthalein</strong></td>
+              <td>9.3</td>
+              <td>8.2 – 10.0</td>
+              <td>Colorless</td>
+              <td>Vivid Magenta / Pink</td>
+              <td>Strong Acid / Weak Acid titrated with Strong Base</td>
+            </tr>
+            <tr>
+              <td><strong>Bromothymol Blue</strong></td>
+              <td>7.1</td>
+              <td>6.0 – 7.6</td>
+              <td>Yellow</td>
+              <td>Royal Blue</td>
+              <td>Strong Acid / Strong Base (Neutral equivalence point)</td>
+            </tr>
+            <tr>
+              <td><strong>Methyl Orange</strong></td>
+              <td>3.4</td>
+              <td>3.1 – 4.4</td>
+              <td>Crimson Red</td>
+              <td>Golden Yellow</td>
+              <td>Strong Acid titrated with Weak Base</td>
+            </tr>
+            <tr>
+              <td><strong>Litmus Solution</strong></td>
+              <td>6.5</td>
+              <td>4.5 – 8.3</td>
+              <td>Red</td>
+              <td>Blue</td>
+              <td>General qualitative acid/alkali testing</td>
+            </tr>
+            <tr>
+              <td><strong>Red Cabbage Extract</strong></td>
+              <td>7.0</td>
+              <td>1.0 – 13.0</td>
+              <td>Ruby Red (pH 1-2)</td>
+              <td>Yellow (pH 12-14)</td>
+              <td>Natural kitchen chemistry (Anthocyanin pigments)</td>
+            </tr>
+            <tr>
+              <td><strong>Turmeric (Curcumin)</strong></td>
+              <td>8.0</td>
+              <td>7.4 – 8.8</td>
+              <td>Bright Yellow</td>
+              <td>Deep Red-Brown</td>
+              <td>Natural kitchen test for soaps and alkalies</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL 3: LAB REPORT -->
+  <div id="modalLabReport" class="modal-wrapper">
+    <div class="modal-backdrop"></div>
+    <div class="modal-container">
+      <div class="modal-header">
+        <h3 class="modal-title">📝 Student Laboratory Notebook &amp; Telemetry Log</h3>
+        <button class="modal-close">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p style="margin-top:0;">
+          All logged test records, pH determinations, and indicator chromatic responses recorded during this experimental session:
+        </p>
+        <table class="report-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Time</th>
+              <th>Sample</th>
+              <th>Indicator Used</th>
+              <th>pH Value</th>
+              <th>Experimental Notes</th>
+            </tr>
+          </thead>
+          <tbody id="reportTableBody"></tbody>
+        </table>
+        <div style="margin-top:20px; display:flex; justify-content:flex-end; gap:10px;">
+          <button id="btnExportCSV" class="action-btn btn-primary">
+            <span>📥</span> Export Lab Report (CSV)
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="js/sound.js"></script>
+  <script src="js/chemistry.js"></script>
+  <script src="js/state.js"></script>
+  <script src="js/renderer.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/main.js"></script>
+</body>
+
+</html>

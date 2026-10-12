@@ -1,0 +1,353 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SpringLab — Interactive Hooke's Law &amp; Spring-Mass Harmonic Scale</title>
+  <meta name="description"
+    content="Interactive STEM physics laboratory exploring Hooke's law, spring stiffness, simple harmonic motion (SHM), series/parallel springs, damping regimes, and mystery mass scales.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+
+<body>
+
+  <!-- MAIN APPLICATION HEADER -->
+  <header class="app-header">
+    <div class="header-container">
+      <div class="brand-wrapper">
+        <div class="brand-icon">⚖️</div>
+        <div>
+          <div style="display:flex; align-items:center;">
+            <h1 class="brand-title">SpringLab</h1>
+            <span class="brand-tag">Class 9–12 &amp; AP Physics</span>
+          </div>
+          <div class="brand-sub">Hooke's Law &amp; Spring-Mass Harmonic Scale</div>
+        </div>
+      </div>
+
+      <!-- Mode Selector -->
+      <div class="mode-selector-group">
+        <button id="btnModeSingle" class="mode-type-btn active" title="Standard single vertical spring experiment">
+          <span>🌀</span> Single Spring
+        </button>
+        <button id="btnModeSeries" class="mode-type-btn" title="Two springs connected end-to-end in series">
+          <span>⛓️</span> Series Springs
+        </button>
+        <button id="btnModeParallel" class="mode-type-btn" title="Two springs side-by-side sharing load">
+          <span>⚡</span> Parallel Springs
+        </button>
+        <button id="btnModeMystery" class="mode-type-btn" title="Weigh unknown objects using Hooke's scale formula">
+          <span>👑</span> Mystery Scale
+        </button>
+      </div>
+
+      <!-- Header Actions -->
+      <div class="header-actions">
+        <button id="btnOpenQuests" class="action-btn" title="Complete Student Laboratory Quests">
+          <span>⭐</span> Lab Quests
+        </button>
+        <button id="btnOpenTheory" class="action-btn btn-primary" title="View Hooke's Law &amp; SHM Formulas">
+          <span>📚</span> Theory &amp; Laws
+        </button>
+        <button id="btnAudioToggle" class="action-btn active" title="Toggle Sound FX">
+          🔊 Sound: ON
+        </button>
+        <button id="btnResetAll" class="action-btn" title="Reset all laboratory parameters to default">
+          <span>↺</span> Reset All
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN WORKSPACE LAYOUT -->
+  <main class="main-layout">
+
+    <!-- LEFT: Canvas Viewport & Live Telemetry -->
+    <div class="canvas-section">
+
+      <!-- Canvas Card -->
+      <div class="canvas-card">
+        <!-- Canvas Top Bar -->
+        <div class="canvas-header-bar">
+          <div class="quick-actions-bar">
+            <button id="btnDisplace" class="btn-action-primary" title="Pull mass downwards by 8 cm and release into oscillation">
+              <span>🖐️</span> Pull &amp; Oscillate
+            </button>
+            <button id="btnRestEq" class="action-btn" title="Damp motion smoothly to static equilibrium rest">
+              <span>⚖️</span> Damp to Rest
+            </button>
+            <button id="btnClearWeights" class="action-btn" title="Remove all weights from the spring hook">
+              <span>🗑️</span> Clear Weights
+            </button>
+          </div>
+
+          <!-- Status & Zoom HUD -->
+          <div class="header-status-hud">
+            <div class="view-scale-group" title="Adjust simulation view zoom">
+              <button id="btnZoomOut" class="bench-zoom-btn" title="Zoom out">🔍−</button>
+              <span id="lblZoomLevel" class="zoom-level-text">90%</span>
+              <button id="btnZoomIn" class="bench-zoom-btn" title="Zoom in">🔍+</button>
+              <button id="btnZoomFit" class="bench-zoom-btn" title="Reset zoom">Fit</button>
+            </div>
+            <span id="hudK" class="hud-badge badge-blue">50.0 N/m</span>
+            <span id="hudMass" class="hud-badge badge-orange">250 g</span>
+            <span id="hudBadgeG" class="hud-badge">g = 9.81 m/s²</span>
+          </div>
+        </div>
+
+        <!-- Canvas Container -->
+        <div class="canvas-container">
+          <canvas id="springCanvas"></canvas>
+        </div>
+      </div>
+
+      <!-- Live Telemetry Grid -->
+      <div class="telemetry-grid">
+        <div class="telemetry-card">
+          <div class="telemetry-card-title">Spring Constant (k_eff)</div>
+          <div id="hudK" class="telemetry-card-val">50.0 N/m</div>
+          <div class="telemetry-card-sub">Effective stiffness</div>
+        </div>
+
+        <div class="telemetry-card">
+          <div class="telemetry-card-title">Static Extension (Δx)</div>
+          <div id="hudExtension" class="telemetry-card-val">4.9 cm</div>
+          <div class="telemetry-card-sub">Δx = m·g / k</div>
+        </div>
+
+        <div class="telemetry-card">
+          <div class="telemetry-card-title">Oscillation Period (T)</div>
+          <div id="hudPeriod" class="telemetry-card-val">0.44 s</div>
+          <div class="telemetry-card-sub">T = 2π√(m / k)</div>
+        </div>
+
+        <div class="telemetry-card">
+          <div class="telemetry-card-title">Frequency (f₀)</div>
+          <div id="hudFreq" class="telemetry-card-val">2.25 Hz</div>
+          <div class="telemetry-card-sub">f₀ = 1 / T</div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- RIGHT: Control Sidebar -->
+    <aside class="control-sidebar">
+
+      <!-- CARD 1: Spring Stiffness -->
+      <div class="sidebar-card">
+        <div class="sidebar-card-title">
+          <span>🌀 SPRING PROPERTIES</span>
+          <span class="sidebar-badge">Hooke's Law</span>
+        </div>
+
+        <!-- Spring 1 (k1) -->
+        <div class="control-group">
+          <div class="control-label-row">
+            <span>Spring 1 Stiffness (k₁):</span>
+            <input type="number" id="k1Number" min="10" max="100" step="1" value="50.0"
+              style="width:54px; padding:2px 4px; font-family:var(--font-mono); font-size:11px; border:1px solid var(--border); border-radius:4px; font-weight:700;">
+          </div>
+          <input type="range" id="k1Slider" class="custom-range" min="10" max="100" step="1" value="50.0">
+          <div style="display:flex; justify-content:space-between; font-size:9.5px; color:#64748b; margin-top:2px; font-family:var(--font-mono);">
+            <span>10 N/m (Soft)</span>
+            <span>50 N/m</span>
+            <span>100 N/m (Stiff)</span>
+          </div>
+        </div>
+
+        <!-- Spring 2 (k2) - Series/Parallel only -->
+        <div id="grpSpring2" class="control-group hidden">
+          <div class="control-label-row">
+            <span>Spring 2 Stiffness (k₂):</span>
+            <input type="number" id="k2Number" min="10" max="100" step="1" value="50.0"
+              style="width:54px; padding:2px 4px; font-family:var(--font-mono); font-size:11px; border:1px solid var(--border); border-radius:4px; font-weight:700;">
+          </div>
+          <input type="range" id="k2Slider" class="custom-range" min="10" max="100" step="1" value="50.0">
+        </div>
+      </div>
+
+      <!-- CARD 2: Environment & Damping -->
+      <div class="sidebar-card">
+        <div class="sidebar-card-title">
+          <span>🌍 GRAVITY &amp; DAMPING</span>
+          <span class="sidebar-badge">Oscillation</span>
+        </div>
+
+        <div class="control-group">
+          <div class="control-label-row">
+            <span>Celestial Gravity:</span>
+          </div>
+          <select id="selGravity" class="custom-select">
+            <option value="earth">Earth (g = 9.81 m/s²)</option>
+            <option value="moon">The Moon (g = 1.62 m/s²)</option>
+            <option value="mars">Mars (g = 3.71 m/s²)</option>
+            <option value="jupiter">Jupiter (g = 24.79 m/s²)</option>
+            <option value="zerog">Zero-G Orbit (g = 0 m/s²)</option>
+          </select>
+        </div>
+
+        <!-- Damping Slider & Presets -->
+        <div class="control-group">
+          <div class="control-label-row">
+            <span>Damping (c): <span id="dampValue" style="font-family:var(--font-mono); font-weight:700;">0.20</span> N·s/m</span>
+          </div>
+          <input type="range" id="dampSlider" class="custom-range" min="0" max="5.0" step="0.05" value="0.20">
+          <div class="damp-preset-group">
+            <button id="btnDampNone" class="damp-btn">None (0)</button>
+            <button id="btnDampLight" class="damp-btn">Light (0.18)</button>
+            <button id="btnDampCritical" class="damp-btn">Critical</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- CARD 3: Display & Digital Stopwatch -->
+      <div class="sidebar-card">
+        <div class="sidebar-card-title">
+          <span>⏱️ DISPLAY &amp; TIMER</span>
+          <span class="sidebar-badge">Tools</span>
+        </div>
+
+        <!-- Digital Stopwatch -->
+        <div class="stopwatch-box">
+          <div>
+            <div style="font-size:9px; color:#94a3b8; font-weight:700; text-transform:uppercase;">Stopwatch</div>
+            <div id="stopwatchDisplay" class="stopwatch-digits">0.00 s</div>
+          </div>
+          <div class="stopwatch-btn-group">
+            <button id="btnStopwatchStart" class="stopwatch-btn">▶ Start</button>
+            <button id="btnStopwatchReset" class="stopwatch-btn">↺ Reset</button>
+          </div>
+        </div>
+
+        <label class="checkbox-row" style="margin-top:6px;">
+          <input type="checkbox" id="chkUnstretched" checked>
+          <span>Show Unstretched Length (L₀)</span>
+        </label>
+
+        <label class="checkbox-row">
+          <input type="checkbox" id="chkEquilibrium" checked>
+          <span>Show Equilibrium Rest Line</span>
+        </label>
+
+        <label class="checkbox-row">
+          <input type="checkbox" id="chkRuler" checked>
+          <span>Show Metric Lab Ruler (cm)</span>
+        </label>
+
+        <label class="checkbox-row">
+          <input type="checkbox" id="chkForces" checked>
+          <span>Show Force Vectors (F_s, W, F_net)</span>
+        </label>
+
+        <label class="checkbox-row">
+          <input type="checkbox" id="chkGraph" checked>
+          <span>Show Displacement Wave x(t)</span>
+        </label>
+
+        <label class="checkbox-row">
+          <input type="checkbox" id="chkEnergy" checked>
+          <span>Show Energy Bar Chart</span>
+        </label>
+
+        <div class="control-group" style="margin-top:8px;">
+          <div class="control-label-row">
+            <span>Simulation Speed:</span>
+          </div>
+          <div class="speed-btn-group">
+            <button class="speed-btn active" data-speed="1.0">1.0×</button>
+            <button class="speed-btn" data-speed="0.5">0.5×</button>
+            <button class="speed-btn" data-speed="0.25">0.25×</button>
+          </div>
+        </div>
+      </div>
+
+    </aside>
+
+  </main>
+
+  <!-- MODAL 1: STUDENT LABORATORY QUESTS -->
+  <div id="modalQuests" class="modal-wrapper">
+    <div class="modal-backdrop"></div>
+    <div class="modal-container">
+      <div class="modal-header">
+        <h3 class="modal-title">⭐ Student Spring Mechanics Quests</h3>
+        <button class="modal-close">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p style="margin-top:0;">
+          Master elasticity, harmonic motion, and energy exchange by completing laboratory missions on your workbench!
+        </p>
+        <div id="questsListContainer">
+          <!-- Populated dynamically -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL 2: THEORY & HOOKE'S LAW FORMULAS -->
+  <div id="modalTheory" class="modal-wrapper">
+    <div class="modal-backdrop"></div>
+    <div class="modal-container">
+      <div class="modal-header">
+        <h3 class="modal-title">📚 Hooke's Law &amp; Harmonic Motion Theory</h3>
+        <button class="modal-close">&times;</button>
+      </div>
+      <div class="modal-body">
+        <h4 style="color:#0284c7; margin-top:0;">1. Hooke's Law of Elasticity</h4>
+        <p>
+          Discovered by Robert Hooke in 1660, Hooke's law states that the restoring force exerted by an ideal spring is directly proportional to its displacement from equilibrium ($\Delta x$):
+        </p>
+        <div style="background:#f8fafc; border-left:4px solid #0284c7; padding:10px 14px; font-family:var(--font-mono); margin:10px 0;">
+          F_s = -k · Δx
+        </div>
+        <p>
+          where $k$ is the <strong>spring constant</strong> (stiffness) measured in $\text{N/m}$. The negative sign indicates that the restoring force always opposes displacement.
+        </p>
+
+        <h4 style="color:#0284c7; margin-top:16px;">2. Static Equilibrium &amp; Spring Balance Scale</h4>
+        <p>
+          When a mass $m$ hangs at rest under gravity $g$, the downward weight ($W = mg$) is exactly balanced by the upward spring tension ($F_s = k \Delta x_{\text{eq}}$):
+        </p>
+        <div style="background:#f8fafc; border-left:4px solid #0284c7; padding:10px 14px; font-family:var(--font-mono); margin:10px 0;">
+          k · Δx_eq = m · g   ⟹   m = (k · Δx_eq) / g
+        </div>
+        <p>
+          This is the fundamental principle of everyday spring scales! By measuring $\Delta x$, you directly determine unknown mass $m$.
+        </p>
+
+        <h4 style="color:#0284c7; margin-top:16px;">3. Series vs. Parallel Spring Combinations</h4>
+        <div style="background:#f8fafc; border-left:4px solid #0284c7; padding:10px 14px; font-family:var(--font-mono); margin:10px 0;">
+          Parallel:  k_eff = k₁ + k₂  (Stiffer system, halves elongation)<br>
+          Series:    1 / k_eff = 1 / k₁ + 1 / k₂  ⟹  k_eff = (k₁ · k₂) / (k₁ + k₂)  (More flexible)
+        </div>
+
+        <h4 style="color:#0284c7; margin-top:16px;">4. Simple Harmonic Motion (SHM) Period</h4>
+        <p>
+          When displaced from equilibrium and released, the mass oscillates in simple harmonic motion:
+        </p>
+        <div style="background:#f8fafc; border-left:4px solid #0284c7; padding:10px 14px; font-family:var(--font-mono); margin:10px 0;">
+          ω₀ = √(k / m)  ⟹  T = 2π / ω₀ = 2π · √(m / k)
+        </div>
+        <p>
+          Notice that the period $T$ depends only on mass $m$ and spring stiffness $k$ — it is <strong>completely independent of gravitational acceleration $g$</strong>!
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="js/sound.js"></script>
+  <script src="js/physics.js"></script>
+  <script src="js/state.js"></script>
+  <script src="js/renderer.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/main.js"></script>
+</body>
+
+</html>

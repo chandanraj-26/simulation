@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OsmosisLab — Interactive Cell Plasmolysis & Osmoregulation Simulator</title>
+  <meta name="description" content="Explore osmosis, water potential, plant cell plasmolysis and deplasmolysis, red blood cell hemolysis, U-tube osmometer, and aquaporin molecular dynamics in an interactive biology lab.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+  <!-- Top Navigation Bar -->
+  <header class="navbar">
+    <div class="brand-wrap">
+      <div class="brand-icon">🌿</div>
+      <div class="brand-title">
+        <span>OsmosisLab</span>
+        <span class="brand-badge">Biology Pro</span>
+      </div>
+    </div>
+
+    <!-- Mode Selectors -->
+    <nav class="nav-center-modes" aria-label="Specimen selection">
+      <button id="btnModePlant" class="mode-type-btn active" title="Onion Epidermal Plant Cell">
+        <span>🌿</span> Plant Cell
+      </button>
+      <button id="btnModeRBC" class="mode-type-btn" title="Erythrocyte / Red Blood Cell">
+        <span>🩸</span> Red Blood Cell
+      </button>
+      <button id="btnModeUTube" class="mode-type-btn" title="U-Tube Osmometer Apparatus">
+        <span>🧪</span> U-Tube Osmometer
+      </button>
+      <button id="btnModeAquaporin" class="mode-type-btn" title="Aquaporin Membrane Molecular View">
+        <span>🔬</span> Aquaporin View
+      </button>
+    </nav>
+
+    <!-- Header Actions -->
+    <div class="nav-actions">
+      <button id="btnOpenQuests" class="btn-header accent" title="Laboratory Challenges">
+        <span>⭐</span> Quests
+      </button>
+      <button id="btnOpenTheory" class="btn-header" title="Osmosis & Water Potential Theory">
+        <span>📖</span> Theory
+      </button>
+      <button id="btnAudioToggle" class="btn-header" title="Toggle audio synthesizer">
+        🔊 Sound: ON
+      </button>
+      <button id="btnResetAll" class="btn-header" title="Reset all simulation values">
+        ↺ Reset
+      </button>
+    </div>
+  </header>
+
+  <!-- Main Viewport Layout -->
+  <main class="main-layout">
+    
+    <!-- Left Canvas & Telemetry Panel -->
+    <section class="viewport-panel">
+      
+      <!-- Interactive 2D Canvas Container -->
+      <div class="canvas-container">
+        <canvas id="simCanvas"></canvas>
+
+        <!-- Floating HUD Overlays on Canvas -->
+        <div class="canvas-hud-top">
+          <div class="hud-pill-group">
+            <span class="hud-pill-label">External Solution:</span>
+            <span id="hudConc" class="hud-pill-val">2.0%</span>
+            <span id="hudTonicity" class="hud-badge badge-blue">ISOTONIC</span>
+          </div>
+
+          <!-- In-Canvas Zoom Controls -->
+          <div class="zoom-controls">
+            <button id="btnZoomOut" class="btn-zoom" title="Zoom out">🔍−</button>
+            <span id="lblZoomLevel" class="zoom-label">90%</span>
+            <button id="btnZoomIn" class="btn-zoom" title="Zoom in">🔍+</button>
+            <button id="btnZoomFit" class="btn-zoom" title="Reset zoom to 90%">Fit</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Live Biophysics Telemetry Cards -->
+      <div class="telemetry-grid">
+        <div class="telemetry-card">
+          <span class="card-label">Cell Morphology State</span>
+          <span id="hudCellState" class="card-value" style="color: #60a5fa;">Flaccid</span>
+          <span class="card-subtext">Dynamic osmotic equilibrium</span>
+        </div>
+
+        <div class="telemetry-card">
+          <span class="card-label">Solute Potential (Ψs)</span>
+          <span id="hudPsiS" class="card-value">−0.80 MPa</span>
+          <span class="card-subtext">Extracellular chemical potential</span>
+        </div>
+
+        <div class="telemetry-card">
+          <span class="card-label">Turgor Pressure (Ψp)</span>
+          <span id="hudTurgor" class="card-value">0.00 MPa</span>
+          <span class="card-subtext">Hydrostatic wall pressure</span>
+        </div>
+
+        <div class="telemetry-card">
+          <span class="card-label">Solute Osmolarity</span>
+          <span class="card-value" style="color: #38bdf8;">0.28 Osm/L</span>
+          <span class="card-subtext">van 't Hoff relation (iCRT)</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Right Control Sidebar (300px locked) -->
+    <aside class="control-sidebar">
+
+      <!-- Section: Solution Concentration Slider (Beaker Mode) -->
+      <div id="grpBeakerControls" class="sidebar-section">
+        <div class="section-title">
+          <span>Beaker Solution</span>
+          <span>% Solute (w/v)</span>
+        </div>
+
+        <div class="control-group">
+          <div class="control-label-row">
+            <span>Solute Concentration:</span>
+            <div class="num-input-wrap">
+              <input type="number" id="concNumber" class="num-input" min="0.0" max="10.0" step="0.1" value="2.0">
+              <span class="num-unit">%</span>
+            </div>
+          </div>
+          <input type="range" id="concSlider" class="range-slider" min="0.0" max="10.0" step="0.1" value="2.0">
+          <div class="slider-ticks">
+            <span>0% (Distilled)</span>
+            <span>2%</span>
+            <span>5%</span>
+            <span>10% (Hyper)</span>
+          </div>
+        </div>
+
+        <!-- Tonicity Presets -->
+        <div class="control-group">
+          <span class="control-label-row">Quick Tonicity Presets:</span>
+          <div class="preset-grid">
+            <button id="btnPresetPure" class="btn-preset" title="Pure Distilled Water (0.0%)">
+              💧 Pure Water
+              <span>0% Hypo</span>
+            </button>
+            <button id="btnPresetIso" class="btn-preset" title="Physiological Isotonic Solution">
+              ⚖️ Isotonic
+              <span>0.9% / 2.0%</span>
+            </button>
+            <button id="btnPresetHyper" class="btn-preset" title="Hypertonic Salt Solution (8.0%)">
+              🧂 Hypertonic
+              <span>8.0% Hyper</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Add Water / Add Salt Action Buttons -->
+        <div class="control-group">
+          <span class="control-label-row">Direct Laboratory Actions:</span>
+          <div class="action-grid">
+            <button id="btnAddWater" class="btn-action water" title="Dilute solution with distilled water">
+              💧 Add Water
+            </button>
+            <button id="btnAddSalt" class="btn-action salt" title="Add solute crystals to solution">
+              🧂 Add Salt
+            </button>
+          </div>
+        </div>
+
+        <button id="btnResetSpecimen" class="btn-full-secondary">
+          ↺ Reset Cell Baseline
+        </button>
+      </div>
+
+      <!-- Section: U-Tube Osmometer Specific Controls -->
+      <div id="grpUTubeControls" class="sidebar-section hidden">
+        <div class="section-title">
+          <span>U-Tube Concentrations</span>
+          <span>Semi-Permeable</span>
+        </div>
+
+        <div class="control-group">
+          <div class="control-label-row">
+            <span>Left Arm (Pure/Dilute):</span>
+            <span class="num-unit">0% to 10%</span>
+          </div>
+          <input type="range" id="uLeftSlider" class="range-slider" min="0.0" max="10.0" step="0.5" value="1.0">
+        </div>
+
+        <div class="control-group">
+          <div class="control-label-row">
+            <span>Right Arm (Solute Solution):</span>
+            <span class="num-unit">0% to 10%</span>
+          </div>
+          <input type="range" id="uRightSlider" class="range-slider" min="0.0" max="10.0" step="0.5" value="6.0">
+        </div>
+      </div>
+
+      <!-- Section: Visualization Toggles -->
+      <div class="sidebar-section">
+        <div class="section-title">
+          <span>Microscopy Overlay</span>
+          <span>Layers</span>
+        </div>
+
+        <div class="control-group" style="gap: 10px;">
+          <label class="toggle-item">
+            <span class="toggle-label">💧 Water Flux Vectors</span>
+            <input type="checkbox" id="chkWaterFlow" class="switch-input" checked>
+          </label>
+          <label class="toggle-item">
+            <span class="toggle-label">⚛️ Molecular Particles</span>
+            <input type="checkbox" id="chkMolecules" class="switch-input" checked>
+          </label>
+          <label class="toggle-item">
+            <span class="toggle-label">🔬 Vacuole & Organelles</span>
+            <input type="checkbox" id="chkOrganelles" class="switch-input" checked>
+          </label>
+        </div>
+      </div>
+
+      <!-- Section: Quick Legend / Biological Guide -->
+      <div class="sidebar-section">
+        <div class="section-title">
+          <span>Biological Key</span>
+          <span>Info</span>
+        </div>
+        <div style="font-size: 0.76rem; color: var(--text-muted); display: flex; flex-direction: column; gap: 6px;">
+          <div><strong style="color: #38bdf8;">● Cyan Dots:</strong> Water Molecules (H₂O)</div>
+          <div><strong style="color: #fb923c;">● Orange Dots:</strong> Solute Molecules (Sucrose/NaCl)</div>
+          <div><strong style="color: #34d399;">● Green Border:</strong> Cellulose Plant Cell Wall</div>
+          <div><strong style="color: #f43f5e;">● Pink Shape:</strong> Protoplast & Vacuole Membrane</div>
+        </div>
+      </div>
+
+    </aside>
+  </main>
+
+  <!-- Quests Modal -->
+  <div id="modalQuests" class="modal-wrapper">
+    <div class="modal-backdrop"></div>
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title">⭐ Laboratory Quests & Challenges</h3>
+        <button class="modal-close">✕</button>
+      </div>
+      <div class="modal-body">
+        <p style="color: var(--text-muted); font-size: 0.85rem;">
+          Complete these 5 hands-on experiments to master osmosis, water potential, turgor pressure, and clinical osmotic lysis:
+        </p>
+        <div id="questsListContainer" class="quests-list">
+          <!-- Dynamically populated by OsmosisUI -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Theory Modal -->
+  <div id="modalTheory" class="modal-wrapper">
+    <div class="modal-backdrop"></div>
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title">📖 Osmosis & Water Potential Theory</h3>
+        <button class="modal-close">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="theory-block">
+          <div class="theory-title">1. Osmosis & Semi-Permeable Membranes</div>
+          <p>Osmosis is the net diffusion of water molecules across a selectively permeable membrane from a region of higher water potential (lower solute concentration) to a region of lower water potential (higher solute concentration).</p>
+        </div>
+
+        <div class="theory-block">
+          <div class="theory-title">2. Water Potential Equation (Ψ = Ψs + Ψp)</div>
+          <div class="theory-formula">Ψ = Ψs + Ψp</div>
+          <p><strong>Ψs (Solute Potential):</strong> Always zero or negative. Pure water has Ψs = 0 MPa. Adding solute decreases Ψs according to the van 't Hoff relation: <code>Ψs = -iCRT</code>.</p>
+          <p><strong>Ψp (Pressure Potential / Turgor):</strong> Physical hydrostatic pressure exerted by the rigid cellulose cell wall against the swollen protoplast. In animal cells (like RBCs), Ψp = 0 because they lack a cell wall.</p>
+        </div>
+
+        <div class="theory-block">
+          <div class="theory-title">3. Plasmolysis vs. Cytolysis (Hemolysis)</div>
+          <p><strong>Plant Cell:</strong> In hypotonic solution, water rushes in until turgor pressure (Ψp) balances solute potential (turgid state). In hypertonic solution, water leaves, shrinking the protoplast away from the wall (<strong>plasmolysis</strong>). Returning it to pure water reverses this (<strong>deplasmolysis</strong>).</p>
+          <p><strong>Animal Cell (RBC):</strong> Without a rigid wall, red blood cells swell and undergo membrane rupture (<strong>hemolysis</strong>) in hypotonic solutions (≤ 0.2% solute). In hypertonic solutions, they shrink and shrivel (<strong>crenation</strong>).</p>
+        </div>
+
+        <div class="theory-block">
+          <div class="theory-title">4. Aquaporin Water Channels</div>
+          <p>Aquaporins are membrane channel proteins discovered by Peter Agre (Nobel Prize in Chemistry, 2003) that facilitate rapid, single-file water flux through biological membranes without allowing ions or large solutes to pass.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="js/sound.js"></script>
+  <script src="js/biology.js"></script>
+  <script src="js/state.js"></script>
+  <script src="js/renderer.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>
