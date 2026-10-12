@@ -76,6 +76,13 @@ A collection of interactive, client-side STEM physics simulations built with HTM
 - **Interactive Modes**: Laboratory apparatus bench, thylakoid photolysis & Calvin cycle molecular view, and real-time kinetic curves graph.
 - **Strict Light Theme**: Clean, bright, professional laboratory aesthetic with digital stopwatch and 5 gamified quests.
 
+### 12. ⚛️ [Periodic Table & Hinglish Mnemonics Simulator (`/PT_Table_simulation`)](PT_Table_simulation/)
+- **Complete 118 IUPAC Elements**: Complete physical, chemical, and electron configuration data from Hydrogen ($Z=1$) to Oganesson ($Z=118$).
+- **Indian Coaching Hinglish Mnemonics**: Group 2 *"Beta Mange Car Scooter Baap Raazi"*, Group 1 *"Helina Ki Rab Se Fariyad"*, Group 13 *"Baingan Aloo Gajar In Thela"*, 3d series *"Science Teacher Vineeta..."*, Lanthanides, and Actinides.
+- **Interactive 2D Bohr Atom Visualizer**: Canvas planetary electron orbital animation with concentric shells ($K, L, M, N, O, P, Q$) and nucleus proton/neutron telemetry.
+- **Periodic Trends Continuous Heatmaps**: Live color gradient across the table for Electronegativity, Atomic Radius, Ionization Energy, Melting Point, and Density.
+- **Synthesized Audio & Speech**: Zero-dependency procedural Web Audio sound FX and Web Speech API pronunciation engine for Hinglish mnemonics.
+
 ---
 
 ## 💻 Tech Stack
@@ -88,6 +95,10 @@ A collection of interactive, client-side STEM physics simulations built with HTM
 You can run any simulation using any static web server:
 
 ```bash
+# Periodic Table & Hinglish Mnemonics Simulator
+cd PT_Table_simulation
+python -m http.server 8095
+
 # Photosynthesis & Elodea Bubble Counter Lab
 cd photosynthesis_simulation
 python -m http.server 8094

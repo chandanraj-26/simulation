@@ -1,0 +1,358 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PeriodicLab — Interactive Periodic Table &amp; Hinglish Mnemonics Simulator</title>
+  <meta name="description"
+    content="Interactive STEM chemistry simulation for Class 9–12, JEE &amp; NEET featuring all 118 elements, famous Hinglish mnemonics ('Beta Mange Car Scooter Baap Raazi'), animated Bohr atomic model, and periodic trends heatmap.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+
+<body>
+
+  <!-- ================================================================= -->
+  <!-- MAIN APPLICATION HEADER                                           -->
+  <!-- ================================================================= -->
+  <header class="app-header">
+    <div class="header-container">
+      <div class="brand-wrapper">
+        <div class="brand-icon">⚛️</div>
+        <div>
+          <div class="brand-title-wrap">
+            <h1 class="brand-title">PeriodicLab</h1>
+            <span class="brand-tag">Class 9–12, JEE &amp; NEET</span>
+          </div>
+          <div class="brand-sub">Interactive IUPAC Periodic Table &amp; Hinglish Mnemonics Simulator</div>
+        </div>
+      </div>
+
+      <!-- Mode Switcher Pills -->
+      <div class="mode-selector-group">
+        <button id="btnModeTable" class="mode-type-btn active" title="Standard 18-Column Periodic Grid">
+          <span>🧪</span> Standard Table
+        </button>
+        <button id="btnModeTrends" class="mode-type-btn" title="Periodic Trends Continuous Color Heatmap">
+          <span>📈</span> Trends Heatmap
+        </button>
+      </div>
+
+      <!-- Header Action Buttons -->
+      <div class="header-actions">
+        <button id="btnToggleMnemonic" class="action-btn btn-gold active" title="Toggle Hinglish mnemonic keyword overlay on cells">
+          <span>💡</span> Mnemonics: ON
+        </button>
+        <button id="btnOpenQuiz" class="action-btn" title="Open Hinglish Mnemonic Memory Trainer Quiz">
+          <span>🧠</span> Memory Trainer
+        </button>
+        <button id="btnOpenTheory" class="action-btn btn-primary" title="View Modern Periodic Law &amp; Moseley's Experiments">
+          <span>📚</span> Theory &amp; Laws
+        </button>
+        <button id="btnToggleSpeech" class="action-btn active" title="Toggle Voice Pronunciation Engine">
+          🗣️ Voice: ON
+        </button>
+        <button id="btnToggleSound" class="action-btn active" title="Toggle Procedural Web Audio FX">
+          🔊 Sound: ON
+        </button>
+        <button id="btnResetAll" class="action-btn" title="Reset all search queries and active filters">
+          <span>↺</span> Reset
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ================================================================= -->
+  <!-- DYNAMIC HINGLISH MNEMONIC & TELEMETRY BANNER                      -->
+  <!-- ================================================================= -->
+  <section id="mnemonicBanner" class="mnemonic-banner" aria-label="Active Hinglish Mnemonic Banner">
+    <!-- Populated dynamically by UIController -->
+  </section>
+
+  <!-- ================================================================= -->
+  <!-- MAIN WORKSPACE LAYOUT (TABLE + SIDEBAR INSPECTOR)                 -->
+  <!-- ================================================================= -->
+  <main class="main-layout">
+
+    <!-- LEFT: Table Viewport & Filter Toolbar -->
+    <section class="table-viewport-panel">
+
+      <!-- Filter & Search Toolbar -->
+      <div class="toolbar-card">
+        <div class="toolbar-row">
+          <!-- Search Input -->
+          <div class="search-box-wrap">
+            <span class="search-icon">🔍</span>
+            <input type="text" id="searchInput" placeholder="Search by name, symbol, atomic number or mnemonic (e.g. 'mange', 'car')..." autocomplete="off">
+          </div>
+
+          <!-- Block Filters (s, p, d, f) -->
+          <div class="block-filters-wrap">
+            <span style="font-size:11px; font-weight:700; color:var(--text-dim); text-transform:uppercase; margin-right:4px;">Blocks:</span>
+            <button class="block-chip" data-block="s" title="Filter s-block elements">s-block</button>
+            <button class="block-chip" data-block="p" title="Filter p-block elements">p-block</button>
+            <button class="block-chip" data-block="d" title="Filter d-block elements">d-block</button>
+            <button class="block-chip" data-block="f" title="Filter f-block elements">f-block</button>
+          </div>
+        </div>
+
+        <!-- Periodic Trends Heatmap Controls (Shown in Trends Mode) -->
+        <div id="trendControlBar" class="trend-control-bar">
+          <div style="display:flex; align-items:center; gap:8px;">
+            <span style="font-size:12px; font-weight:700; color:#38bdf8;">Heatmap Property:</span>
+            <select id="trendPropertySelect" class="trend-select-dropdown">
+              <option value="electronegativity">Electronegativity (Pauling Scale)</option>
+              <option value="atomicRadius">Atomic Radius (pm)</option>
+              <option value="ionizationEnergy">First Ionization Energy (kJ/mol)</option>
+              <option value="meltingPoint">Melting Point (K)</option>
+              <option value="density">Density (g/cm³)</option>
+            </select>
+          </div>
+          <div class="trend-gradient-bar">
+            <span id="trendMinVal" class="trend-val-label">0.7</span>
+            <div class="trend-gradient-track"></div>
+            <span id="trendMaxVal" class="trend-val-label">4.0</span>
+          </div>
+        </div>
+
+        <!-- Category Legend & Clickable Filters -->
+        <div class="category-legend-row">
+          <div class="legend-item" data-category="alkali-metal">
+            <span class="legend-dot" style="background:var(--cat-alkali);"></span>
+            <span>Alkali Metals</span>
+          </div>
+          <div class="legend-item" data-category="alkaline-earth">
+            <span class="legend-dot" style="background:var(--cat-alkaline-earth);"></span>
+            <span>Alkaline Earth</span>
+          </div>
+          <div class="legend-item" data-category="transition-metal">
+            <span class="legend-dot" style="background:var(--cat-transition);"></span>
+            <span>Transition Metals</span>
+          </div>
+          <div class="legend-item" data-category="post-transition">
+            <span class="legend-dot" style="background:var(--cat-post-transition);"></span>
+            <span>Post-Transition</span>
+          </div>
+          <div class="legend-item" data-category="metalloid">
+            <span class="legend-dot" style="background:var(--cat-metalloid);"></span>
+            <span>Metalloids</span>
+          </div>
+          <div class="legend-item" data-category="reactive-nonmetal">
+            <span class="legend-dot" style="background:var(--cat-nonmetal);"></span>
+            <span>Reactive Nonmetals</span>
+          </div>
+          <div class="legend-item" data-category="halogen">
+            <span class="legend-dot" style="background:var(--cat-halogen);"></span>
+            <span>Halogens</span>
+          </div>
+          <div class="legend-item" data-category="noble-gas">
+            <span class="legend-dot" style="background:var(--cat-noble-gas);"></span>
+            <span>Noble Gases</span>
+          </div>
+          <div class="legend-item" data-category="lanthanide">
+            <span class="legend-dot" style="background:var(--cat-lanthanide);"></span>
+            <span>Lanthanides</span>
+          </div>
+          <div class="legend-item" data-category="actinide">
+            <span class="legend-dot" style="background:var(--cat-actinide);"></span>
+            <span>Actinides</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 18-Column Periodic Table Grid -->
+      <div class="table-grid-card">
+        <div id="periodicTableGrid" class="periodic-table-grid">
+          <!-- Dynamically constructed by UIController -->
+        </div>
+      </div>
+
+    </section>
+
+    <!-- RIGHT: Inspector Sidebar (Bohr Atom, Mnemonic Card, Properties) -->
+    <aside class="sidebar-panel">
+
+      <div class="profile-card">
+        <!-- Element Header Block -->
+        <div class="profile-header">
+          <div id="profileSymbolBox" class="profile-symbol-box">
+            <span id="profileSymbolZ" class="profile-symbol-z">20</span>
+            <span id="profileSymbolText" class="profile-symbol-text">Ca</span>
+          </div>
+          <div class="profile-title-block">
+            <h2 id="profileName" class="profile-name">Calcium</h2>
+            <span id="profileCategoryPill" class="profile-category-pill">Alkaline Earth</span>
+          </div>
+        </div>
+
+        <!-- Animated Bohr Atomic Orbital Visualizer -->
+        <div class="bohr-canvas-wrap">
+          <canvas id="bohrCanvas"></canvas>
+          <div class="bohr-overlay-badge">Bohr 2D Orbital Model</div>
+          <div id="propValenceShells" class="bohr-overlay-shells">2, 8, 8, 2</div>
+        </div>
+
+        <!-- Hinglish Mnemonic Card -->
+        <div class="profile-mnemonic-box">
+          <div class="profile-mnemonic-header">
+            <div class="profile-mnemonic-badge">
+              <span>💡</span> Hinglish Trick
+            </div>
+            <button id="btnProfileSpeak" class="btn-speak" title="Listen to this Hinglish mnemonic">
+              <span>🔊</span> Listen
+            </button>
+          </div>
+          <div id="profileMnemonicWord" class="profile-mnemonic-word">
+            <span>Car</span> (कार)
+          </div>
+          <div id="profileMnemonicDesc" class="profile-mnemonic-desc">
+            "Beta Mange Car Scooter Baap Raazi" — Son demands a car &amp; scooter, Father agrees!
+          </div>
+        </div>
+
+        <!-- Physical & Chemical Properties Grid -->
+        <div class="properties-grid">
+          <div class="prop-item">
+            <span class="prop-label">Electron Config</span>
+            <span id="propElectConfig" class="prop-value">[Ar] 4s²</span>
+          </div>
+          <div class="prop-item">
+            <span class="prop-label">Electronegativity</span>
+            <span id="propElectroneg" class="prop-value">1.00</span>
+          </div>
+          <div class="prop-item">
+            <span class="prop-label">Atomic Radius</span>
+            <span id="propAtomicRadius" class="prop-value">194 pm</span>
+          </div>
+          <div class="prop-item">
+            <span class="prop-label">Ionization Energy</span>
+            <span id="propIonization" class="prop-value">590 kJ/mol</span>
+          </div>
+          <div class="prop-item">
+            <span class="prop-label">Density</span>
+            <span id="propDensity" class="prop-value">1.54 g/cm³</span>
+          </div>
+          <div class="prop-item">
+            <span class="prop-label">Melting Point</span>
+            <span id="propMelting" class="prop-value">1115 K</span>
+          </div>
+          <div class="prop-item">
+            <span class="prop-label">Boiling Point</span>
+            <span id="propBoiling" class="prop-value">1757 K</span>
+          </div>
+          <div class="prop-item">
+            <span class="prop-label">Discovery</span>
+            <span id="propDiscovery" class="prop-value">1808 (Humphry Davy)</span>
+          </div>
+        </div>
+
+        <!-- Practical Uses & Trivia -->
+        <div class="application-box">
+          <div class="app-box-title">Practical Applications &amp; Life Impact</div>
+          <p id="profileUses" class="app-box-text">Portland cement, limestone plaster, building mortar, bone mineralization, milk nutrition.</p>
+        </div>
+
+        <div class="application-box">
+          <div class="app-box-title">Chemical Description</div>
+          <p id="profileDescription" class="app-box-text">Fifth most abundant element in Earth's crust; structural backbone of human skeletal bones, teeth, and seashells.</p>
+        </div>
+
+      </div>
+
+    </aside>
+
+  </main>
+
+  <!-- ================================================================= -->
+  <!-- MODAL: HINGLISH MNEMONIC MEMORY TRAINER QUIZ                      -->
+  <!-- ================================================================= -->
+  <div id="quizModal" class="modal-overlay" role="dialog" aria-modal="true">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div class="modal-title">
+          <span>🧠</span> Hinglish Mnemonic Memory Trainer (JEE / NEET)
+        </div>
+        <button id="btnCloseQuiz" class="modal-close-btn" title="Close Quiz">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="quiz-score-bar">
+          <div>Score: <strong id="quizScoreVal" style="color:#38bdf8;">0</strong> pts</div>
+          <div>Streak: <strong id="quizStreakVal" style="color:#f59e0b;">0</strong> 🔥</div>
+        </div>
+        <div id="quizQuestionText" class="quiz-question-box">
+          Loading question...
+        </div>
+        <div id="quizOptionsList" class="quiz-options-list">
+          <!-- Populated dynamically -->
+        </div>
+        <div id="quizFeedbackBox" class="quiz-feedback-box">
+          <!-- Feedback message -->
+        </div>
+        <div style="display:flex; justify-content:flex-end;">
+          <button id="btnQuizNext" class="action-btn btn-primary" style="display:none;">
+            Next Question →
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================================================================= -->
+  <!-- MODAL: THEORY & PERIODIC LAWS GUIDE                              -->
+  <!-- ================================================================= -->
+  <div id="theoryModal" class="modal-overlay" role="dialog" aria-modal="true">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div class="modal-title">
+          <span>📚</span> Modern Periodic Law &amp; Chemical Periodicity Guide
+        </div>
+        <button id="btnCloseTheory" class="modal-close-btn" title="Close Guide">&times;</button>
+      </div>
+      <div class="modal-body">
+        
+        <div class="theory-section">
+          <h3><span>🔬</span> Henry Moseley &amp; Modern Periodic Law (1913)</h3>
+          <p>Dmitri Mendeleev originally arranged elements in order of increasing atomic masses ($A$). However, Henry Moseley bombarded various elements with high-speed electrons and recorded the characteristic X-ray frequencies ($\nu$):</p>
+          <div class="theory-callout">
+            <strong>Moseley's Law:</strong> $\sqrt{\nu} = a(Z - b)$, where $Z$ is the atomic number.<br>
+            <strong>Modern Periodic Law:</strong> <em>"The physical and chemical properties of the elements are periodic functions of their atomic numbers."</em>
+          </div>
+        </div>
+
+        <div class="theory-section">
+          <h3><span>💡</span> Why Hinglish Mnemonics Work So Well</h3>
+          <p>In competitive examinations like JEE Main, JEE Advanced, and NEET, instantaneous recall of group numbers, periods, and valence configurations is essential. Connecting arbitrary chemical symbols to vivid, humorous everyday Hinglish phrases creates strong neural associations:</p>
+          <div class="theory-callout">
+            • <strong>Group 2 Alkaline Earth Metals:</strong> <em>Beta Mange Car Scooter Baap Raazi</em> (Be, Mg, Ca, Sr, Ba, Ra)<br>
+            • <strong>Group 1 Alkali Metals:</strong> <em>Helina Ki Rab Se Fariyad</em> (H, Li, Na, K, Rb, Cs, Fr)<br>
+            • <strong>Group 13 Boron Family:</strong> <em>Baingan Aloo Gajar In Thela</em> (B, Al, Ga, In, Tl)<br>
+            • <strong>Group 17 Halogens:</strong> <em>Fir Kal Bahar Aayi Aunty</em> (F, Cl, Br, I, At, Ts)
+          </div>
+        </div>
+
+        <div class="theory-section">
+          <h3><span>📈</span> Periodic Trends Across Periods &amp; Down Groups</h3>
+          <p><strong>1. Atomic Radius:</strong> Decreases across a period (left to right) due to increasing effective nuclear charge ($Z_{\text{eff}}$) pulling electrons inward. Increases down a group due to the addition of principal electron shells ($n$).</p>
+          <p><strong>2. Ionization Energy:</strong> Increases across a period as electrons are held more tightly. Decreases down a group due to increased atomic radius and electron shielding.</p>
+          <p><strong>3. Electronegativity:</strong> Fluorine ($F, 3.98$) is the most electronegative element, followed by Oxygen ($O, 3.44$) and Nitrogen ($N, 3.04$). Caesium ($Cs, 0.79$) and Francium ($Fr, 0.7$) are the least electronegative.</p>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="js/elements_data.js"></script>
+  <script src="js/sound.js"></script>
+  <script src="js/state.js"></script>
+  <script src="js/bohr_renderer.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/main.js"></script>
+</body>
+
+</html>
