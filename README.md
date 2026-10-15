@@ -83,6 +83,18 @@ A collection of interactive, client-side STEM physics simulations built with HTM
 - **Periodic Trends Continuous Heatmaps**: Live color gradient across the table for Electronegativity, Atomic Radius, Ionization Energy, Melting Point, and Density.
 - **Synthesized Audio & Speech**: Zero-dependency procedural Web Audio sound FX and Web Speech API pronunciation engine for Hinglish mnemonics.
 
+### 13. 🔊 [Doppler Waves & Mach Cone Simulator (`/doppler_simulation`)](doppler_simulation/)
+- **Spherical Acoustic Wavefronts**: 60 FPS expanding ring emissions demonstrating subsonic wavelength compression ($\lambda_{\text{front}} = \frac{v - v_s}{f_0}$) and rarefaction ($\lambda_{\text{rear}} = \frac{v + v_s}{f_0}$).
+- **Supersonic Flight & Mach Shock Cone**: Sonic boom barrier constructive interference ($M = 1$) and supersonic conical Mach shockwave envelopes ($M > 1$) with half-angle $\mu = \arcsin(1/M)$.
+- **Procedural Doppler Audio Engine**: Web Audio API continuous pitch synthesizer, emergency siren mode with stereo panning, and sonic boom pressure burst FX.
+- **5 Exploration Modes**: Subsonic Motion, Mach Cone, Moving Observer, Passing Siren, and Static Source calibration.
+
+### 14. 💎 [Diamond Light Refraction & Cut Simulator (`/diamond_simulation`)](diamond_simulation/)
+- **Snell's Law & Cauchy Chromatic Dispersion**: Accurate multi-wavelength ray tracing through faceted gem polygons with wavelength-dependent refractive indices $n(\lambda) = n_D + B(1/\lambda^2 - 1/\lambda_D^2)$.
+- **Total Internal Reflection (TIR)**: Precise critical angle boundary calculation ($\theta_c = \arcsin(1/n) \approx 24.4^\circ$ for diamond vs $41.1^\circ$ for glass) with internal bounce tracing and sparkle pings.
+- **Marcel Tolkowsky 1919 Ideal Cut Proportions**: Real-time brilliance return and fire dispersion metrics comparing Tolkowsky Ideal ($34.5^\circ$ crown, $40.75^\circ$ pavilion) against Shallow (fish-eye bottom leakage) and Deep (nail-head side extinction) cuts.
+- **Gemstone Library & Tunable Light**: Explore Diamond, Moissanite, Cubic Zirconia, Sapphire, Zircon, and Crown Glass with White Light (VIBGYOR fire fan) or Monochromatic Laser ($380\text{–}750\text{ nm}$).
+
 ---
 
 ## 💻 Tech Stack
@@ -95,9 +107,18 @@ A collection of interactive, client-side STEM physics simulations built with HTM
 You can run any simulation using any static web server:
 
 ```bash
+# Diamond Light Refraction & Cut Simulator
+cd diamond_simulation
+python -m http.server 8097
+
+# Doppler Waves & Mach Cone Simulator
+cd doppler_simulation
+python -m http.server 8096
+
 # Periodic Table & Hinglish Mnemonics Simulator
 cd PT_Table_simulation
 python -m http.server 8095
+
 
 # Photosynthesis & Elodea Bubble Counter Lab
 cd photosynthesis_simulation

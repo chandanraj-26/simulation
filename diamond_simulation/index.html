@@ -1,0 +1,460 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>DiamondCutSim — Snell's Law, Total Internal Reflection &amp; Dispersion Ray Tracer</title>
+  <meta name="description"
+    content="Interactive STEM optics laboratory exploring Snell's law of refraction, Cauchy chromatic dispersion, Total Internal Reflection (TIR), and Tolkowsky diamond cut brilliance & fire.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+
+<body>
+
+  <!-- MAIN APPLICATION HEADER -->
+  <header class="app-header">
+    <div class="header-container">
+      <div class="brand-wrapper">
+        <div class="brand-icon">💎</div>
+        <div>
+          <div style="display:flex; align-items:center;">
+            <h1 class="brand-title">DiamondCutSim</h1>
+            <span class="brand-tag">Class 10–12 &amp; AP Optics</span>
+          </div>
+          <div class="brand-sub">Snell's Law, Total Internal Reflection &amp; Dispersion Ray Tracer</div>
+        </div>
+      </div>
+
+      <!-- Mode Selector -->
+      <div class="mode-selector-group">
+        <button id="btnModeBrilliance" class="mode-type-btn active" title="Maximum light return through diamond crown">
+          <span>✨</span> Brilliance &amp; Fire
+        </button>
+        <button id="btnModeFire" class="mode-type-btn" title="Exaggerated Cauchy chromatic dispersion fan">
+          <span>🌈</span> Rainbow Dispersion
+        </button>
+        <button id="btnModeTIR" class="mode-type-btn" title="Total internal reflection & critical angle threshold">
+          <span>⚡</span> TIR Demo
+        </button>
+        <button id="btnModeCutCompare" class="mode-type-btn" title="Compare Ideal vs Shallow vs Deep diamond cuts">
+          <span>📐</span> Cut Comparison
+        </button>
+        <button id="btnModeCustomCut" class="mode-type-btn" title="Interactive lapidary gem faceting studio">
+          <span>🔬</span> Custom Cut Studio
+        </button>
+      </div>
+
+      <!-- Header Actions -->
+      <div class="header-actions">
+        <button id="btnOpenQuests" class="action-btn" title="Complete Student Laboratory Quests">
+          <span>⭐</span> Lab Quests
+        </button>
+        <button id="btnOpenTheory" class="action-btn btn-primary" title="View Snell's Law &amp; Dispersion Formulas">
+          <span>📚</span> Theory &amp; Laws
+        </button>
+        <button id="btnAudioToggle" class="action-btn active" title="Toggle Crystal Acoustic Sound Engine">
+          🔊 Sound: ON
+        </button>
+        <button id="btnResetAll" class="action-btn" title="Reset all simulation parameters to default">
+          <span>↺</span> Reset All
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN WORKSPACE LAYOUT -->
+  <main class="main-layout">
+
+    <!-- LEFT: Canvas Viewport & Live Telemetry -->
+    <div class="canvas-section">
+
+      <!-- Canvas Card -->
+      <div class="canvas-card">
+        <!-- Canvas Header Bar -->
+        <div class="canvas-header-bar">
+          <div class="quick-actions-bar">
+            <button id="btnPlayPause" class="btn-action-primary" title="Pause or resume ray-tracing clock">
+              <span>⏸️</span> Pause
+            </button>
+          </div>
+
+          <!-- Status & Zoom HUD -->
+          <div class="header-status-hud">
+            <div class="view-scale-group" title="Adjust simulation view zoom">
+              <button id="btnZoomOut" class="bench-zoom-btn" title="Zoom out">🔍−</button>
+              <span id="lblZoomLevel" class="zoom-level-text">100%</span>
+              <button id="btnZoomIn" class="bench-zoom-btn" title="Zoom in">🔍+</button>
+              <button id="btnZoomFit" class="bench-zoom-btn" title="Reset zoom">Fit</button>
+            </div>
+            <span id="hudBadgeRI" class="hud-badge badge-cyan">n = 2.417</span>
+            <span id="hudBadgeCrit" class="hud-badge badge-purple">θ_c = 24.4°</span>
+            <span id="hudBadgeBrilliance" class="hud-badge badge-emerald">Brilliance: 100%</span>
+          </div>
+        </div>
+
+        <!-- Canvas Container -->
+        <div class="canvas-container">
+          <canvas id="diamondCanvas"></canvas>
+        </div>
+      </div>
+
+      <!-- Live Telemetry Grid -->
+      <div class="telemetry-grid">
+        <div class="telemetry-card">
+          <div class="telemetry-card-title">Incidence Angle (θ₁)</div>
+          <div id="hudAngleIVal" class="telemetry-card-val">0.0°</div>
+          <div class="telemetry-card-sub">At diamond table facet</div>
+        </div>
+
+        <div class="telemetry-card">
+          <div class="telemetry-card-title">Refraction Angle (θ₂)</div>
+          <div id="hudAngleRVal" class="telemetry-card-val">0.0°</div>
+          <div class="telemetry-card-sub">Snell: sin(θ₂)=sin(θ₁)/n</div>
+        </div>
+
+        <div class="telemetry-card">
+          <div class="telemetry-card-title">Critical Angle (θ_c)</div>
+          <div id="hudCritVal" class="telemetry-card-val">24.4°</div>
+          <div class="telemetry-card-sub">TIR threshold: arcsin(1/n)</div>
+        </div>
+
+        <div class="telemetry-card">
+          <div class="telemetry-card-title">Internal Bounces</div>
+          <div id="hudBouncesVal" class="telemetry-card-val">2</div>
+          <div class="telemetry-card-sub">TIR reflections inside gem</div>
+        </div>
+
+        <div class="telemetry-card">
+          <div class="telemetry-card-title">Brilliance Return</div>
+          <div id="hudBrillianceVal" class="telemetry-card-val">100%</div>
+          <div class="telemetry-card-sub">Light returned through crown</div>
+        </div>
+
+        <div class="telemetry-card">
+          <div class="telemetry-card-title">Fire Spread</div>
+          <div id="hudFireVal" class="telemetry-card-val">18.4°</div>
+          <div class="telemetry-card-sub">Emergent spectral dispersion</div>
+        </div>
+
+        <div class="telemetry-card">
+          <div class="telemetry-card-title">Cut Quality Grade</div>
+          <div id="hudCutGradeVal" class="telemetry-card-val grade-excellent">Tolkowsky Ideal Cut ⭐</div>
+          <div class="telemetry-card-sub">Proportion efficiency assessment</div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- RIGHT: Controls Sidebar -->
+    <aside class="sidebar-controls">
+
+      <!-- CARD 1: Gem Material & Refractive Index -->
+      <div class="control-panel-card">
+        <div class="control-card-title">
+          <span class="icon">💎</span>
+          <span>Gemstone Material</span>
+        </div>
+
+        <div class="control-row">
+          <select id="selMaterial" class="styled-select" title="Select crystal gemstone material">
+            <option value="diamond" selected>Diamond (C) — n = 2.417</option>
+            <option value="moissanite">Moissanite (SiC) — n = 2.650</option>
+            <option value="cubic_z">Cubic Zirconia — n = 2.170</option>
+            <option value="zircon">Natural Zircon — n = 1.930</option>
+            <option value="sapphire">Sapphire (Al₂O₃) — n = 1.770</option>
+            <option value="glass">Crown Glass — n = 1.520</option>
+          </select>
+        </div>
+        <div id="lblMaterialDesc" style="font-size:0.75rem; color:var(--text-muted); line-height: 1.4;">
+          Diamond (C) (n = 2.417): Exceptionally high RI and extreme fire.
+        </div>
+      </div>
+
+      <!-- CARD 2: Incident Light & Dispersion -->
+      <div class="control-panel-card">
+        <div class="control-card-title">
+          <span class="icon">🔦</span>
+          <span>Incident Light Source</span>
+        </div>
+
+        <div class="control-row">
+          <div class="control-label">Light Spectrum Type</div>
+          <div class="btn-segmented-group">
+            <button id="btnLightWhite" class="btn-segment active">🌈 White Light</button>
+            <button id="btnLightLaser" class="btn-segment">🔴 Laser Beam</button>
+          </div>
+        </div>
+
+        <div class="control-row">
+          <div class="control-label">Beam Profile</div>
+          <div class="btn-segmented-group">
+            <button id="btnBeamSingle" class="btn-segment">Single Ray</button>
+            <button id="btnBeamMulti" class="btn-segment active">5-Ray Beam</button>
+          </div>
+        </div>
+
+        <div class="control-row">
+          <div class="control-label-wrap">
+            <label for="sldIncidentAngle" class="control-label">Incident Angle (θ₁)</label>
+            <span id="lblIncidentAngleVal" class="control-val-readout">+0.0°</span>
+          </div>
+          <input type="range" id="sldIncidentAngle" min="-35" max="35" step="0.5" value="0">
+        </div>
+
+        <div id="laserControlsGroup" class="control-row" style="display: none;">
+          <div class="control-label-wrap">
+            <label for="sldLaserWavelength" class="control-label">Laser Wavelength (λ)</label>
+            <div>
+              <span id="laserColorSwatch" class="color-swatch-box" style="background-color: #ffd600;"></span>
+              <span id="lblLaserWavelengthVal" class="control-val-readout">589 nm</span>
+            </div>
+          </div>
+          <input type="range" id="sldLaserWavelength" min="380" max="750" step="1" value="589">
+        </div>
+
+        <div class="control-row">
+          <div class="control-label-wrap">
+            <label for="sldDispersionScale" class="control-label">Dispersion Exaggeration</label>
+            <span id="lblDispersionScaleVal" class="control-val-readout">3.5×</span>
+          </div>
+          <input type="range" id="sldDispersionScale" min="1.0" max="10.0" step="0.5" value="3.5">
+        </div>
+      </div>
+
+      <!-- CARD 3: Diamond Cut Proportions & Lapidary -->
+      <div class="control-panel-card">
+        <div class="control-card-title">
+          <span class="icon">📐</span>
+          <span>Cut Geometry &amp; Proportions</span>
+        </div>
+
+        <div class="control-row">
+          <div class="control-label">Cut Profile Shape</div>
+          <select id="selCut" class="styled-select">
+            <option value="brilliant" selected>Round Brilliant (Tolkowsky)</option>
+            <option value="princess">Princess Cut</option>
+            <option value="emerald">Emerald Cut (Step Cut)</option>
+          </select>
+        </div>
+
+        <div class="control-row">
+          <div class="control-label">Cut Proportions Preset</div>
+          <div class="preset-buttons-grid">
+            <button id="btnPresetIdeal" class="btn-preset preset-ideal" title="Tolkowsky Ideal Cut: 34.5° Crown, 40.75° Pavilion">⭐ Ideal</button>
+            <button id="btnPresetShallow" class="btn-preset" title="Shallow Cut: 30° Crown, 37° Pavilion (Light leaks out bottom)">Shallow</button>
+            <button id="btnPresetDeep" class="btn-preset" title="Deep Cut: 37° Crown, 43.5° Pavilion (Light leaks out sides)">Deep</button>
+          </div>
+        </div>
+
+        <div class="control-row">
+          <div class="control-label-wrap">
+            <label for="sldCrownAngle" class="control-label">Crown Angle</label>
+            <span id="lblCrownAngleVal" class="control-val-readout">34.5°</span>
+          </div>
+          <input type="range" id="sldCrownAngle" min="20.0" max="45.0" step="0.5" value="34.5">
+        </div>
+
+        <div class="control-row">
+          <div class="control-label-wrap">
+            <label for="sldPavilionAngle" class="control-label">Pavilion Angle</label>
+            <span id="lblPavilionAngleVal" class="control-val-readout">40.75°</span>
+          </div>
+          <input type="range" id="sldPavilionAngle" min="35.0" max="46.0" step="0.25" value="40.75">
+        </div>
+
+        <div class="control-row">
+          <div class="control-label-wrap">
+            <label for="sldTableRatio" class="control-label">Table Width %</label>
+            <span id="lblTableRatioVal" class="control-val-readout">57%</span>
+          </div>
+          <input type="range" id="sldTableRatio" min="45" max="75" step="1" value="57">
+        </div>
+      </div>
+
+      <!-- CARD 4: Optical Display & Ray Tracing Toggles -->
+      <div class="control-panel-card">
+        <div class="control-card-title">
+          <span class="icon">👁️</span>
+          <span>Visual Display Toggles</span>
+        </div>
+
+        <div class="toggles-grid">
+          <label class="toggle-item">
+            <input type="checkbox" id="chkShowRays" checked>
+            <span>Light Rays</span>
+          </label>
+          <label class="toggle-item">
+            <input type="checkbox" id="chkShowNormals">
+            <span>Facet Normals</span>
+          </label>
+          <label class="toggle-item">
+            <input type="checkbox" id="chkShowAngles" checked>
+            <span>Angles θ₁, θ₂</span>
+          </label>
+          <label class="toggle-item">
+            <input type="checkbox" id="chkShowCriticalCone" checked>
+            <span>Critical Cones</span>
+          </label>
+          <label class="toggle-item">
+            <input type="checkbox" id="chkShowFacetLabels">
+            <span>Facet Names</span>
+          </label>
+          <label class="toggle-item">
+            <input type="checkbox" id="chkShowFireRainbow" checked>
+            <span>Fire Fan Bar</span>
+          </label>
+          <label class="toggle-item">
+            <input type="checkbox" id="chkShowPhotons" checked>
+            <span>Photon Flow</span>
+          </label>
+          <label class="toggle-item">
+            <input type="checkbox" id="chkShowGrid" checked>
+            <span>Optical Grid</span>
+          </label>
+        </div>
+      </div>
+
+    </aside>
+
+  </main>
+
+  <!-- MODAL 1: STUDENT LABORATORY QUESTS -->
+  <div id="modalQuests" class="modal-backdrop">
+    <div class="modal-window">
+      <div class="modal-header">
+        <div class="modal-title">
+          <span>⭐</span>
+          <span>Diamond Optics Laboratory Quests</span>
+        </div>
+        <button id="btnCloseQuests" class="modal-close-btn">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p>Complete these interactive laboratory challenges by exploring diamond cuts, refractive indices, and chromatic dispersion:</p>
+        <div id="questsListContainer" class="quests-container">
+          <!-- Populated dynamically by UI -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL 2: OPTICS THEORY & DIAMOND CUT LAWS -->
+  <div id="modalTheory" class="modal-backdrop">
+    <div class="modal-window">
+      <div class="modal-header">
+        <div class="modal-title">
+          <span>📚</span>
+          <span>Snell's Law, Total Internal Reflection &amp; Tolkowsky Cut Theory</span>
+        </div>
+        <button id="btnCloseTheory" class="modal-close-btn">&times;</button>
+      </div>
+      <div class="modal-body">
+
+        <div class="theory-section">
+          <div class="theory-title">1. Snell's Law of Refraction</div>
+          <p>When light passes from one medium (e.g., air with index $n_1$) into a denser optical medium (e.g., diamond with index $n_2$), it bends toward the normal line:</p>
+          <div class="formula-box">
+            n₁ · sin(θ₁) = n₂ · sin(θ₂) &nbsp;&implies;&nbsp; sin(θ₂) = (n₁ / n₂) · sin(θ₁)
+          </div>
+          <p>Because diamond has an extraordinarily high refractive index ($n \approx 2.417$), light slows down dramatically from $300,000\text{ km/s}$ in vacuum to only $124,000\text{ km/s}$ inside diamond, bending sharply.</p>
+        </div>
+
+        <div class="theory-section">
+          <div class="theory-title">2. Total Internal Reflection (TIR) &amp; Critical Angle</div>
+          <p>When light inside diamond strikes an internal facet attempting to exit into air, if the incident angle exceeds the <strong>critical angle</strong> $\theta_c$, 100% of the light is reflected internally with zero transmission:</p>
+          <div class="formula-box">
+            θ_c = arcsin(n_air / n_gem) = arcsin(1.0 / 2.417) &approx; 24.4&deg;
+          </div>
+          <p>Compare this to ordinary crown glass ($n = 1.52$, $\theta_c \approx 41.1^\circ$). Diamond's tiny critical angle ($24.4^\circ$) means light entering a diamond is far more easily trapped and bounced internally before exiting through the top!</p>
+        </div>
+
+        <div class="theory-section">
+          <div class="theory-title">3. Cauchy's Chromatic Dispersion &amp; Fire</div>
+          <p>The refractive index is not constant — it depends on wavelength $\lambda$. Violet light bends more than red light:</p>
+          <div class="formula-box">
+            n(&lambda;) = n_D + B &middot; (1 / &lambda;&sup2; - 1 / &lambda;_D&sup2;)
+          </div>
+          <p>This differential bending separates white light into a dazzling spectrum (VIBGYOR). In gemology, this spectral flare is called <strong>"Fire"</strong>.</p>
+        </div>
+
+        <div class="theory-section">
+          <div class="theory-title">4. Marcel Tolkowsky's 1919 Ideal Brilliant Cut</div>
+          <p>In 1919, mathematician and gemologist Marcel Tolkowsky calculated the exact proportions needed for light entering through the table facet to bounce off both pavilion facets via Total Internal Reflection and exit back up through the crown facets to the viewer's eyes:</p>
+          <ul style="margin-left: 20px; line-height: 1.8;">
+            <li><strong>Crown Angle:</strong> $34.5^\circ$</li>
+            <li><strong>Pavilion Angle:</strong> $40.75^\circ$ (critical sweet spot!)</li>
+            <li><strong>Table Diameter:</strong> $57\%$ of total girdle width</li>
+          </ul>
+        </div>
+
+        <div class="theory-section">
+          <div class="theory-title">5. Material Refractive Index &amp; Critical Angle Comparison</div>
+          <table class="theory-table">
+            <thead>
+              <tr>
+                <th>Material</th>
+                <th>Refractive Index (n)</th>
+                <th>Critical Angle (&theta;_c)</th>
+                <th>Dispersion (Fire)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Diamond (C)</strong></td>
+                <td>2.417</td>
+                <td>24.4&deg;</td>
+                <td>Extreme (0.044)</td>
+              </tr>
+              <tr>
+                <td><strong>Moissanite (SiC)</strong></td>
+                <td>2.650</td>
+                <td>22.2&deg;</td>
+                <td>Ultra-High (0.104)</td>
+              </tr>
+              <tr>
+                <td><strong>Cubic Zirconia</strong></td>
+                <td>2.170</td>
+                <td>27.4&deg;</td>
+                <td>High (0.060)</td>
+              </tr>
+              <tr>
+                <td><strong>Natural Zircon</strong></td>
+                <td>1.930</td>
+                <td>31.2&deg;</td>
+                <td>Moderate (0.038)</td>
+              </tr>
+              <tr>
+                <td><strong>Sapphire / Ruby</strong></td>
+                <td>1.770</td>
+                <td>34.4&deg;</td>
+                <td>Low (0.018)</td>
+              </tr>
+              <tr>
+                <td><strong>Crown Glass</strong></td>
+                <td>1.520</td>
+                <td>41.1&deg;</td>
+                <td>Very Low (0.013)</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- SCRIPTS -->
+  <script src="js/optics.js"></script>
+  <script src="js/state.js"></script>
+  <script src="js/sound.js"></script>
+  <script src="js/renderer.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/main.js"></script>
+</body>
+
+</html>
