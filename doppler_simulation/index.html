@@ -1,0 +1,366 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>DopplerLab — Acoustic Wavefront Ring Expansion &amp; Mach Cone Simulator</title>
+  <meta name="description"
+    content="Interactive STEM acoustics laboratory exploring the Doppler effect, spherical wavefront ring expansions, subsonic compression, sonic boom barriers, and supersonic Mach cone shockwaves.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+
+<body>
+
+  <!-- MAIN APPLICATION HEADER -->
+  <header class="app-header">
+    <div class="header-container">
+      <div class="brand-wrapper">
+        <div class="brand-icon">🔊</div>
+        <div>
+          <div style="display:flex; align-items:center;">
+            <h1 class="brand-title">DopplerLab</h1>
+            <span class="brand-tag">Class 10–12 &amp; AP Physics</span>
+          </div>
+          <div class="brand-sub">Acoustic Wavefront Ring Expansion &amp; Mach Cone Simulator</div>
+        </div>
+      </div>
+
+      <!-- Mode Selector -->
+      <div class="mode-selector-group">
+        <button id="btnModeSubsonic" class="mode-type-btn active" title="Subsonic Doppler shift with compressed wavefronts">
+          <span>🚗</span> Subsonic Motion
+        </button>
+        <button id="btnModeSupersonic" class="mode-type-btn" title="Supersonic Mach cone and shockwave envelope">
+          <span>🚀</span> Mach Cone (M ≥ 1)
+        </button>
+        <button id="btnModeObserver" class="mode-type-btn" title="Observer moving towards or away from stationary source">
+          <span>🏃</span> Moving Observer
+        </button>
+        <button id="btnModeAmbulance" class="mode-type-btn" title="Realistic emergency siren vehicle drive-by passing sidewalk observer">
+          <span>🚑</span> Passing Siren
+        </button>
+        <button id="btnModeStationary" class="mode-type-btn" title="Stationary source emitting concentric calibration rings">
+          <span>🎯</span> Static Source
+        </button>
+      </div>
+
+      <!-- Header Actions -->
+      <div class="header-actions">
+        <button id="btnOpenQuests" class="action-btn" title="Complete Student Laboratory Quests">
+          <span>⭐</span> Lab Quests
+        </button>
+        <button id="btnOpenTheory" class="action-btn btn-primary" title="View Doppler Formulas &amp; Acoustic Theory">
+          <span>📚</span> Theory &amp; Laws
+        </button>
+        <button id="btnAudioToggle" class="action-btn active" title="Toggle Sound Engine">
+          🔊 Sound: ON
+        </button>
+        <button id="btnResetAll" class="action-btn" title="Reset all simulation parameters to default">
+          <span>↺</span> Reset All
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN WORKSPACE LAYOUT -->
+  <main class="main-layout">
+
+    <!-- LEFT: Canvas Viewport & Live Telemetry -->
+    <div class="canvas-section">
+
+      <!-- Canvas Card -->
+      <div class="canvas-card">
+        <!-- Canvas Header Bar -->
+        <div class="canvas-header-bar">
+          <div class="quick-actions-bar">
+            <button id="btnPlayPause" class="btn-action-primary" title="Pause or resume simulation clock">
+              <span>⏸️</span> Pause
+            </button>
+          </div>
+
+          <!-- Status & Zoom HUD -->
+          <div class="header-status-hud">
+            <div class="view-scale-group" title="Adjust simulation view zoom">
+              <button id="btnZoomOut" class="bench-zoom-btn" title="Zoom out">🔍−</button>
+              <span id="lblZoomLevel" class="zoom-level-text">100%</span>
+              <button id="btnZoomIn" class="bench-zoom-btn" title="Zoom in">🔍+</button>
+              <button id="btnZoomFit" class="bench-zoom-btn" title="Reset zoom">Fit</button>
+            </div>
+            <span id="hudBadgeMach" class="hud-badge badge-blue">Mach 0.35</span>
+            <span id="hudBadgeFObs" class="hud-badge badge-orange">f_obs = 512.4 Hz</span>
+            <span id="hudBadgeVSound" class="hud-badge">v = 343 m/s</span>
+          </div>
+        </div>
+
+        <!-- Canvas Container -->
+        <div class="canvas-container">
+          <canvas id="dopplerCanvas"></canvas>
+        </div>
+      </div>
+
+      <!-- Live Telemetry Grid -->
+      <div class="telemetry-grid">
+        <div class="telemetry-card">
+          <div class="telemetry-card-title">Observed Pitch (f_obs)</div>
+          <div id="hudFObsVal" class="telemetry-card-val">512.4 Hz</div>
+          <div class="telemetry-card-sub">Frequency heard at ear</div>
+        </div>
+
+        <div class="telemetry-card">
+          <div class="telemetry-card-title">Emitted Pitch (f₀)</div>
+          <div id="hudFSrcVal" class="telemetry-card-val">440 Hz</div>
+          <div class="telemetry-card-sub">Source rest frequency</div>
+        </div>
+
+        <div class="telemetry-card">
+          <div class="telemetry-card-title">Mach Number (M)</div>
+          <div id="hudMachVal" class="telemetry-card-val">M = 0.35</div>
+          <div class="telemetry-card-sub">M = v_source / v_sound</div>
+        </div>
+
+        <div class="telemetry-card">
+          <div class="telemetry-card-title">Observed Wavelength (λ)</div>
+          <div id="hudLambdaVal" class="telemetry-card-val">0.67 m</div>
+          <div class="telemetry-card-sub">λ_obs = v_sound / f_obs</div>
+        </div>
+
+        <div class="telemetry-card">
+          <div class="telemetry-card-title">Frequency Shift Ratio</div>
+          <div id="hudShiftRatio" class="telemetry-card-val">116.5%</div>
+          <div class="telemetry-card-sub">f_obs / f₀ ratio</div>
+        </div>
+
+        <div class="telemetry-card">
+          <div class="telemetry-card-title">Distance (d)</div>
+          <div id="hudDistance" class="telemetry-card-val">540 m</div>
+          <div class="telemetry-card-sub">Source to observer</div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- RIGHT: Control Sidebar -->
+    <aside class="control-sidebar">
+
+      <!-- CARD 1: Acoustic Source Controls -->
+      <div class="sidebar-card">
+        <div class="sidebar-card-title">
+          <span>🔊 ACOUSTIC SOURCE</span>
+          <span class="sidebar-badge">Emitter</span>
+        </div>
+
+        <!-- Source Velocity -->
+        <div class="control-group">
+          <div class="control-label-row">
+            <span>Velocity (v_src):</span>
+            <input type="number" id="srcVelNumber" min="0" max="650" step="10" value="120"
+              style="width:58px; padding:2px 4px; font-family:var(--font-mono); font-size:11px; border:1px solid var(--border); border-radius:4px; font-weight:700;">
+          </div>
+          <input type="range" id="srcVelSlider" class="custom-range" min="0" max="650" step="5" value="120">
+          <div style="display:flex; justify-content:space-between; font-size:9.5px; color:#64748b; margin-top:2px; font-family:var(--font-mono);">
+            <span>0 m/s</span>
+            <span>343 m/s (Mach 1)</span>
+            <span>650 m/s</span>
+          </div>
+        </div>
+
+        <!-- Source Frequency -->
+        <div class="control-group">
+          <div class="control-label-row">
+            <span>Base Frequency (f₀):</span>
+            <input type="number" id="srcFreqNumber" min="100" max="1000" step="20" value="440"
+              style="width:58px; padding:2px 4px; font-family:var(--font-mono); font-size:11px; border:1px solid var(--border); border-radius:4px; font-weight:700;">
+          </div>
+          <input type="range" id="srcFreqSlider" class="custom-range" min="100" max="1000" step="10" value="440">
+        </div>
+      </div>
+
+      <!-- CARD 2: Observer Controls -->
+      <div class="sidebar-card">
+        <div class="sidebar-card-title">
+          <span>👂 OBSERVER SENSOR</span>
+          <span class="sidebar-badge">Receiver</span>
+        </div>
+
+        <!-- Observer Velocity -->
+        <div class="control-group">
+          <div class="control-label-row">
+            <span>Velocity (v_obs):</span>
+            <input type="number" id="obsVelNumber" min="-250" max="250" step="10" value="0"
+              style="width:58px; padding:2px 4px; font-family:var(--font-mono); font-size:11px; border:1px solid var(--border); border-radius:4px; font-weight:700;">
+          </div>
+          <input type="range" id="obsVelSlider" class="custom-range" min="-250" max="250" step="5" value="0">
+          <div style="display:flex; justify-content:space-between; font-size:9.5px; color:#64748b; margin-top:2px; font-family:var(--font-mono);">
+            <span>-250 m/s</span>
+            <span>0 (Rest)</span>
+            <span>+250 m/s</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- CARD 3: Medium & Propagation -->
+      <div class="sidebar-card">
+        <div class="sidebar-card-title">
+          <span>🌊 ACOUSTIC MEDIUM</span>
+          <span class="sidebar-badge">Environment</span>
+        </div>
+
+        <div class="control-group">
+          <div class="control-label-row">
+            <span>Sound Speed in Medium:</span>
+          </div>
+          <select id="selMedium" class="custom-select">
+            <option value="air_20c">Air @ 20°C (v = 343 m/s)</option>
+            <option value="air_cold">Cold Air @ -10°C (v = 325 m/s)</option>
+            <option value="air_hot">Hot Air @ 40°C (v = 355 m/s)</option>
+            <option value="helium">Helium Gas (v = 965 m/s)</option>
+            <option value="water">Fresh Water (v = 1482 m/s)</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- CARD 4: Visuals & Simulation Speed -->
+      <div class="sidebar-card">
+        <div class="sidebar-card-title">
+          <span>👁️ DISPLAY &amp; SPEED</span>
+          <span class="sidebar-badge">Overlays</span>
+        </div>
+
+        <label class="checkbox-row">
+          <input type="checkbox" id="chkWavefronts" checked>
+          <span>Show Expanding Acoustic Wavefronts</span>
+        </label>
+
+        <label class="checkbox-row">
+          <input type="checkbox" id="chkMachCone" checked>
+          <span>Show Supersonic Mach Cone Envelope</span>
+        </label>
+
+        <label class="checkbox-row">
+          <input type="checkbox" id="chkVectors" checked>
+          <span>Show Velocity Vectors (v_src, v_obs)</span>
+        </label>
+
+        <label class="checkbox-row">
+          <input type="checkbox" id="chkGrid" checked>
+          <span>Show Acoustic Measurement Grid</span>
+        </label>
+
+        <label class="checkbox-row">
+          <input type="checkbox" id="chkOscilloscope" checked>
+          <span>Show CRT Oscilloscope Waveform</span>
+        </label>
+
+        <label class="checkbox-row">
+          <input type="checkbox" id="chkSpectrum" checked>
+          <span>Show Frequency Spectrum Card</span>
+        </label>
+
+        <div class="control-group" style="margin-top:8px;">
+          <div class="control-label-row">
+            <span>Simulation Clock Speed:</span>
+          </div>
+          <div class="speed-btn-group">
+            <button class="speed-btn active" data-speed="1.0">1.0×</button>
+            <button class="speed-btn" data-speed="0.5">0.5×</button>
+            <button class="speed-btn" data-speed="0.25">0.25×</button>
+          </div>
+        </div>
+      </div>
+
+    </aside>
+
+  </main>
+
+  <!-- MODAL 1: STUDENT LABORATORY QUESTS -->
+  <div id="modalQuests" class="modal-wrapper">
+    <div class="modal-backdrop"></div>
+    <div class="modal-container">
+      <div class="modal-header">
+        <h3 class="modal-title">⭐ Student Doppler Quests &amp; Missions</h3>
+        <button class="modal-close">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p style="margin-top:0;">
+          Explore the fundamental physics of sound propagation, wave compression, sonic booms, and relativistic parallels!
+        </p>
+        <div id="questsListContainer">
+          <!-- Populated dynamically -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL 2: THEORY & FORMULAS -->
+  <div id="modalTheory" class="modal-wrapper">
+    <div class="modal-backdrop"></div>
+    <div class="modal-container">
+      <div class="modal-header">
+        <h3 class="modal-title">📚 Doppler Effect &amp; Acoustic Wavefront Theory</h3>
+        <button class="modal-close">&times;</button>
+      </div>
+      <div class="modal-body">
+        <h4 style="color:#0284c7; margin-top:0;">1. Christian Doppler's Discovery (1842)</h4>
+        <p>
+          In 1842, Austrian physicist Christian Doppler postulated that the observed frequency of a wave depends on the relative motion between the source and the observer. In 1845, Dutch scientist C. H. D. Buys Ballot experimentally confirmed this by placing trumpet players on an open moving train flatcar!
+        </p>
+
+        <h4 style="color:#0284c7; margin-top:16px;">2. General Doppler Formula</h4>
+        <p>
+          For sound waves propagating through a stationary medium at speed $v$:
+        </p>
+        <div style="background:#f8fafc; border-left:4px solid #0284c7; padding:10px 14px; font-family:var(--font-mono); margin:10px 0;">
+          f_obs = f₀ · (v ± v_obs) / (v ∓ v_source)
+        </div>
+        <p>
+          Sign convention:
+        </p>
+        <ul>
+          <li><strong>Source approaches Observer</strong>: Use minus sign in denominator $\to (v - v_{\text{source}})$, causing $f_{\text{obs}} > f_0$ (pitch rises, wavefronts compressed).</li>
+          <li><strong>Source recedes from Observer</strong>: Use plus sign in denominator $\to (v + v_{\text{source}})$, causing $f_{\text{obs}} < f_0$ (pitch drops, wavefronts dilated).</li>
+          <li><strong>Wavelength in medium</strong>: $\lambda_{\text{compressed}} = (v - v_{\text{source}}) / f_0$.</li>
+        </ul>
+
+        <h4 style="color:#0284c7; margin-top:16px;">3. Mach Number and the Sonic Barrier</h4>
+        <p>
+          The <strong>Mach Number ($M$)</strong> is defined as the ratio of source velocity to the speed of sound:
+        </p>
+        <div style="background:#f8fafc; border-left:4px solid #0284c7; padding:10px 14px; font-family:var(--font-mono); margin:10px 0;">
+          M = v_source / v_sound
+        </div>
+        <ul>
+          <li><strong>Subsonic ($M < 1$)</strong>: Wavefronts spread out in concentric rings that never touch or cross each other.</li>
+          <li><strong>Sonic ($M = 1$)</strong>: The source travels at the exact speed of the wavefronts it emits. All wavefronts pile up along a vertical boundary creating a shock wall of constructive interference!</li>
+          <li><strong>Supersonic ($M > 1$)</strong>: The source outruns its own sound. The expanding spherical wavefronts form a conical envelope called the <strong>Mach Cone</strong>.</li>
+        </ul>
+
+        <h4 style="color:#0284c7; margin-top:16px;">4. Mach Cone Half-Angle Formula</h4>
+        <div style="background:#f8fafc; border-left:4px solid #0284c7; padding:10px 14px; font-family:var(--font-mono); margin:10px 0;">
+          sin(μ) = v_sound / v_source = 1 / M   ⇒   μ = arcsin(1 / M)
+        </div>
+        <p>
+          As the aircraft flies faster (higher Mach number), the Mach cone becomes narrower and sharper. When this high-pressure cone sweeps across the ground, observers hear the sudden double-boom known as a <strong>sonic boom</strong>!
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Application Toast -->
+  <div id="appToast" class="app-toast"></div>
+
+  <!-- Scripts -->
+  <script src="js/sound.js"></script>
+  <script src="js/physics.js"></script>
+  <script src="js/state.js"></script>
+  <script src="js/renderer.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/main.js"></script>
+</body>
+
+</html>
