@@ -95,6 +95,12 @@ A collection of interactive, client-side STEM physics simulations built with HTM
 - **Marcel Tolkowsky 1919 Ideal Cut Proportions**: Real-time brilliance return and fire dispersion metrics comparing Tolkowsky Ideal ($34.5^\circ$ crown, $40.75^\circ$ pavilion) against Shallow (fish-eye bottom leakage) and Deep (nail-head side extinction) cuts.
 - **Gemstone Library & Tunable Light**: Explore Diamond, Moissanite, Cubic Zirconia, Sapphire, Zircon, and Crown Glass with White Light (VIBGYOR fire fan) or Monochromatic Laser ($380\text{–}750\text{ nm}$).
 
+### 15. ❤️ [Human Cardiac Cycle & ECG Simulator (`/cardiac_simulation`)](cardiac_simulation/)
+- **4-Chamber Heart Anatomy & Valves**: Beating myocardium, synchronized Tricuspid, Mitral, Pulmonary, and Aortic valves with papillary muscles and chordae tendineae.
+- **Electrical Conduction Highway**: SA node pacemaker, internodal pathways, 0.12s AV nodal delay, and His-Purkinje network propagation.
+- **Synchronized Wiggers Diagram**: Real-time Lead II ECG (P-QRS-T), ventricular and aortic pressures with **Dicrotic Notch**, ventricular volume ($EDV \to ESV$), and phonocardiogram (PCG).
+- **Procedural Web Audio & Auscultation Bench**: Zero-dependency synthesis of $S_1$ ("LUB") and $S_2$ ("DUB"), draggable stethoscope over clinical landmarks (Aortic, Pulmonic, Tricuspid, Mitral/Apex), and pathological murmurs.
+
 ---
 
 ## 💻 Tech Stack
@@ -107,6 +113,10 @@ A collection of interactive, client-side STEM physics simulations built with HTM
 You can run any simulation using any static web server:
 
 ```bash
+# Human Cardiac Cycle & ECG Simulator
+cd cardiac_simulation
+python -m http.server 8098
+
 # Diamond Light Refraction & Cut Simulator
 cd diamond_simulation
 python -m http.server 8097

@@ -1,0 +1,323 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Human Cardiac Cycle &amp; ECG Simulator — Wiggers Diagram &amp; Heart Anatomy Lab</title>
+  <meta name="description"
+    content="Interactive STEM virtual biology & cardiology laboratory exploring the 4-chamber beating heart, cardiac conduction system, valves, Lead II ECG, Wiggers diagram, and auscultation.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+
+<body>
+
+  <!-- MAIN APPLICATION HEADER -->
+  <header class="app-header">
+    <div class="header-container">
+      <div class="brand-wrapper">
+        <div class="brand-icon">❤️</div>
+        <div>
+          <div style="display:flex; align-items:center;">
+            <h1 class="brand-title">CardiacSim</h1>
+            <span class="brand-tag">Class 11–12 &amp; Medical Biology</span>
+          </div>
+          <div class="brand-sub">Human Cardiac Cycle, Wiggers Diagram &amp; ECG Simulator</div>
+        </div>
+      </div>
+
+      <!-- Mode Selector -->
+      <nav class="mode-selector-group" aria-label="Simulation Modes">
+        <button id="btnModeAnatomy" class="mode-type-btn active" title="4-Chamber Heart Anatomy & Conduction System">
+          <span>🫀</span> Heart Anatomy
+        </button>
+        <button id="btnModeWiggers" class="mode-type-btn" title="Synchronized Wiggers Diagram & Multi-Channel Oscilloscope">
+          <span>📈</span> Wiggers &amp; ECG
+        </button>
+        <button id="btnModeSplit" class="mode-type-btn" title="Side-by-side Dual View">
+          <span>🔀</span> Split View
+        </button>
+        <button id="btnModeAuscultation" class="mode-type-btn" title="Interactive Chest Auscultation Bench">
+          <span>🩺</span> Auscultation Lab
+        </button>
+      </nav>
+
+      <!-- Header Actions -->
+      <div class="header-actions">
+        <button id="btnOpenQuests" class="action-btn" title="Complete Student Laboratory Quests">
+          <span>⭐</span> Quests <span id="questBadgeCount" class="badge-counter">0/5</span>
+        </button>
+        <button id="btnOpenTheory" class="action-btn btn-primary" title="View Cardiac Physiology & Formulas">
+          <span>📚</span> Theory &amp; Wiggers
+        </button>
+        <button id="btnAudioToggle" class="action-btn active" title="Toggle Heart Valve Acoustic Engine">
+          🔊 Sound: ON
+        </button>
+        <button id="btnBeepToggle" class="action-btn active" title="Toggle ECG Monitor R-wave Beep">
+          📟 Beep: ON
+        </button>
+        <button id="btnResetAll" class="action-btn" title="Reset all simulation parameters">
+          <span>↺</span> Reset
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN WORKSPACE LAYOUT -->
+  <main class="main-layout">
+
+    <!-- LEFT: Canvas Viewport & Live Telemetry -->
+    <section class="canvas-section">
+
+      <!-- Canvas Card -->
+      <div class="canvas-card">
+        <!-- Canvas Header Bar -->
+        <div class="canvas-header-bar">
+          <div class="quick-actions-bar">
+            <button id="btnPlayPause" class="btn-action-primary" title="Pause or resume cardiac clock">
+              <span>⏸️</span> Pause
+            </button>
+            <button id="btnStepBack" class="btn-action-primary" title="Step back 50ms">
+              ⏮️ Step
+            </button>
+            <button id="btnStepForward" class="btn-action-primary" title="Step forward 50ms">
+              ⏭️ Step
+            </button>
+            <div class="speed-selector-group" title="Adjust simulation speed for observation">
+              <span class="speed-label">Speed:</span>
+              <button id="btnSpeed01" class="speed-pill-btn" title="0.1x Ultra Slow-Motion">0.1x</button>
+              <button id="btnSpeed025" class="speed-pill-btn active" title="0.25x Study Speed (Recommended)">0.25x</button>
+              <button id="btnSpeed05" class="speed-pill-btn" title="0.5x Half Speed">0.5x</button>
+              <button id="btnSpeed10" class="speed-pill-btn" title="1.0x Real-Time">1.0x</button>
+            </div>
+          </div>
+
+          <!-- Status & Zoom HUD -->
+          <div class="header-status-hud">
+            <div class="view-scale-group" title="Adjust simulation view zoom">
+              <button id="btnZoomOut" class="bench-zoom-btn" title="Zoom out">🔍−</button>
+              <span id="lblZoomLevel" class="zoom-level-text">100%</span>
+              <button id="btnZoomIn" class="bench-zoom-btn" title="Zoom in">🔍+</button>
+              <button id="btnZoomFit" class="bench-zoom-btn" title="Reset zoom">Fit</button>
+            </div>
+            <span id="hudBadgeBpm" class="hud-badge badge-crimson">72 BPM</span>
+            <span id="hudBadgeBP" class="hud-badge badge-sapphire">BP: 120/80</span>
+            <span id="hudBadgeCO" class="hud-badge badge-emerald">CO: 5.0 L/min</span>
+          </div>
+        </div>
+
+        <!-- Canvas Viewport -->
+        <div class="canvas-viewport-wrapper">
+          <canvas id="cardiacCanvas"></canvas>
+          <div class="canvas-overlay-hint">
+            <span class="canvas-hint-pill">Drag 🩺 Stethoscope or click graph to scrub phase</span>
+            <span id="cardPhase" class="canvas-hint-pill">Diastole: Rapid Filling</span>
+          </div>
+        </div>
+
+        <!-- Interactive Phase Scrubber Bar -->
+        <div class="phase-scrubber-bar">
+          <div class="scrubber-header-row">
+            <div style="display:flex; align-items:center; gap:8px;">
+              <span class="scrubber-label">⏱️ Cycle Phase Scrubber:</span>
+              <span id="lblPhasePercent" class="scrubber-percent">0%</span>
+            </div>
+            <span id="lblPhaseSubName" class="scrubber-phase-name">1. Atrial Systole</span>
+          </div>
+          <input id="sliderPhase" type="range" class="phase-slider" min="0" max="100" step="0.5" value="0">
+          <div class="phase-pills-row">
+            <button id="btnPhase1" class="phase-jump-btn active" data-phase="1">1. Atrial Systole</button>
+            <button id="btnPhase2" class="phase-jump-btn" data-phase="2">2. Isovol. Contr.</button>
+            <button id="btnPhase3" class="phase-jump-btn" data-phase="3">3. Rapid Ejection</button>
+            <button id="btnPhase4" class="phase-jump-btn" data-phase="4">4. Reduced Eject.</button>
+            <button id="btnPhase5" class="phase-jump-btn" data-phase="5">5. Isovol. Relax.</button>
+            <button id="btnPhase6" class="phase-jump-btn" data-phase="6">6. Rapid Filling</button>
+            <button id="btnPhase7" class="phase-jump-btn" data-phase="7">7. Diastasis</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Telemetry Cards (4-Column Grid) -->
+      <div class="telemetry-grid">
+        <div class="telemetry-card">
+          <span class="telemetry-card-title">Heart Rate (HR)</span>
+          <span id="cardBpm" class="telemetry-card-value">72 BPM</span>
+          <span class="telemetry-card-sub">Resting Sinus Rhythm</span>
+        </div>
+
+        <div class="telemetry-card">
+          <span class="telemetry-card-title">Blood Pressure (BP)</span>
+          <span id="cardBP" class="telemetry-card-value">120/80 mmHg</span>
+          <span class="telemetry-card-sub">Systolic / Diastolic (MAP 93)</span>
+        </div>
+
+        <div class="telemetry-card">
+          <span class="telemetry-card-title">Stroke Volume &amp; EF</span>
+          <span id="cardSVEF" class="telemetry-card-value">70 mL (56%)</span>
+          <span class="telemetry-card-sub">SV = EDV − ESV</span>
+        </div>
+
+        <div class="telemetry-card">
+          <span class="telemetry-card-title">Cardiac Output (CO)</span>
+          <span id="cardCO" class="telemetry-card-value">5.04 L/min</span>
+          <span class="telemetry-card-sub">CO = (HR &times; SV) / 1000</span>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- RIGHT: Interactive Control Sidebar -->
+    <aside class="control-sidebar" aria-label="Laboratory Controls">
+      <h3 class="sidebar-heading">🎛️ Physiological Controls</h3>
+
+      <!-- Heart Rate Slider -->
+      <div class="control-group">
+        <div class="control-label-row">
+          <label for="sliderBpm" class="control-label">Heart Rate (HR)</label>
+          <span id="valBpm" class="control-value-tag">72 BPM</span>
+        </div>
+        <input id="sliderBpm" type="range" class="custom-range" min="40" max="180" step="1" value="72">
+        <div class="preset-btn-group">
+          <button id="btnPresetResting" class="preset-btn">Resting (72)</button>
+          <button id="btnPresetExercise" class="preset-btn">Exercise (145)</button>
+          <button id="btnPresetSleep" class="preset-btn">Sleep (48)</button>
+        </div>
+      </div>
+
+      <!-- Rhythm & Pathology Selection -->
+      <div class="control-group">
+        <label for="selectRhythm" class="control-label">Rhythm &amp; Pathology Mode</label>
+        <select id="selectRhythm" class="custom-select">
+          <option value="normal">Normal Sinus Rhythm (NSR)</option>
+          <option value="exercise">Exercise / Sympathetic Drive</option>
+          <option value="bradycardia">Sinus Bradycardia (&lt;60 BPM)</option>
+          <option value="tachycardia">Sinus Tachycardia (&gt;100 BPM)</option>
+          <option value="afib">Atrial Fibrillation (AFib)</option>
+          <option value="vtach">Ventricular Tachycardia (VTach)</option>
+          <option value="stenosis">Aortic Stenosis (Systolic Murmur)</option>
+          <option value="regurgitation">Mitral Regurgitation (Holosystolic Murmur)</option>
+        </select>
+      </div>
+
+      <!-- Contractility Slider -->
+      <div class="control-group">
+        <div class="control-label-row">
+          <label for="sliderContractility" class="control-label">Myocardial Inotropy / Force</label>
+          <span id="valContractility" class="control-value-tag">1.00x</span>
+        </div>
+        <input id="sliderContractility" type="range" class="custom-range" min="0.6" max="1.5" step="0.05" value="1.0">
+      </div>
+
+      <!-- Stethoscope Auscultation Legend -->
+      <div class="control-group">
+        <span class="control-label">🩺 Auscultation Landmarks</span>
+        <div class="legend-box">
+          <div class="legend-item">
+            <div class="legend-color-dot" style="background: #E11D48;"></div>
+            <span><strong>A — Aortic Area:</strong> 2nd R Intercostal (S2 loudest)</span>
+          </div>
+          <div class="legend-item">
+            <div class="legend-color-dot" style="background: #0284C7;"></div>
+            <span><strong>P — Pulmonic Area:</strong> 2nd L Intercostal (S2 split)</span>
+          </div>
+          <div class="legend-item">
+            <div class="legend-color-dot" style="background: #059669;"></div>
+            <span><strong>T — Tricuspid Area:</strong> 4th L Sternal Border (S1)</span>
+          </div>
+          <div class="legend-item">
+            <div class="legend-color-dot" style="background: #7C3AED;"></div>
+            <span><strong>M — Mitral / Apex:</strong> 5th L Midclavicular (S1 loudest)</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Hemodynamics Quick Guide -->
+      <div class="control-group">
+        <span class="control-label">⚡ Electrical Highway</span>
+        <div class="legend-box">
+          <div class="legend-item">
+            <div class="legend-color-dot" style="background: #F59E0B;"></div>
+            <span><strong>SA Node:</strong> Sinoatrial pacemaker (starts P wave)</span>
+          </div>
+          <div class="legend-item">
+            <div class="legend-color-dot" style="background: #10B981;"></div>
+            <span><strong>AV Node:</strong> 0.12s physiologic pause (PR segment)</span>
+          </div>
+          <div class="legend-item">
+            <div class="legend-color-dot" style="background: #FBBF24;"></div>
+            <span><strong>His-Purkinje:</strong> Rapid ventricular trigger (QRS)</span>
+          </div>
+        </div>
+      </div>
+
+    </aside>
+
+  </main>
+
+  <!-- MODAL: LAB QUESTS -->
+  <div id="modalQuests" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="questsTitle">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 id="questsTitle" class="modal-title">⭐ Student Cardiology Quests</h3>
+        <button id="btnCloseQuests" class="modal-close-btn" aria-label="Close quests modal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p>Complete these interactive clinical missions by manipulating physiological controls, observing the ECG, and auscultating heart sounds.</p>
+        <div id="questsContainer" class="quests-list"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: THEORY & WIGGERS GUIDE -->
+  <div id="modalTheory" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="theoryTitle">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 id="theoryTitle" class="modal-title">📚 Cardiac Cycle &amp; Wiggers Diagram Reference</h3>
+        <button id="btnCloseTheory" class="modal-close-btn" aria-label="Close theory modal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <h3>1. The 7 Classical Phases of the Cardiac Cycle</h3>
+        <ol>
+          <li><strong>Atrial Systole:</strong> SA node fires (P wave); atria contract, boosting ventricular volume by 15–20% (the "atrial kick"). End-Diastolic Volume ($EDV \approx 120\text{–}130\text{ mL}$) reached.</li>
+          <li><strong>Isovolumetric Contraction:</strong> QRS triggers ventricular excitation. Pressure skyrockets; AV valves (Tricuspid &amp; Mitral) snap shut producing the <strong>$S_1$ ("LUB")</strong> heart sound. All 4 valves are closed.</li>
+          <li><strong>Rapid Ventricular Ejection:</strong> Ventricular pressure surpasses aortic pressure (80 mmHg); Semilunar valves open, briskly expelling ~70% of the stroke volume.</li>
+          <li><strong>Reduced Ventricular Ejection:</strong> Ventricles begin repolarizing (T wave); blood outflow slows as ventricular pressure declines.</li>
+          <li><strong>Isovolumetric Relaxation:</strong> Ventricular pressure drops below aortic/pulmonic pressure; Semilunar valves snap shut producing the <strong>$S_2$ ("DUB")</strong> sound and the aortic <em>Dicrotic Notch (Incisura)</em>. All 4 valves closed.</li>
+          <li><strong>Rapid Ventricular Filling:</strong> Ventricular pressure falls below atrial pressure; AV valves open, and passive ventricular filling rapidly surges.</li>
+          <li><strong>Diastasis (Reduced Inflow):</strong> Slower passive blood inflow as atria and ventricles equalize before the next SA nodal impulse.</li>
+        </ol>
+
+        <h3>2. Fundamental Clinical Equations</h3>
+        <ul>
+          <li><strong>Stroke Volume ($SV$):</strong> $SV = EDV - ESV \approx 125 - 55 = 70\text{ mL}$</li>
+          <li><strong>Cardiac Output ($CO$):</strong> $CO = HR \times SV = 72 \times 70\text{ mL} \approx 5.04\text{ L/min}$</li>
+          <li><strong>Ejection Fraction ($EF$):</strong> $EF = \frac{SV}{EDV} \times 100\% \approx 55\text{–}65\%$</li>
+          <li><strong>Mean Arterial Pressure ($MAP$):</strong> $MAP = DP + \frac{1}{3}(SP - DP) \approx 80 + \frac{1}{3}(40) = 93.3\text{ mmHg}$</li>
+        </ul>
+
+        <h3>3. Heart Sounds &amp; Auscultation</h3>
+        <ul>
+          <li><strong>$S_1$ ("LUB"):</strong> Caused by closure of Mitral &amp; Tricuspid valves at the start of systole. Loudest at the <strong>Cardiac Apex (Mitral Area)</strong>.</li>
+          <li><strong>$S_2$ ("DUB"):</strong> Caused by closure of Aortic &amp; Pulmonary valves at the start of diastole. Loudest at the <strong>Base of the heart (Aortic &amp; Pulmonic Areas)</strong>.</li>
+          <li><strong>Aortic Stenosis:</strong> Systolic ejection diamond-shaped murmur caused by turbulent jetting across a calcified/narrowed aortic valve.</li>
+          <li><strong>Mitral Regurgitation:</strong> Holosystolic blowing murmur extending from $S_1$ to $S_2$ caused by backward leakage into the left atrium during ventricular contraction.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCRIPTS -->
+  <script src="js/state.js"></script>
+  <script src="js/sound.js"></script>
+  <script src="js/cardiac_engine.js"></script>
+  <script src="js/renderer.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/main.js"></script>
+</body>
+
+</html>
