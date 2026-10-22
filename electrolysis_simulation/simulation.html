@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Electrolysis of Water & Copper Electroplating Virtual Lab</title>
+  <meta name="description" content="Interactive STEM chemistry simulation for Class 9/10. Explore Faraday's laws of electrolysis, 2:1 water splitting ratio, hydrogen pop and oxygen relight tests, and copper electroplating.">
+
+  <!-- Google Fonts: Dual-Font Typography System -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <!-- Header -->
+  <header class="lab-header">
+    <div class="header-brand">
+      <div class="lab-icon-badge">⚡</div>
+      <div class="lab-title-group">
+        <h1>Electrolysis & Electroplating Virtual Lab</h1>
+        <div class="lab-subtitle">Class 9 & 10 Chemistry • Faraday's Laws & Stoichiometric Gas Decomposition</div>
+      </div>
+    </div>
+
+    <div class="header-actions">
+      <!-- Mode Tabs -->
+      <div class="mode-switch-group" role="tablist">
+        <button id="modeWaterBtn" class="mode-btn active" role="tab">💧 Water Splitting</button>
+        <button id="modePlateBtn" class="mode-btn" role="tab">🪙 Cu Electroplating</button>
+      </div>
+
+      <button id="soundToggleBtn" class="btn-secondary" title="Toggle procedural sound synthesis">🔊 Sound: ON</button>
+      <button id="guideBtn" class="btn-secondary" title="View lab manual and experimental guide">📖 Lab Manual</button>
+    </div>
+  </header>
+
+  <!-- Main Unified Workspace Grid -->
+  <main class="main-layout">
+    <!-- Left: Canvas Stage & Telemetry -->
+    <section class="stage-container">
+      <div class="canvas-wrapper">
+        <canvas id="simCanvas"></canvas>
+
+        <div class="canvas-hud-top">
+          <div class="hud-pill">
+            <span class="hud-pill-pulse"></span>
+            <span>Hofmann Voltameter Apparatus</span>
+          </div>
+          <div class="hud-pill">
+            <span>Electrolyte: 0.1 M H₂SO₄</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Action Stage Controls -->
+      <div class="stage-controls">
+        <div class="stage-btn-group">
+          <button id="powerBtn" class="btn-power">⏻ START CURRENT</button>
+          <button id="testH2Btn" class="btn-splint">🔥 Test H₂ (Squeaky Pop)</button>
+          <button id="testO2Btn" class="btn-splint">✨ Test O₂ (Glowing Splint)</button>
+        </div>
+        <button id="resetBtn" class="btn-secondary">↺ Reset Apparatus</button>
+      </div>
+
+      <!-- Telemetry Grid -->
+      <div class="telemetry-grid">
+        <div class="telemetry-card">
+          <div id="card1Title" class="telemetry-card-title">POTENTIAL / EMF</div>
+          <div id="card1Val" class="telemetry-card-value">6.0</div>
+          <div id="card1Unit" class="telemetry-card-unit">Volts (DC)</div>
+        </div>
+        <div class="telemetry-card">
+          <div id="card2Title" class="telemetry-card-title">FARADAIC CURRENT</div>
+          <div id="card2Val" class="telemetry-card-value">0.00</div>
+          <div id="card2Unit" class="telemetry-card-unit">Amperes (I)</div>
+        </div>
+        <div class="telemetry-card">
+          <div id="card3Title" class="telemetry-card-title">H₂ GAS (CATHODE)</div>
+          <div id="card3Val" class="telemetry-card-value">0.00</div>
+          <div id="card3Unit" class="telemetry-card-unit">mL collected</div>
+        </div>
+        <div class="telemetry-card">
+          <div id="card4Title" class="telemetry-card-title">O₂ GAS (ANODE)</div>
+          <div id="card4Val" class="telemetry-card-value">0.00</div>
+          <div id="card4Unit" class="telemetry-card-unit">mL collected</div>
+        </div>
+      </div>
+
+      <!-- Live Reaction Equation Banner -->
+      <div class="reaction-banner">
+        <div id="reactionTitle" class="reaction-title">Electrolysis of Water (Acidified H₂SO₄)</div>
+        <div id="equationBlock" class="equation-block">2H₂O (l)  →  2H₂ (g) [Cathode]  +  O₂ (g) [Anode]  (Stoichiometric Ratio = 2 : 1)</div>
+      </div>
+    </section>
+
+    <!-- Right: Parameter Control Sidebar -->
+    <aside class="control-sidebar">
+      <!-- Power Supply Voltage Settings -->
+      <div class="sidebar-panel">
+        <div class="panel-header">
+          <h2 class="panel-title">Power Supply Controls</h2>
+        </div>
+
+        <div class="control-group">
+          <div class="control-label-row">
+            <span>DC Voltage (EMF)</span>
+            <span id="voltageVal" class="control-value-readout">6.0 V</span>
+          </div>
+          <input type="range" id="voltageSlider" class="styled-slider" min="0.0" max="12.0" step="0.2" value="6.0">
+        </div>
+
+        <div style="font-size: 0.8rem; color: var(--text-muted); line-height: 1.4;">
+          <strong>Electrode Potentials:</strong> Minimum theoretical potential $E^\circ = 1.23\text{ V}$. Water splitting overpotential requires $\ge 1.78\text{ V}$ to begin active gas bubble evolution.
+        </div>
+      </div>
+
+      <!-- Lab Curriculum Quests -->
+      <div class="sidebar-panel">
+        <div class="panel-header">
+          <h2 class="panel-title">Laboratory Quests (NCERT)</h2>
+        </div>
+
+        <div id="questList" class="quest-list">
+          <!-- Dynamically populated by state -->
+        </div>
+      </div>
+    </aside>
+  </main>
+
+  <!-- Lab Manual Guide Modal -->
+  <div id="guideModal" class="modal-overlay">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 class="modal-title">📖 Laboratory Manual: Electrolysis & Electroplating</h3>
+        <button id="closeModalBtn" class="modal-close-btn">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p><strong>1. Electrolysis of Water:</strong> Pure water is a poor conductor. Adding a few drops of dilute $\text{H}_2\text{SO}_4$ provides free $\text{H}^+$ and $\text{SO}_4^{2-}$ ions.</p>
+        <br>
+        <p><strong>2. Stoichiometry (2:1 Ratio):</strong> For every 4 electrons transferred, 2 molecules of $\text{H}_2$ are formed at the cathode for every 1 molecule of $\text{O}_2$ formed at the anode. Thus, the volume of hydrogen gas collected is twice the volume of oxygen gas.</p>
+        <br>
+        <p><strong>3. Gas Identification:</strong></p>
+        <ul style="padding-left: 20px; margin-top: 4px;">
+          <li><strong>Hydrogen ($\text{H}_2$):</strong> Extinguishes a burning splint with a characteristic squeaky <em>"POP"</em>.</li>
+          <li><strong>Oxygen ($\text{O}_2$):</strong> Kindles a glowing splint into bright burning flame.</li>
+        </ul>
+        <br>
+        <p><strong>4. Copper Electroplating:</strong> Connect the pure copper plate to the positive terminal (anode) and the iron key to the negative terminal (cathode) in blue $\text{CuSO}_4$ solution. Copper dissolves at the anode and deposits onto the iron key.</p>
+      </div>
+      <div class="modal-footer">
+        <button id="modalGotItBtn" class="btn-power" style="padding: 8px 18px;">Understood, Start Experiment</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="js/electrolysis_data.js"></script>
+  <script src="js/sound.js"></script>
+  <script src="js/state.js"></script>
+  <script src="js/electrolysis_engine.js"></script>
+  <script src="js/renderer.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>

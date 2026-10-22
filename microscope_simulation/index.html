@@ -1,0 +1,335 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Virtual Compound Microscope &amp; Mitosis (Cell Division) Simulator</title>
+  <meta name="description"
+    content="Interactive STEM cytology laboratory exploring compound light microscopy, optical focus, onion root tip meristem, whitefish blastula, cell phase tagging, and Mitotic Index calculation.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+
+<body>
+
+  <!-- MAIN APPLICATION HEADER -->
+  <header class="app-header">
+    <div class="header-container">
+      <div class="brand-wrapper">
+        <div class="brand-icon">🔬</div>
+        <div>
+          <div style="display:flex; align-items:center;">
+            <h1 class="brand-title">MicroscopeLab</h1>
+            <span class="brand-tag">Class 11–12 &amp; AP Cytology</span>
+          </div>
+          <div class="brand-sub">Virtual Compound Microscope &amp; Mitosis (Cell Division) Simulator</div>
+        </div>
+      </div>
+
+      <!-- Specimen Slide Selector -->
+      <nav class="slide-selector-group" aria-label="Specimen Slides">
+        <button id="btnSlideOnion" class="slide-type-btn active" title="Onion Root Tip Squash (Plant Meristem)">
+          <span>🧅</span> Onion Root Tip
+        </button>
+        <button id="btnSlideWhitefish" class="slide-type-btn" title="Whitefish Blastula (Animal Asters & Cleavage Furrow)">
+          <span>🐟</span> Whitefish Blastula
+        </button>
+        <button id="btnSlideMicrometer" class="slide-type-btn" title="Stage Micrometer Calibration Slide (0.01 mm / 10 µm)">
+          <span>📏</span> Stage Micrometer
+        </button>
+      </nav>
+
+      <!-- Header Actions -->
+      <div class="header-actions">
+        <button id="btnOpenQuests" class="action-btn" title="Complete Student Laboratory Quests">
+          <span>⭐</span> Quests <span id="questBadgeCount" class="badge-counter">0/5</span>
+        </button>
+        <button id="btnOpenTheory" class="action-btn btn-primary" title="View Mitosis Stages &amp; Microscopy Theory">
+          <span>📚</span> Theory &amp; Stages
+        </button>
+        <button id="btnAudioToggle" class="action-btn active" title="Toggle Mechanical Audio FX">
+          🔊 Sound: ON
+        </button>
+        <button id="btnResetAll" class="action-btn" title="Reset microscope optics and stage">
+          <span>↺</span> Reset
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN WORKSPACE LAYOUT -->
+  <main class="main-layout">
+
+    <!-- LEFT: Microscope Canvas & Telemetry -->
+    <section class="canvas-section">
+
+      <!-- Canvas Card -->
+      <div class="canvas-card">
+        <!-- Canvas Header Bar with Objective Nosepiece -->
+        <div class="canvas-header-bar">
+          <div class="nosepiece-group">
+            <span class="nosepiece-label">Revolving Nosepiece:</span>
+            <button id="btnObj4x" class="obj-btn" title="4× Scanning Objective (40× Total Magnification)">4×</button>
+            <button id="btnObj10x" class="obj-btn active" title="10× Low Power Objective (100× Total Magnification)">10×</button>
+            <button id="btnObj40x" class="obj-btn" title="40× High Power Objective (400× Total Magnification)">40×</button>
+            <button id="btnObj100x" class="obj-btn" title="100× Oil Immersion Objective (1000× Total Magnification)">100× Oil</button>
+          </div>
+
+          <div style="display:flex; align-items:center; gap:8px;">
+            <button id="btnGraticule" class="action-btn" title="Toggle Ocular Micrometer Reticle">
+              📐 Ocular Reticle
+            </button>
+            <button id="btnImmersionOil" class="action-btn" title="Apply Immersion Oil for 100× Objective">
+              💧 Immersion Oil
+            </button>
+          </div>
+        </div>
+
+        <!-- Canvas Viewport -->
+        <div class="canvas-viewport-wrapper">
+          <canvas id="microscopeCanvas"></canvas>
+          <div class="canvas-overlay-hint">
+            <span class="canvas-hint-pill">Drag stage to pan • Select a phase tool below to tag cells</span>
+            <span class="canvas-hint-pill">Stage Calipers: <strong id="lblStageCoords">(0, 0) µm</strong></span>
+          </div>
+        </div>
+
+        <!-- Cell Tagging Toolbar -->
+        <div class="tagging-toolbar-card">
+          <div class="tagging-palette-group">
+            <span class="palette-label">🏷️ Cell Tagging:</span>
+            <button id="btnToolInspect" class="tag-btn tag-inspect active" title="Click any cell to inspect its cytology & molecular events">
+              <span>🔍</span> Inspect
+            </button>
+            <button id="btnToolInterphase" class="tag-btn tag-interphase" title="Tag as Interphase (G1, S, G2)">
+              <span>🔵</span> Interphase
+            </button>
+            <button id="btnToolProphase" class="tag-btn tag-prophase" title="Tag as Prophase (Chromatin Condensation)">
+              <span>🟠</span> Prophase
+            </button>
+            <button id="btnToolMetaphase" class="tag-btn tag-metaphase" title="Tag as Metaphase (Equatorial Plate)">
+              <span>🟢</span> Metaphase
+            </button>
+            <button id="btnToolAnaphase" class="tag-btn tag-anaphase" title="Tag as Anaphase (Chromatid Separation)">
+              <span>🔴</span> Anaphase
+            </button>
+            <button id="btnToolTelophase" class="tag-btn tag-telophase" title="Tag as Telophase / Cytokinesis">
+              <span>🟣</span> Telophase
+            </button>
+          </div>
+
+          <button id="btnClearTags" class="action-btn" title="Clear all cell tags">
+            <span>🗑️</span> Clear Tags
+          </button>
+        </div>
+      </div>
+
+      <!-- Telemetry Cards (4-Column Grid) -->
+      <div class="telemetry-grid">
+        <div class="telemetry-card">
+          <span class="telemetry-card-title">Total Magnification</span>
+          <span id="cardMag" class="telemetry-card-value">100× (10×)</span>
+          <span class="telemetry-card-sub">Ocular (10×) &times; Objective</span>
+        </div>
+
+        <div class="telemetry-card">
+          <span class="telemetry-card-title">Optical Clarity</span>
+          <span id="cardClarity" class="telemetry-card-value">100%</span>
+          <span class="telemetry-card-sub">Focal Plane Alignment</span>
+        </div>
+
+        <div class="telemetry-card">
+          <span class="telemetry-card-title">Stage Position</span>
+          <span id="cardStage" class="telemetry-card-value">X: 0 µm | Y: 0 µm</span>
+          <span class="telemetry-card-sub">Vernier Caliper Offsets</span>
+        </div>
+
+        <div class="telemetry-card">
+          <span class="telemetry-card-title">Mitotic Index (MI)</span>
+          <span id="cardMitoticIndex" class="telemetry-card-value">0.0% (0/0)</span>
+          <span class="telemetry-card-sub">(Dividing / Total) &times; 100%</span>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- RIGHT: Microscope Hardware Controls -->
+    <aside class="control-sidebar" aria-label="Microscope Hardware Controls">
+      <h3 class="sidebar-heading">⚙️ Microscope Controls</h3>
+
+      <!-- Coarse Focus Dial -->
+      <div class="control-group">
+        <div class="control-label-row">
+          <label for="sliderCoarse" class="control-label">Coarse Focus (Macro)</label>
+          <span id="valCoarse" class="control-value-tag">50%</span>
+        </div>
+        <input id="sliderCoarse" type="range" class="custom-range" min="0" max="100" step="0.5" value="50">
+      </div>
+
+      <!-- Fine Focus Dial -->
+      <div class="control-group">
+        <div class="control-label-row">
+          <label for="sliderFine" class="control-label">Fine Focus (Micrometric)</label>
+          <span id="valFine" class="control-value-tag">50%</span>
+        </div>
+        <input id="sliderFine" type="range" class="custom-range" min="0" max="100" step="0.2" value="50">
+      </div>
+
+      <!-- Mechanical Stage Calipers (D-Pad) -->
+      <div class="control-group">
+        <span class="control-label">Mechanical Stage Calipers (X-Y)</span>
+        <div class="stage-dpad-container">
+          <button id="btnStageUp" class="dpad-btn" title="Translate Stage Up">▲</button>
+          <div class="dpad-row">
+            <button id="btnStageLeft" class="dpad-btn" title="Translate Stage Left">◀</button>
+            <button id="btnStageCenter" class="dpad-btn" title="Center Stage">⌂</button>
+            <button id="btnStageRight" class="dpad-btn" title="Translate Stage Right">▶</button>
+          </div>
+          <button id="btnStageDown" class="dpad-btn" title="Translate Stage Down">▼</button>
+        </div>
+      </div>
+
+      <!-- Substage Illumination & Iris Diaphragm -->
+      <div class="control-group">
+        <div class="control-label-row">
+          <label for="sliderLight" class="control-label">Light Source Intensity</label>
+          <span id="valLight" class="control-value-tag">85%</span>
+        </div>
+        <input id="sliderLight" type="range" class="custom-range" min="0.1" max="1.0" step="0.05" value="0.85">
+      </div>
+
+      <div class="control-group">
+        <div class="control-label-row">
+          <label for="sliderIris" class="control-label">Iris Diaphragm (Contrast)</label>
+          <span id="valIris" class="control-value-tag">80%</span>
+        </div>
+        <input id="sliderIris" type="range" class="custom-range" min="0.2" max="1.0" step="0.05" value="0.80">
+      </div>
+
+      <!-- Mitotic Index Live Scorecard -->
+      <div class="control-group">
+        <span class="control-label">📊 Mitotic Index Scorecard</span>
+        <table class="mitotic-table">
+          <thead>
+            <tr>
+              <th>Mitotic Stage</th>
+              <th style="text-align:right;">Tally</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>🔵 Interphase (Non-dividing)</td>
+              <td id="tallyInterphase" class="numeric">0</td>
+            </tr>
+            <tr>
+              <td>🟠 Prophase</td>
+              <td id="tallyProphase" class="numeric">0</td>
+            </tr>
+            <tr>
+              <td>🟢 Metaphase</td>
+              <td id="tallyMetaphase" class="numeric">0</td>
+            </tr>
+            <tr>
+              <td>🔴 Anaphase</td>
+              <td id="tallyAnaphase" class="numeric">0</td>
+            </tr>
+            <tr>
+              <td>🟣 Telophase / Cytokinesis</td>
+              <td id="tallyTelophase" class="numeric">0</td>
+            </tr>
+            <tr style="border-top: 2px solid var(--border);">
+              <td><strong>Total Cells Counted</strong></td>
+              <td id="tallyTotal" class="numeric" style="font-weight:700;">0</td>
+            </tr>
+            <tr class="mitotic-index-highlight">
+              <td><strong>Mitotic Index (MI)</strong></td>
+              <td id="valMitoticIndexScore" class="numeric">0.0%</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+    </aside>
+
+  </main>
+
+  <!-- MODAL: DETAILED CELL INSPECTION -->
+  <div id="modalCellDetail" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="cellModalTitle">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 id="cellModalTitle" class="modal-title">🔬 Cell Inspection</h3>
+        <button id="btnCloseCell" class="modal-close-btn" aria-label="Close cell details">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p id="cellModalDesc"></p>
+        <h3>Key Cytological Diagnostic Features</h3>
+        <ul id="cellModalFeatures"></ul>
+        <h3>Molecular &amp; Spindle Checkpoints</h3>
+        <p id="cellModalMolecular" style="font-family: var(--font-mono); font-size:12px; background:#F8FAFC; padding:10px; border-radius:6px; border:1px solid var(--border-subtle);"></p>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: LAB QUESTS -->
+  <div id="modalQuests" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="questsTitle">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 id="questsTitle" class="modal-title">⭐ Student Cytology Quests</h3>
+        <button id="btnCloseQuests" class="modal-close-btn" aria-label="Close quests modal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p>Complete these laboratory challenges by operating the compound light microscope, adjusting focus, and identifying mitotic phases.</p>
+        <div id="questsContainer" class="quests-list"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: THEORY & MITOSIS GUIDE -->
+  <div id="modalTheory" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="theoryTitle">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 id="theoryTitle" class="modal-title">📚 Mitosis &amp; Microscopy Cytology Guide</h3>
+        <button id="btnCloseTheory" class="modal-close-btn" aria-label="Close theory modal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <h3>1. The Stages of Mitosis (Cell Division)</h3>
+        <ol>
+          <li><strong>Interphase (G1, S, G2):</strong> Metabolic growth and complete DNA replication. The nucleus is bounded by an intact membrane with a prominent nucleolus; chromatin is diffuse.</li>
+          <li><strong>Prophase:</strong> Chromatin supercoils into visible condensed chromosomes (paired sister chromatids). The nucleolus and nuclear envelope disassemble. Spindle fibers begin forming.</li>
+          <li><strong>Metaphase:</strong> Chromosomes reach peak condensation and align along the central equatorial Metaphase Plate. Bipolar kinetochore microtubules attach under mechanical tension.</li>
+          <li><strong>Anaphase:</strong> Cohesin protein complexes are cleaved by Separase. Sister chromatids separate and are pulled toward opposite spindle poles by shortening kinetochore microtubules, forming characteristic V-shapes.</li>
+          <li><strong>Telophase &amp; Cytokinesis:</strong> Nuclear envelopes reassemble around daughter chromosome clusters. In plant cells (*Allium cepa*), a Phragmoplast guides vesicle fusion to build a primary <strong>Cell Plate</strong>. In animal cells (*Whitefish*), a contractile ring constricts a <strong>Cleavage Furrow</strong>.</li>
+        </ol>
+
+        <h3>2. Calculating the Mitotic Index (MI)</h3>
+        <p>The Mitotic Index quantifies the proliferative activity of a tissue (such as apical meristems or tumors):</p>
+        <div style="background:#F8FAFC; padding:12px; border-radius:6px; font-family:var(--font-mono); font-size:13px; text-align:center; border:1px solid var(--border-subtle);">
+          $$\text{Mitotic Index} = \frac{\text{Number of Dividing Cells (P + M + A + T)}}{\text{Total Number of Cells Counted}} \times 100\%$$
+        </div>
+
+        <h3>3. Microscope Optical Physics &amp; Oil Immersion</h3>
+        <ul>
+          <li><strong>Total Magnification:</strong> $M_{\text{total}} = M_{\text{ocular}} \times M_{\text{objective}} = 10\times \times 40\times = 400\times$.</li>
+          <li><strong>Numerical Aperture (NA) &amp; Resolution Limit:</strong> $d = \frac{0.61 \lambda}{\text{NA}} = \frac{0.61 \lambda}{n \sin \theta}$.</li>
+          <li><strong>Immersion Oil Principle:</strong> At 100× magnification, the narrow gap between glass cover slip and objective lens causes light to refract away in air ($n = 1.000$). Cedarwood or synthetic immersion oil matches the refractive index of glass ($n = 1.515$), preventing light refraction loss and dramatically boosting resolution!</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCRIPTS -->
+  <script src="js/state.js"></script>
+  <script src="js/cells_data.js"></script>
+  <script src="js/microscope_engine.js"></script>
+  <script src="js/sound.js"></script>
+  <script src="js/renderer.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/main.js"></script>
+</body>
+
+</html>

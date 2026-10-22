@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tyndall Effect, Colloids & Suspensions Virtual Lab | Class 9 NCERT Chemistry</title>
+  <meta name="description" content="Interactive STEM simulation comparing True Solutions, Colloidal Sols, and Suspensions. Explore the Tyndall Effect, Rayleigh light scattering, Brownian motion, and filtration separation.">
+
+  <!-- Typography: Google Fonts Inter, Plus Jakarta Sans & JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+  <!-- App Header -->
+  <header class="app-header">
+    <div class="header-left">
+      <div class="logo-badge">NCERT 9</div>
+      <div class="app-title-group">
+        <h1>Tyndall Effect & Mixtures Virtual Laboratory</h1>
+        <p>Class 9 Chapter 2: Is Matter Around Us Pure? (Activities 2.1 & 2.2)</p>
+      </div>
+    </div>
+    <div class="header-right">
+      <button id="btn-sound" class="btn-icon" aria-label="Toggle Sound">
+        <span>🔊</span> Sound: ON
+      </button>
+      <button id="btn-reset" class="btn-icon" aria-label="Reset Experiment">
+        <span>🔄</span> Reset
+      </button>
+    </div>
+  </header>
+
+  <!-- Main Layout Grid -->
+  <main class="main-layout">
+
+    <!-- Left Controls Panel -->
+    <aside class="panel">
+      <div class="panel-header">
+        <h2 class="panel-title">🔬 Apparatus Controls</h2>
+      </div>
+
+      <!-- View Modes -->
+      <div class="control-group">
+        <label class="control-label">Observation Mode</label>
+        <div class="view-tabs">
+          <button class="tab-btn active" data-mode="bench">Optical Bench</button>
+          <button class="tab-btn" data-mode="brownian_microscope">Ultramicroscope</button>
+          <button class="tab-btn" data-mode="filtration">Filtration Test</button>
+        </div>
+      </div>
+
+      <!-- Laser Emitter Controls -->
+      <div class="control-group">
+        <label class="control-label">Diode Laser Optics</label>
+        <div class="laser-control-row">
+          <button id="btn-toggle-laser" class="btn-toggle-laser active">
+            ⚡ LASER EMITTER: ON
+          </button>
+        </div>
+      </div>
+
+      <!-- Laser Wavelength Pills -->
+      <div class="control-group">
+        <label class="control-label">Wavelength (λ) Selection</label>
+        <div class="laser-pills">
+          <div class="pill-laser active" data-color="red">
+            <div class="laser-dot"></div>
+            <span>650 nm</span>
+          </div>
+          <div class="pill-laser" data-color="green">
+            <div class="laser-dot"></div>
+            <span>532 nm</span>
+          </div>
+          <div class="pill-laser" data-color="blue">
+            <div class="laser-dot"></div>
+            <span>405 nm</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Mixture Selection Cards -->
+      <div class="control-group">
+        <label class="control-label">Select Active Beaker</label>
+        <div class="beaker-cards">
+          <div class="beaker-card" data-beaker="true_solution">
+            <div class="beaker-card-header">
+              <span class="beaker-title">1. True Solution</span>
+              <span class="beaker-tag tag-true">&lt; 1 nm</span>
+            </div>
+            <p class="beaker-desc">CuSO₄ dissolved in distilled water. Clear and transparent.</p>
+          </div>
+
+          <div class="beaker-card active" data-beaker="colloid">
+            <div class="beaker-card-header">
+              <span class="beaker-title">2. Colloidal Sol</span>
+              <span class="beaker-tag tag-colloid">1–1000 nm</span>
+            </div>
+            <p class="beaker-desc">Dilute milk / starch sol. Translucent colloidal dispersion.</p>
+          </div>
+
+          <div class="beaker-card" data-beaker="suspension">
+            <div class="beaker-card-header">
+              <span class="beaker-title">3. Suspension</span>
+              <span class="beaker-tag tag-suspension">&gt; 1000 nm</span>
+            </div>
+            <p class="beaker-desc">Chalk powder in water. Coarse, turbid and settling.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Action Button: Stir Suspension -->
+      <button id="btn-stir" class="btn-action">
+        <span>🌀</span> Stir Suspension
+      </button>
+
+      <!-- Ray Optics Formula -->
+      <div class="formula-banner">
+        <div class="formula-title">Rayleigh-Tyndall Scattering Law</div>
+        <div class="formula-body">I ∝ 1 / λ⁴</div>
+        <div class="formula-caption">Shorter wavelengths (Blue 405 nm) scatter ~6.6× more intensely than Red (650 nm).</div>
+      </div>
+    </aside>
+
+    <!-- Center Stage Canvas Area -->
+    <section class="canvas-wrapper">
+      <div class="canvas-toolbar">
+        <div class="canvas-status">
+          <span class="status-dot"></span>
+          <span>Optical Bench Interactive Canvas (Click on any Beaker)</span>
+        </div>
+        <div id="telemetry-laser-info" style="font-family: var(--font-mono); font-size: 0.78rem; font-weight: 700; color: #1E293B;">
+          Red Diode Laser (650 nm)
+        </div>
+      </div>
+
+      <div class="canvas-container">
+        <canvas id="simulation-canvas"></canvas>
+      </div>
+    </section>
+
+    <!-- Right Telemetry & Quests Column -->
+    <aside class="telemetry-column">
+
+      <!-- Real-time Physical Telemetry -->
+      <div class="panel">
+        <div class="panel-header">
+          <h2 class="panel-title">📊 Optical Telemetry</h2>
+        </div>
+
+        <div class="data-grid">
+          <div class="data-box" style="grid-column: span 2;">
+            <span class="data-box-title">Selected Sample</span>
+            <span id="telemetry-mixture-name" class="data-box-value" style="font-size: 0.92rem;">Colloidal Sol (Milk / Starch)</span>
+          </div>
+
+          <div class="data-box">
+            <span class="data-box-title">Particle Size</span>
+            <span id="telemetry-particle-size" class="data-box-value" style="font-size: 0.90rem;">1–1000 nm</span>
+            <span class="data-box-desc">Colloidal range</span>
+          </div>
+
+          <div class="data-box">
+            <span class="data-box-title">Tyndall Effect</span>
+            <span id="telemetry-tyndall-status" class="data-box-value" style="font-size: 0.85rem;">
+              <span class="badge-true">Luminous Tyndall Cone</span>
+            </span>
+          </div>
+
+          <div class="data-box">
+            <span class="data-box-title">Scattering (I)</span>
+            <span id="telemetry-scattering-intensity" class="data-box-value">85.0%</span>
+            <span class="data-box-desc">Relative to red laser</span>
+          </div>
+
+          <div class="data-box">
+            <span class="data-box-title">Physical Stability</span>
+            <span id="telemetry-stability" class="data-box-value" style="font-size: 0.80rem;">Completely Stable</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- NCERT Activity 2.1 & 2.2 Quest Tracker -->
+      <div class="panel">
+        <div class="panel-header">
+          <h2 class="panel-title">🎯 NCERT Quests</h2>
+        </div>
+        <div id="quest-list" class="quest-list">
+          <!-- Populated by ui.js -->
+        </div>
+      </div>
+
+    </aside>
+
+    <!-- Bottom Comparative Database Section -->
+    <section class="comparison-section">
+      <div class="panel-header">
+        <h2 class="panel-title">📚 Comparative Scientific Database (NCERT Chapter 2)</h2>
+      </div>
+
+      <div class="table-responsive">
+        <table class="comparison-table">
+          <thead>
+            <tr>
+              <th>Mixture Type</th>
+              <th>Particle Diameter</th>
+              <th>Appearance</th>
+              <th>Tyndall Effect (Light Beam)</th>
+              <th>Separation by Filter Paper</th>
+              <th>Stability (Settling)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr data-type="true_solution">
+              <td><strong>True Solution</strong> (e.g. CuSO₄ / Salt)</td>
+              <td>&lt; 1 nm (10⁻⁹ m)</td>
+              <td>Clear & Transparent</td>
+              <td><span class="badge-false">No (Beam Invisible)</span></td>
+              <td>Passes completely (No residue)</td>
+              <td>Completely Stable</td>
+            </tr>
+            <tr data-type="colloid" class="highlighted">
+              <td><strong>Colloid</strong> (e.g. Milk / Starch Sol)</td>
+              <td>1 nm to 1000 nm</td>
+              <td>Translucent / Opalescent</td>
+              <td><span class="badge-true">Yes (Luminous Path)</span></td>
+              <td>Passes through filter paper</td>
+              <td>Stable (Brownian motion)</td>
+            </tr>
+            <tr data-type="suspension">
+              <td><strong>Suspension</strong> (e.g. Chalk Powder)</td>
+              <td>&gt; 1000 nm (10⁻⁶ m)</td>
+              <td>Cloudy / Opaque</td>
+              <td><span class="badge-true">Yes (Scatters while turbid)</span></td>
+              <td>Retained (Chalk residue)</td>
+              <td>Unstable (Sediments)</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Simulation Logic & Modules -->
+  <script src="js/tyndall_data.js"></script>
+  <script src="js/sound.js"></script>
+  <script src="js/state.js"></script>
+  <script src="js/tyndall_engine.js"></script>
+  <script src="js/renderer.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Solubility Curves & Crystallization Virtual Lab (NCERT Class 9)</title>
+  <meta name="description" content="Interactive STEM chemistry simulation for Class 9. Explore temperature-dependent solubility curves, saturation equilibrium, and fractional crystallization purification.">
+
+  <!-- Google Fonts: Dual-Font Typography System -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <!-- Header -->
+  <header class="lab-header">
+    <div class="header-brand">
+      <div class="lab-icon-badge">🧊</div>
+      <div class="lab-title-group">
+        <h1>Solubility & Crystallization Virtual Lab</h1>
+        <div class="lab-subtitle">Class 9 Chemistry • NCERT Chapter 2 (Saturated Solutions & Purification)</div>
+      </div>
+    </div>
+
+    <div class="header-actions">
+      <!-- Solute Switcher Tabs -->
+      <div class="solute-switch-group" role="tablist">
+        <button id="soluteKno3Btn" class="solute-btn active" role="tab">KNO₃ (Steep)</button>
+        <button id="soluteNaclBtn" class="solute-btn" role="tab">NaCl (Flat)</button>
+        <button id="soluteCuso4Btn" class="solute-btn" role="tab">CuSO₄ (Blue)</button>
+        <button id="soluteCeBtn" class="solute-btn" role="tab">Ce₂(SO₄)₃ (Inverse)</button>
+      </div>
+
+      <button id="soundToggleBtn" class="btn-secondary" title="Toggle spatula clinks and burner audio">🔊 Sound: ON</button>
+      <button id="guideBtn" class="btn-secondary" title="View lab manual and solubility theory">📖 Lab Manual</button>
+    </div>
+  </header>
+
+  <!-- Main Unified Workspace Grid -->
+  <main class="main-layout">
+    <!-- Left: Canvas Stage & Telemetry -->
+    <section class="stage-container">
+      <div class="canvas-wrapper">
+        <canvas id="simCanvas"></canvas>
+
+        <div class="canvas-hud-top">
+          <div class="hud-pill">
+            <span class="hud-pill-pulse"></span>
+            <span>250 mL Borosilicate Beaker + Wire Gauze</span>
+          </div>
+          <div class="hud-pill">
+            <span>Solvent: 100.0 g pure H₂O</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Action Controls below canvas -->
+      <div class="stage-controls">
+        <div class="stage-btn-group">
+          <button id="add5gBtn" class="btn-add-solute">🥄 Add +5g Solute</button>
+          <button id="add20gBtn" class="btn-add-solute">🥄 Add +20g Solute</button>
+          <button id="seedCrystalBtn" class="btn-seed">💎 Add Seed Crystal</button>
+          <button id="iceBathBtn" class="btn-ice">❄️ Ice Bath Cooling</button>
+        </div>
+
+        <button id="resetBtn" class="btn-secondary">↺ Reset Beaker</button>
+      </div>
+
+      <!-- Telemetry Grid -->
+      <div class="telemetry-grid">
+        <div class="telemetry-card">
+          <div class="telemetry-card-title">TEMPERATURE</div>
+          <div id="card1Val" class="telemetry-card-value">20.0°C</div>
+          <div id="card1Unit" class="telemetry-card-unit">Ambient Equilibrium</div>
+        </div>
+        <div class="telemetry-card">
+          <div class="telemetry-card-title">SOLUTE ADDED</div>
+          <div id="card2Val" class="telemetry-card-value">0.0 g</div>
+          <div id="card2Unit" class="telemetry-card-unit">In 100 g H₂O</div>
+        </div>
+        <div class="telemetry-card">
+          <div class="telemetry-card-title">SOLUBILITY LIMIT</div>
+          <div id="card3Val" class="telemetry-card-value">31.6 g</div>
+          <div id="card3Unit" class="telemetry-card-unit">Equilibrium S(T)</div>
+        </div>
+        <div class="telemetry-card">
+          <div class="telemetry-card-title">SOLUTION STATE</div>
+          <div id="card4Val" class="telemetry-card-value">UNSATURATED</div>
+          <div id="card4Unit" class="telemetry-card-unit">Can dissolve more solute freely</div>
+        </div>
+      </div>
+
+      <!-- Live Scientific Formula Banner -->
+      <div class="reaction-banner">
+        <div id="reactionTitle" class="reaction-title">Potassium Nitrate (KNO₃) Thermodynamic Profile</div>
+        <div id="equationBlock" class="equation-block">Solvent: 100.0 g pure H₂O   |   Slope Characteristic: STEEP ENDOTHERMIC</div>
+        <div id="explanationText" class="explanation-text">Remarkably steep positive slope. Solubility increases by over 700% from 20°C to 100°C. Ideal for purifying via fractional crystallization.</div>
+      </div>
+    </section>
+
+    <!-- Right: Parameter Control Sidebar -->
+    <aside class="control-sidebar">
+      <!-- Bunsen Burner Heating Controls -->
+      <div class="sidebar-panel">
+        <div class="panel-header">
+          <h2 class="panel-title">Bunsen Burner Heating</h2>
+        </div>
+
+        <div class="control-group">
+          <div class="control-label-row">
+            <span>Burner Flame Power</span>
+            <span id="flameVal" class="control-value-readout">OFF</span>
+          </div>
+          <input type="range" id="flameSlider" class="styled-slider" min="0" max="100" step="5" value="0">
+        </div>
+
+        <div style="font-size: 0.8rem; color: var(--text-muted); line-height: 1.4;">
+          <strong>Le Chatelier's Principle:</strong> For endothermic dissolution ($\Delta H > 0$), heating shifts equilibrium towards dissolving more solute, raising the saturation limit.
+        </div>
+      </div>
+
+      <!-- Laboratory Quests (NCERT) -->
+      <div class="sidebar-panel">
+        <div class="panel-header">
+          <h2 class="panel-title">Laboratory Quests (NCERT)</h2>
+        </div>
+
+        <div id="questList" class="quest-list">
+          <!-- Dynamically populated by state -->
+        </div>
+      </div>
+    </aside>
+  </main>
+
+  <!-- Lab Manual Guide Modal -->
+  <div id="guideModal" class="modal-overlay">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 class="modal-title">📖 Laboratory Manual: Solubility & Crystallization</h3>
+        <button id="closeModalBtn" class="modal-close-btn">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p><strong>1. Solubility Definition:</strong> The maximum mass of solute in grams that can dissolve in $100\text{ g}$ of a solvent at a specific temperature to form a saturated solution.</p>
+        <br>
+        <p><strong>2. Three Solution States:</strong></p>
+        <ul style="padding-left: 20px; margin-top: 4px;">
+          <li><strong>Unsaturated Solution:</strong> Contains less solute than the saturation limit at that temperature. More solute dissolves easily upon stirring.</li>
+          <li><strong>Saturated Solution:</strong> Equilibrium between dissolved solute and undissolved solid. No more solute can dissolve at that temperature.</li>
+          <li><strong>Supersaturated Solution:</strong> Contains more dissolved solute than normal saturation. Formed by cooling a hot saturated solution. Highly unstable; introducing a seed crystal triggers immediate crystallization!</li>
+        </ul>
+        <br>
+        <p><strong>3. Crystallization vs. Evaporation:</strong> Crystallization is superior to simple evaporation to dryness because it yields pure crystalline solids without decomposing heat-sensitive salts or concentrating soluble impurities.</p>
+      </div>
+      <div class="modal-footer">
+        <button id="modalGotItBtn" class="btn-add-solute" style="padding: 8px 18px;">Understood, Start Lab</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="js/solubility_data.js"></script>
+  <script src="js/sound.js"></script>
+  <script src="js/state.js"></script>
+  <script src="js/solubility_engine.js"></script>
+  <script src="js/renderer.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>
