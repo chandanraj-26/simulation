@@ -2,9 +2,9 @@ name: Daily Virtual Lab Release
 
 on:
   schedule:
-    # Triggers every day at 04:30 UTC (10:00 AM IST)
+    # Triggers every day at 10:30 UTC (4:00 PM IST)
     # Runs completely on GitHub's cloud servers — no laptop needed!
-    - cron: '30 4 * * *'
+    - cron: '30 10 * * *'
   workflow_dispatch: # Allows manual one-click trigger from phone or browser anytime
 
 permissions:
