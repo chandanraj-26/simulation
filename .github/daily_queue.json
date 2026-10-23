@@ -7,8 +7,8 @@
     "commitMsg": "feat(microscope): add Virtual Compound Microscope & Mitosis Simulator (NCERT Class 9)",
     "readmeSection": "### 16. 🔬 [Virtual Compound Microscope & Mitosis Simulator (`/microscope_simulation`)](microscope_simulation/)\n- **Revolving Objective Nosepiece & Optics**: 4× Scanning, 10× Low Power, 40× High Power, and 100× Oil Immersion ($n = 1.515$) with coarse/fine micrometric focus and depth-of-field blur.\n- **Authentic Cytology Specimen Slides**: Onion Root Tip Squash (*Allium cepa*) with primary cellulose cell plate cytokinesis, and Whitefish Blastula (*Coregonus*) with radiating astral rays (asters) and cleavage furrow.\n- **All 5 Stages of Mitosis**: Interphase, Prophase, Metaphase, Anaphase, and Telophase with stained chromatin, kinetochores, and spindle fiber tracking.\n- **Interactive Cell Tagging & Mitotic Index**: Live scorecard calculating meristematic Mitotic Index ($\\text{MI} = \\frac{\\text{Dividing}}{\\text{Total}} \\times 100\\%$) and stage micrometer calibration ($0.01\\text{ mm} / 10\\ \\mu\\text{m}$).",
     "runSection": "# Virtual Compound Microscope & Mitosis Simulator\ncd microscope_simulation\nnode server.js   # http://localhost:8099",
-    "released": false,
-    "releasedAt": null
+    "released": true,
+    "releasedAt": "2026-10-23T15:14:04.932Z"
   },
   {
     "id": "flame_test_simulation",
