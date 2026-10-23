@@ -101,6 +101,12 @@ A collection of interactive, client-side STEM physics simulations built with HTM
 - **Synchronized Wiggers Diagram**: Real-time Lead II ECG (P-QRS-T), ventricular and aortic pressures with **Dicrotic Notch**, ventricular volume ($EDV \to ESV$), and phonocardiogram (PCG).
 - **Procedural Web Audio & Auscultation Bench**: Zero-dependency synthesis of $S_1$ ("LUB") and $S_2$ ("DUB"), draggable stethoscope over clinical landmarks (Aortic, Pulmonic, Tricuspid, Mitral/Apex), and pathological murmurs.
 
+
+### 16. 🔬 [Virtual Compound Microscope & Mitosis Simulator (`/microscope_simulation`)](microscope_simulation/)
+- **Revolving Objective Nosepiece & Optics**: 4× Scanning, 10× Low Power, 40× High Power, and 100× Oil Immersion ($n = 1.515$) with coarse/fine micrometric focus and depth-of-field blur.
+- **Authentic Cytology Specimen Slides**: Onion Root Tip Squash (*Allium cepa*) with primary cellulose cell plate cytokinesis, and Whitefish Blastula (*Coregonus*) with radiating astral rays (asters) and cleavage furrow.
+- **All 5 Stages of Mitosis**: Interphase, Prophase, Metaphase, Anaphase, and Telophase with stained chromatin, kinetochores, and spindle fiber tracking.
+- **Interactive Cell Tagging & Mitotic Index**: Live scorecard calculating meristematic Mitotic Index ($\text{MI} = \frac{\text{Dividing}}{\text{Total}} \times 100\%$) and stage micrometer calibration ($0.01\text{ mm} / 10\ \mu\text{m}$).
 ---
 
 ## 💻 Tech Stack
@@ -113,6 +119,10 @@ A collection of interactive, client-side STEM physics simulations built with HTM
 You can run any simulation using any static web server:
 
 ```bash
+# Virtual Compound Microscope & Mitosis Simulator
+cd microscope_simulation
+node server.js   # http://localhost:8099
+
 # Human Cardiac Cycle & ECG Simulator
 cd cardiac_simulation
 python -m http.server 8098
