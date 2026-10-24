@@ -1,0 +1,407 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>CoasterLab — Roller Coaster Kinematics &amp; Loop Fail Dynamics</title>
+  <meta name="description"
+    content="Interactive STEM physics simulator exploring roller coaster energy conservation, centripetal acceleration, normal contact force, the 2.5R rule, and dramatic loop fail dynamics.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+
+<body>
+
+  <!-- MAIN APPLICATION HEADER -->
+  <header class="app-header">
+    <div class="header-container">
+      <div class="brand-wrapper">
+        <div class="brand-icon">🎢</div>
+        <div>
+          <div style="display:flex; align-items:center;">
+            <h1 class="brand-title">CoasterLab</h1>
+            <span class="brand-tag">Class 9–12 &amp; AP Physics</span>
+          </div>
+          <div class="brand-sub">Roller Coaster Kinematics &amp; Loop Fail Dynamics</div>
+        </div>
+      </div>
+
+      <!-- Mode Selector (Loop Geometry) -->
+      <div class="mode-selector-group">
+        <button id="btnModeCircular" class="mode-type-btn active" title="Classic circular loop (Constant radius R)">
+          <span>⭕</span> Circular Loop
+        </button>
+        <button id="btnModeClothoid" class="mode-type-btn" title="Teardrop clothoid loop (Euler spiral, safer G-forces)">
+          <span>💧</span> Clothoid Loop
+        </button>
+      </div>
+
+      <!-- Header Actions -->
+      <div class="header-actions">
+        <button id="btnOpenQuests" class="action-btn" title="Complete Student Laboratory Quests">
+          <span>⭐</span> Lab Quests
+        </button>
+        <button id="btnOpenTheory" class="action-btn btn-primary" title="View Conservation of Energy &amp; 2.5R Rule Theory">
+          <span>📚</span> Theory &amp; Laws
+        </button>
+        <button id="btnAudioToggle" class="action-btn active" title="Toggle Sound FX">
+          🔊 Audio: ON
+        </button>
+        <button id="btnReset" class="action-btn" title="Reset cart to the top of the initial hill">
+          <span>↺</span> Reset
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN WORKSPACE LAYOUT -->
+  <main class="main-layout">
+
+    <!-- LEFT: Canvas Viewport & Live Telemetry -->
+    <div class="canvas-section">
+
+      <!-- Canvas Card -->
+      <div class="canvas-card">
+        <!-- Canvas Top Bar -->
+        <div class="canvas-header-bar">
+          <div class="quick-actions-bar">
+            <button id="btnLaunch" class="btn-launch" title="Release the coaster cart from rest">
+              <span>🚀</span> Release Cart
+            </button>
+            <button id="btnPause" class="btn-pause" title="Pause or resume the simulation loop">
+              <span>⏸️</span> Pause
+            </button>
+          </div>
+
+          <!-- Status & Real-time Quick HUD -->
+          <div class="header-status-hud">
+            <span id="telStatus" class="hud-pill status-safe">READY</span>
+            <span class="hud-pill">g = 9.81 m/s²</span>
+          </div>
+        </div>
+
+        <!-- Canvas Container -->
+        <div class="canvas-container">
+          <canvas id="coasterCanvas"></canvas>
+
+          <!-- CRITICAL FAIL OVERLAY (Post-Crash Banner) -->
+          <div id="crashOverlay" class="crash-overlay">
+            <div class="crash-box">
+              <div class="crash-icon">💥</div>
+              <h2 class="crash-title">CRITICAL: CART FELL OFF TRACK!</h2>
+              <p class="crash-explanation">
+                The release height was insufficient to sustain the normal contact force ($N \le 0$) at the loop. The cart detached from the rails and tumbled along a ballistic parabolic arc!
+              </p>
+              <div class="crash-formula-box">
+                <div>Release Height h₀: <strong id="crashH0Val">20.0 m</strong></div>
+                <div>Required h_min (2.5R): <strong id="crashHMinVal">25.0 m</strong></div>
+                <div style="margin-top:4px; font-size:11px; color:#475569;">Condition: h₀ must be ≥ 2.5 × R</div>
+              </div>
+              <button id="btnCrashReset" class="btn-crash-reset">
+                <span>↺</span> Reset &amp; Adjust Height
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Live Telemetry Grid (Unified 4-Col Desktop, 2-Col Tablet, 1-Col Phone) -->
+      <div class="telemetry-grid">
+        <div class="telemetry-card">
+          <div class="telemetry-card-title">Cart Velocity (v)</div>
+          <div id="telSpeed" class="telemetry-card-val color-speed">0.0 m/s</div>
+          <div id="telSpeedSub" class="telemetry-card-sub">0.0 km/h</div>
+        </div>
+
+        <div class="telemetry-card">
+          <div class="telemetry-card-title">Track Height (y)</div>
+          <div id="telHeight" class="telemetry-card-val">40.0 m</div>
+          <div class="telemetry-card-sub">Above ground level</div>
+        </div>
+
+        <div class="telemetry-card">
+          <div class="telemetry-card-title">Kinetic Energy (KE)</div>
+          <div id="telKE" class="telemetry-card-val color-ke">0.0 kJ</div>
+          <div class="telemetry-card-sub">KE = ½ m v²</div>
+        </div>
+
+        <div class="telemetry-card">
+          <div class="telemetry-card-title">Potential Energy (PE)</div>
+          <div id="telPE" class="telemetry-card-val color-pe">196.2 kJ</div>
+          <div class="telemetry-card-sub">PE = m g y</div>
+        </div>
+
+        <div class="telemetry-card">
+          <div class="telemetry-card-title">Apparent Weight (G-Force)</div>
+          <div id="telGForce" class="telemetry-card-val color-gforce">1.00 G</div>
+          <div class="telemetry-card-sub">G = N / (m g)</div>
+        </div>
+
+        <div id="cardNormal" class="telemetry-card">
+          <div class="telemetry-card-title">Track Normal Force (N)</div>
+          <div id="telNormal" class="telemetry-card-val color-normal">4.91 kN</div>
+          <div class="telemetry-card-sub">Detachment when N ≤ 0</div>
+        </div>
+
+        <div class="telemetry-card">
+          <div class="telemetry-card-title">Track Distance (s)</div>
+          <div id="telDist" class="telemetry-card-val">0.0 m</div>
+          <div class="telemetry-card-sub">Arc length from summit</div>
+        </div>
+
+        <div class="telemetry-card">
+          <div class="telemetry-card-title">Loop Safety Check</div>
+          <div class="telemetry-card-val" style="font-size:14px; font-weight:700;">
+            h₀ ≥ 2.5 R
+          </div>
+          <div class="telemetry-card-sub">Apex condition: v ≥ √(gR)</div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- RIGHT: Control Sidebar -->
+    <aside class="control-sidebar">
+
+      <!-- CARD 1: Presets -->
+      <div class="sidebar-card">
+        <div class="sidebar-card-title">
+          <span>🚀 EXPERIMENT PRESETS</span>
+          <span class="sidebar-badge">Quick Test</span>
+        </div>
+        <div class="preset-button-grid">
+          <button id="presetSafe" class="preset-btn active-safe" title="Release from 40m - safely clears 10m loop">
+            <span class="preset-btn-icon">✅</span>
+            <span class="preset-btn-label">Safe Run</span>
+            <span class="preset-btn-sub">h₀ = 40 m</span>
+          </button>
+          <button id="presetBarely" class="preset-btn" title="Release from 25m = 2.5R exactly - N drops to near zero at apex!">
+            <span class="preset-btn-icon">⚠️</span>
+            <span class="preset-btn-label">Barely Makes It</span>
+            <span class="preset-btn-sub">h₀ = 25 m = 2.5R</span>
+          </button>
+          <button id="presetFail" class="preset-btn" title="Release from 20m < 2.5R - cart detaches and crashes!">
+            <span class="preset-btn-icon">❌</span>
+            <span class="preset-btn-label">Fail Preset</span>
+            <span class="preset-btn-sub">h₀ = 20 m &lt; 2.5R</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- CARD 2: Hill & Loop Geometry -->
+      <div class="sidebar-card">
+        <div class="sidebar-card-title">
+          <span>📐 TRACK GEOMETRY</span>
+          <span class="sidebar-badge">Dimensions</span>
+        </div>
+
+        <!-- Release Height h0 -->
+        <div class="control-group">
+          <div class="control-label-row">
+            <span>Release Height (h₀):</span>
+            <span id="valH0" class="slider-val-readout">40.0 m</span>
+          </div>
+          <input type="range" id="sliderH0" class="custom-range" min="10" max="75" step="1" value="40">
+          <div style="display:flex; justify-content:space-between; font-size:9.5px; color:#64748b; font-family:var(--font-mono);">
+            <span>10 m</span>
+            <span>40 m</span>
+            <span>75 m</span>
+          </div>
+        </div>
+
+        <!-- Loop Radius R -->
+        <div class="control-group">
+          <div class="control-label-row">
+            <span>Loop Radius (R):</span>
+            <span id="valRadius" class="slider-val-readout">10.0 m</span>
+          </div>
+          <input type="range" id="sliderRadius" class="custom-range" min="5" max="20" step="0.5" value="10">
+          <div style="display:flex; justify-content:space-between; font-size:9.5px; color:#64748b; font-family:var(--font-mono);">
+            <span>5 m</span>
+            <span>10 m</span>
+            <span>20 m</span>
+          </div>
+        </div>
+
+        <!-- 2.5R Rule Verification Live Box -->
+        <div class="hmin-indicator-box">
+          <div>
+            <div style="font-weight:700; color:#334155;">Min Height (2.5R):</div>
+            <div id="lblHMin" style="font-family:var(--font-mono); color:#0284C7; font-weight:700;">25.0 m</div>
+          </div>
+          <span id="badgeHMinPass" class="hmin-badge pass">PASS (Safe)</span>
+        </div>
+      </div>
+
+      <!-- CARD 3: Cart Mass & Friction -->
+      <div class="sidebar-card">
+        <div class="sidebar-card-title">
+          <span>⚙️ CART &amp; FRICTION</span>
+          <span class="sidebar-badge">Dynamics</span>
+        </div>
+
+        <!-- Cart Mass -->
+        <div class="control-group">
+          <div class="control-label-row">
+            <span>Cart Mass (m):</span>
+            <span id="valMass" class="slider-val-readout">500 kg</span>
+          </div>
+          <input type="range" id="sliderMass" class="custom-range" min="100" max="2000" step="50" value="500">
+          <div style="display:flex; justify-content:space-between; font-size:9.5px; color:#64748b; font-family:var(--font-mono);">
+            <span>100 kg</span>
+            <span>500 kg</span>
+            <span>2000 kg</span>
+          </div>
+        </div>
+
+        <!-- Friction Toggle & Slider -->
+        <div class="control-group">
+          <div class="control-label-row">
+            <label class="toggle-label" style="margin:0;">
+              <input type="checkbox" id="chkFriction">
+              <span>Enable Kinetic Friction (μ)</span>
+            </label>
+            <span id="valFriction" class="slider-val-readout">0.000</span>
+          </div>
+          <input type="range" id="sliderFriction" class="custom-range" min="0.000" max="0.080" step="0.005" value="0.000">
+        </div>
+
+        <!-- Simulation Speed -->
+        <div class="control-group">
+          <div class="control-label-row">
+            <span>Simulation Speed:</span>
+            <span id="valSpeed" class="slider-val-readout">1.00x</span>
+          </div>
+          <input type="range" id="sliderSpeed" class="custom-range" min="0.25" max="2.50" step="0.25" value="1.00">
+        </div>
+      </div>
+
+      <!-- CARD 4: Visual Overlays -->
+      <div class="sidebar-card">
+        <div class="sidebar-card-title">
+          <span>👁️ VISUAL OVERLAYS</span>
+          <span class="sidebar-badge">HUD</span>
+        </div>
+        <div class="toggle-grid">
+          <label class="toggle-label">
+            <input type="checkbox" id="chkVelocityVector" checked>
+            <span>Velocity Vector</span>
+          </label>
+          <label class="toggle-label">
+            <input type="checkbox" id="chkForceVectors" checked>
+            <span>Force Vectors (N, mg)</span>
+          </label>
+          <label class="toggle-label">
+            <input type="checkbox" id="chkEnergyBars" checked>
+            <span>Energy Bar Gauge</span>
+          </label>
+          <label class="toggle-label">
+            <input type="checkbox" id="chkSpeedTrail" checked>
+            <span>Speed Trail</span>
+          </label>
+        </div>
+      </div>
+
+    </aside>
+
+  </main>
+
+  <!-- MODAL 1: LAB QUESTS -->
+  <div id="modalQuests" class="modal-wrapper">
+    <div class="modal-backdrop"></div>
+    <div class="modal-container">
+      <div class="modal-header">
+        <h3 class="modal-title">⭐ Student Laboratory Quests</h3>
+        <button class="modal-close">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p style="margin-top:0; color:#64748B;">Complete each physics experiment challenge to earn gold stars:</p>
+        <div id="questsList">
+          <!-- Populated dynamically -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL 2: THEORY & FORMULAS -->
+  <div id="modalTheory" class="modal-wrapper">
+    <div class="modal-backdrop"></div>
+    <div class="modal-container">
+      <div class="modal-header">
+        <h3 class="modal-title">📚 Roller Coaster Physics &amp; The 2.5R Rule</h3>
+        <button class="modal-close">&times;</button>
+      </div>
+      <div class="modal-body">
+        <h4 style="color:#0284C7; margin-top:0;">1. Conservation of Mechanical Energy</h4>
+        <p>
+          At any point on the track at vertical height $y$, the cart’s total mechanical energy is the sum of its Gravitational Potential Energy ($PE$) and Kinetic Energy ($KE$):
+        </p>
+        <div style="background:#F8FAFC; border-left:4px solid #0284C7; padding:10px 14px; font-family:var(--font-mono); margin:10px 0;">
+          E_total = PE + KE = m·g·y + ½·m·v² = m·g·h₀
+        </div>
+        <p>
+          Solving for the speed as a function of drop height:
+        </p>
+        <div style="background:#F8FAFC; border-left:4px solid #0284C7; padding:10px 14px; font-family:var(--font-mono); margin:10px 0;">
+          v(y) = √( 2·g·(h₀ - y) )
+        </div>
+        <p>Notice that the cart's speed is completely independent of its mass $m$!</p>
+
+        <h4 style="color:#0284C7; margin-top:16px;">2. Centripetal Force &amp; Normal Force at the Apex</h4>
+        <p>
+          When the cart traverses a loop of radius $R$, the track must exert an inward contact force (Normal Force $N$) toward the center. At the top of the loop (apex at $y = 2R$), both gravity $mg$ and the normal force $N$ point downwards:
+        </p>
+        <div style="background:#F8FAFC; border-left:4px solid #0284C7; padding:10px 14px; font-family:var(--font-mono); margin:10px 0;">
+          N + m·g = m·v² / R  ⟹  N = m·( v² / R - g )
+        </div>
+
+        <h4 style="color:#0284C7; margin-top:16px;">3. The 2.5R Rule Derivation</h4>
+        <p>
+          To prevent the cart from falling off the rails, the contact force cannot drop below zero ($N \ge 0$). This establishes the minimum apex speed:
+        </p>
+        <div style="background:#F8FAFC; border-left:4px solid #0284C7; padding:10px 14px; font-family:var(--font-mono); margin:10px 0;">
+          v_apex ≥ √( g·R )
+        </div>
+        <p>
+          By energy conservation from release height $h_0$ to apex height $y = 2R$:
+        </p>
+        <div style="background:#F8FAFC; border-left:4px solid #0284C7; padding:10px 14px; font-family:var(--font-mono); margin:10px 0;">
+          m·g·h_min = m·g·(2R) + ½·m·(√(gR))² = 2·m·g·R + 0.5·m·g·R = 2.5·m·g·R<br>
+          ⟹ h_min = 2.5 · R
+        </div>
+        <p>
+          <strong>The 2.5R Rule:</strong> The initial hill must be at least <strong>2.5 times the radius</strong> of a circular loop. If friction or air resistance is present, it must be even higher!
+        </p>
+
+        <h4 style="color:#0284C7; margin-top:16px;">4. The "Loop Fail" Phenomenon</h4>
+        <p>
+          When $h_0 < 2.5R$, the speed at the upper loop is too low to sustain circular motion ($v^2/R < g$). The normal contact force drops to zero ($N = 0$). The cart lifts off the track rails and transitions into free-fall <strong>ballistic projectile motion</strong> under gravity ($a_x = 0, a_y = -g$).
+        </p>
+
+        <h4 style="color:#0284C7; margin-top:16px;">5. Why Real Coasters Use "Clothoid" Loops</h4>
+        <p>
+          A perfectly circular loop requires an abrupt change in curvature at the entrance, generating dangerous, spine-compressing G-forces (> 6–8 Gs). Real roller coasters use teardrop-shaped loops (clothoids or Euler spirals) where the radius of curvature decreases gradually toward the top, keeping entry forces comfortable (&le; 3.5–4 Gs).
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div id="toastContainer" class="toast-container"></div>
+
+  <!-- Scripts -->
+  <script src="js/track.js"></script>
+  <script src="js/sound.js"></script>
+  <script src="js/physics.js"></script>
+  <script src="js/state.js"></script>
+  <script src="js/renderer.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/main.js"></script>
+</body>
+
+</html>
