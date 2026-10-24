@@ -1,0 +1,475 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>OhmLab — Interactive Ohm's Law &amp; V-I Characteristic Virtual Laboratory</title>
+  <meta name="description"
+    content="Interactive STEM physics simulation for Class 10–12 and AP Physics exploring Ohm's Law, Drude electron drift, Joule heating, V-I characteristics, and circuit meter safety.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+
+<body>
+
+  <!-- ==========================================================================
+       APP HEADER
+       ========================================================================== -->
+  <header class="app-header">
+    <div class="header-container">
+      <div class="brand-wrapper">
+        <div class="brand-icon">⚡</div>
+        <div>
+          <div style="display:flex; align-items:center;">
+            <h1 class="brand-title">OhmLab</h1>
+            <span class="brand-tag">Class 10–12 &amp; AP Physics</span>
+          </div>
+          <div class="brand-sub">Ohm's Law, Drude Conduction &amp; V-I Characteristic Virtual Laboratory</div>
+        </div>
+      </div>
+
+      <!-- Header Action Buttons -->
+      <div class="header-actions">
+        <button id="btnOpenQuests" class="action-btn" title="View laboratory learning quests">
+          <span>⭐</span> Lab Quests
+        </button>
+        <button id="btnOpenTheory" class="action-btn btn-primary" title="View mathematical theory and physics principles">
+          <span>📚</span> Theory &amp; Laws
+        </button>
+        <button id="btnAudioToggle" class="action-btn active" title="Toggle audio synthesis">
+          🔊 Sound: ON
+        </button>
+        <button id="btnResetAll" class="action-btn" title="Reset all simulation values to default">
+          <span>↺</span> Reset All
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ==========================================================================
+       MAIN WORKSPACE LAYOUT
+       ========================================================================== -->
+  <main class="main-layout">
+
+    <!-- LEFT: Canvas Viewport & Live Telemetry Grid -->
+    <div class="canvas-section">
+
+      <!-- Canvas Card -->
+      <div class="canvas-card">
+        <!-- Canvas Header Bar with View Tabs, Presets, and Status Badges -->
+        <div class="canvas-header-bar">
+          <!-- View Tabs Switcher -->
+          <div class="canvas-view-tabs" role="tablist">
+            <button id="tabCircuit" class="view-tab-btn active" role="tab" aria-selected="true" title="Interactive schematic view with animated wire current and meters">
+              <span>⚡</span> Circuit View
+            </button>
+            <button id="tabDrift" class="view-tab-btn" role="tab" aria-selected="false" title="Microscopic Drude model view of free electrons colliding with lattice ions">
+              <span>🔬</span> Electron Drift
+            </button>
+            <button id="tabGraph" class="view-tab-btn" role="tab" aria-selected="false" title="Cartesian V-I characteristic graph with real-time operating point and regression">
+              <span>📊</span> V-I Graph
+            </button>
+          </div>
+
+          <!-- Play/Pause Quick Action -->
+          <div class="quick-actions-bar">
+            <button id="btnPlayPause" class="btn-action-primary" title="Pause or resume simulation clock (Spacebar)">
+              <span>⏸️</span> Pause
+            </button>
+          </div>
+
+          <!-- Quick Presets -->
+          <div class="canvas-presets-wrapper">
+            <button class="preset-chip active" data-preset="safe" title="Standard safe operating point: 6V, 100Ω">Safe Linear (6V, 100Ω)</button>
+            <button class="preset-chip" data-preset="high-current" title="High current demonstrating faster drift: 12V, 10Ω">High Current (12V, 10Ω)</button>
+            <button class="preset-chip" data-preset="high-resist" title="High resistance circuit: 6V, 1kΩ">High R (6V, 1kΩ)</button>
+            <button class="preset-chip" data-preset="max-power" title="Maximum Joule heating thermal dissipation: 24V, 10Ω">Max Power (24V, 10Ω)</button>
+            <button class="preset-chip hazard-chip" data-preset="short-circuit" title="Fault: Ammeter across power supply">⚠ Short Circuit</button>
+            <button class="preset-chip hazard-chip" data-preset="open-loop" title="Fault: Voltmeter in series with load">⚠ Open Loop</button>
+          </div>
+
+          <!-- Real-Time Status HUD Badges -->
+          <div class="header-status-hud">
+            <span id="hudBadgeV" class="hud-badge badge-red">V = 6.00 V</span>
+            <span id="hudBadgeI" class="hud-badge badge-blue">I = 60.0 mA</span>
+            <span id="hudBadgeR" class="hud-badge badge-orange">R = 100.0 Ω</span>
+          </div>
+        </div>
+
+        <!-- Canvas Container -->
+        <div class="canvas-container">
+          <canvas id="circuitCanvas"></canvas>
+        </div>
+      </div>
+
+      <!-- Live Telemetry Card Grid (6 Cards) -->
+      <div class="telemetry-grid">
+        <!-- Card 1: Supply Voltage -->
+        <div class="telemetry-card card-voltage">
+          <div class="telemetry-card-title">Power Supply (EMF)</div>
+          <div id="telemetryV" class="telemetry-card-val">6.00 V</div>
+          <div class="telemetry-card-sub">Applied DC potential</div>
+        </div>
+
+        <!-- Card 2: Total Circuit Current -->
+        <div class="telemetry-card card-current">
+          <div class="telemetry-card-title">Circuit Current (I)</div>
+          <div id="telemetryI" class="telemetry-card-val">0.0 mA</div>
+          <div class="telemetry-card-sub" id="telemetryISub">Switch open (I = 0)</div>
+        </div>
+
+        <!-- Card 3: Resistor Resistance -->
+        <div class="telemetry-card card-resist">
+          <div class="telemetry-card-title">Effective Resistance (R)</div>
+          <div id="telemetryR" class="telemetry-card-val">100.0 Ω</div>
+          <div class="telemetry-card-sub" id="telemetryRSub">R(T) at 25.0 °C</div>
+        </div>
+
+        <!-- Card 4: Electrical Power -->
+        <div class="telemetry-card card-power">
+          <div class="telemetry-card-title">Joule Power (P)</div>
+          <div id="telemetryP" class="telemetry-card-val">0.0 mW</div>
+          <div class="telemetry-card-sub">Heat dissipation rate (I²R)</div>
+        </div>
+
+        <!-- Card 5: Electron Drift Velocity -->
+        <div class="telemetry-card card-drift">
+          <div class="telemetry-card-title">Drift Velocity (v_d)</div>
+          <div id="telemetryVd" class="telemetry-card-val">0.0 μm/s</div>
+          <div class="telemetry-card-sub">Drude model in copper wire</div>
+        </div>
+
+        <!-- Card 6: Resistor Temperature -->
+        <div class="telemetry-card card-temp">
+          <div class="telemetry-card-title">Resistor Temp (T)</div>
+          <div id="telemetryT" class="telemetry-card-val">25.0 °C</div>
+          <div class="telemetry-card-sub" id="telemetryTSub">Ambient room temp</div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- RIGHT: Control Sidebar -->
+    <aside class="control-sidebar">
+
+      <!-- CARD 1: DC POWER SUPPLY -->
+      <div class="sidebar-card">
+        <div class="sidebar-card-title">
+          <span>⚡ DC Power Supply (V)</span>
+          <span class="sidebar-card-badge">EMF Source</span>
+        </div>
+        <div class="control-group">
+          <div class="control-label-row">
+            <span class="control-name">Supply Potential (V)</span>
+            <span id="valVoltage" class="control-val">6.00 V</span>
+          </div>
+          <input type="range" id="sliderVoltage" class="custom-range range-red" min="0" max="24" step="0.1" value="6.0">
+          <div class="slider-ticks">
+            <span>0V</span>
+            <span>6V</span>
+            <span>12V</span>
+            <span>18V</span>
+            <span>24V</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- CARD 2: LOAD RESISTOR -->
+      <div class="sidebar-card">
+        <div class="sidebar-card-title">
+          <span>🔧 Load Resistor (R₀)</span>
+          <span class="sidebar-card-badge">Ohmic Component</span>
+        </div>
+        <div class="control-group">
+          <div class="control-label-row">
+            <span class="control-name">Base Resistance (R₀ at 25°C)</span>
+            <span id="valResistance" class="control-val">100.0 Ω</span>
+          </div>
+          <!-- Log-scale slider: 0 -> 1Ω, 100 -> 10Ω, 200 -> 100Ω, 300 -> 1000Ω -->
+          <input type="range" id="sliderResistance" class="custom-range range-orange" min="0" max="300" step="1" value="200">
+          <div class="slider-ticks">
+            <span>1 Ω</span>
+            <span>10 Ω</span>
+            <span>100 Ω</span>
+            <span>1 kΩ</span>
+          </div>
+        </div>
+
+        <!-- Color Band Preview -->
+        <div class="resistor-preview-wrapper">
+          <div class="resistor-bands-graphic" id="resistorBands">
+            <span class="resistor-band" style="background:#854D0E;"></span>
+            <span class="resistor-band" style="background:#0F172A;"></span>
+            <span class="resistor-band" style="background:#854D0E;"></span>
+            <span class="resistor-band" style="background:#D97706;"></span>
+          </div>
+          <span class="resistor-preview-text" id="resistorColorCodeText">Brown • Black • Brown • Gold (100 Ω ±5%)</span>
+        </div>
+
+        <div style="font-size:11px; color:var(--text-muted); display:flex; justify-content:space-between;">
+          <span>Temp Coeff (α):</span>
+          <span style="font-family:var(--font-mono); font-weight:700;">+0.0040 /°C (Cu)</span>
+        </div>
+      </div>
+
+      <!-- CARD 3: CIRCUIT KNIFE SWITCH -->
+      <div class="sidebar-card">
+        <div class="sidebar-card-title">
+          <span>🔌 Circuit Knife Switch</span>
+          <span class="sidebar-card-badge">Single-Pole</span>
+        </div>
+        <button id="btnSwitchToggle" class="switch-toggle-card-btn" title="Toggle circuit knife switch open or closed">
+          <span class="switch-indicator-dot" id="switchIndicatorDot"></span>
+          <span id="switchStatusText">Switch: OPEN (Click to Close)</span>
+        </button>
+      </div>
+
+      <!-- CARD 4: CHARGE FLOW DIRECTION -->
+      <div class="sidebar-card">
+        <div class="sidebar-card-title">
+          <span>➡️ Charge Flow Direction</span>
+        </div>
+        <div class="segmented-control" id="segFlowDirection">
+          <button class="seg-btn active" data-flow="conventional" title="Positive charge carriers (+ to −)">
+            Conventional (+ → −)
+          </button>
+          <button class="seg-btn" data-flow="electron" title="Physical negative electron flow (− to +)">
+            Electron Flow (− → +)
+          </button>
+        </div>
+      </div>
+
+      <!-- CARD 5: INSTRUMENT TOPOLOGY & FAULT SIMULATION -->
+      <div class="sidebar-card">
+        <div class="sidebar-card-title">
+          <span>📐 Meter Topologies &amp; Safety</span>
+          <span class="sidebar-card-badge" style="background:#FEE2E2; color:#B91C1C;">Lab Hazards</span>
+        </div>
+
+        <div class="control-group">
+          <span class="control-name" style="font-size:12px;">Ammeter (A) Connection:</span>
+          <div class="segmented-control" id="segAmmeterMode">
+            <button class="seg-btn active" data-mode="series" title="Correct: in series with load">
+              Series (Correct)
+            </button>
+            <button class="seg-btn seg-danger" data-mode="parallel" title="Hazardous: in parallel with supply (Short Circuit!)">
+              Parallel (Hazard!)
+            </button>
+          </div>
+        </div>
+
+        <div class="control-group">
+          <span class="control-name" style="font-size:12px;">Voltmeter (V) Connection:</span>
+          <div class="segmented-control" id="segVoltmeterMode">
+            <button class="seg-btn active" data-mode="parallel" title="Correct: in parallel across load">
+              Parallel (Correct)
+            </button>
+            <button class="seg-btn seg-danger" data-mode="series" title="Hazardous: in series with circuit loop (Open Circuit!)">
+              Series (Hazard!)
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- CARD 6: VISUAL DISPLAY OPTIONS -->
+      <div class="sidebar-card">
+        <div class="sidebar-card-title">
+          <span>👁️ Visual Display &amp; Overlays</span>
+        </div>
+        <label class="checkbox-row">
+          <input type="checkbox" id="chkHeatGlow" class="custom-checkbox" checked>
+          <span>Show Resistor Thermal Glow &amp; Heat Distortion</span>
+        </label>
+        <label class="checkbox-row">
+          <input type="checkbox" id="chkCurrentLabels" class="custom-checkbox" checked>
+          <span>Show Live Potential &amp; Current Labels on Wires</span>
+        </label>
+      </div>
+
+      <!-- CARD 7: V-I CHARACTERISTIC EXPERIMENT -->
+      <div class="sidebar-card">
+        <div class="sidebar-card-title">
+          <span>📊 V-I Characteristic Experiment</span>
+          <span class="sidebar-card-badge">Data Logging</span>
+        </div>
+
+        <div class="experiment-actions-row">
+          <button id="btnRecordPoint" class="btn-secondary btn-record-point" title="Log current (V, I) operating point">
+            <span>📝</span> Log Point
+          </button>
+          <button id="btnToggleRegression" class="btn-secondary" title="Toggle linear regression best-fit line">
+            <span>📈</span> Best-Fit
+          </button>
+          <button id="btnClearPoints" class="btn-secondary" title="Clear all recorded data points">
+            <span>🗑️</span> Clear
+          </button>
+        </div>
+
+        <!-- Data Summary -->
+        <div class="data-summary-box" id="viDataSummary">
+          <div class="data-summary-row">
+            <span class="data-summary-label">Recorded Points:</span>
+            <span id="lblPointsCount" class="data-summary-val">0 / 25</span>
+          </div>
+          <div class="data-summary-row">
+            <span class="data-summary-label">Experimental R (Slope):</span>
+            <span id="lblExpR" class="data-summary-val">--</span>
+          </div>
+          <div class="data-summary-row">
+            <span class="data-summary-label">Nominal Resistor R₀:</span>
+            <span id="lblNominalR" class="data-summary-val">100.0 Ω</span>
+          </div>
+          <div class="data-summary-row">
+            <span class="data-summary-label">Fit Quality (R²):</span>
+            <span id="lblR2" class="data-summary-val">--</span>
+          </div>
+        </div>
+      </div>
+
+    </aside>
+
+  </main>
+
+  <!-- ==========================================================================
+       MODAL: THEORY & MATHEMATICAL PRINCIPLES
+       ========================================================================== -->
+  <div id="modalTheory" class="modal-wrapper" role="dialog" aria-modal="true" aria-labelledby="modalTheoryTitle">
+    <div class="modal-box">
+      <div class="modal-header">
+        <div class="modal-title-group">
+          <span style="font-size:22px;">📚</span>
+          <h2 id="modalTheoryTitle" class="modal-title">Physics Theory &amp; Mathematical Derivations</h2>
+        </div>
+        <button id="btnCloseTheory" class="modal-close-btn" title="Close dialog">✕</button>
+      </div>
+
+      <div class="modal-body">
+
+        <!-- Section 1: Ohm's Law -->
+        <div class="theory-section">
+          <h3 class="theory-section-title">1. Ohm's Law &amp; Macroscopic Conduction</h3>
+          <p class="formula-desc">
+            Discovered by German physicist <strong>Georg Simon Ohm (1827)</strong>, Ohm's Law states that at constant temperature and physical dimensions, the electric current passing through a conductor is directly proportional to the potential difference across its terminals:
+          </p>
+          <div class="formula-card">
+            <div class="formula-math">V = I · R &emsp;&iff;&emsp; I = \frac{V}{R} &emsp;&iff;&emsp; R = \frac{V}{I}</div>
+            <div class="formula-desc">
+              Where <strong>V</strong> is potential difference (Volts, V), <strong>I</strong> is current (Amperes, A), and <strong>R</strong> is electrical resistance (Ohms, Ω).
+            </div>
+          </div>
+          <p class="formula-desc">
+            In vector differential form, Ohm's law relates the current density <strong>J</strong> to the electric field <strong>E</strong> via electrical conductivity <strong>σ</strong>:
+          </p>
+          <div class="formula-card">
+            <div class="formula-math">\mathbf{J} = \sigma \mathbf{E} = \frac{1}{\rho}\mathbf{E}</div>
+            <div class="formula-desc">
+              Where <strong>J = I / A</strong> (A/m²), <strong>E = V / L</strong> (V/m), and <strong>ρ</strong> is the material resistivity (Ω·m).
+            </div>
+          </div>
+        </div>
+
+        <!-- Section 2: Drude Model -->
+        <div class="theory-section">
+          <h3 class="theory-section-title">2. Drude Microscopic Model of Conduction</h3>
+          <p class="formula-desc">
+            Paul Drude (1900) proposed that metals contain a free electron gas moving through a stationary lattice of positive metallic ions. Free electrons undergo rapid thermal motion ($v_{\text{thermal}} \approx 10^5\text{–}10^6\text{ m/s}$) in random directions with zero net drift without an applied field.
+          </p>
+          <div class="formula-card">
+            <div class="formula-math">v_d = \frac{e \tau}{m_e} E = \frac{I}{n A e}</div>
+            <div class="formula-desc">
+              When voltage is applied, the electric field accelerates electrons. Successive collisions with vibrating lattice ions decelerate them, establishing an average steady <strong>drift velocity v_d</strong> (typically $10^{-4}$ to $10^{-5}$ m/s).
+              Here $n \approx 8.5 \times 10^{28}\text{ m}^{-3}$ (free electron density for Cu), $A$ is wire cross-section ($1\text{ mm}^2$), and $e = 1.602 \times 10^{-19}\text{ C}$.
+            </div>
+          </div>
+        </div>
+
+        <!-- Section 3: Joule Heating -->
+        <div class="theory-section">
+          <h3 class="theory-section-title">3. Joule Heating &amp; Thermal Resistance Drift</h3>
+          <p class="formula-desc">
+            As drifting electrons scatter off lattice ions, kinetic energy is transferred to the lattice vibrations (phonons), heating the resistor:
+          </p>
+          <div class="formula-card">
+            <div class="formula-math">P = I^2 R = V I = \frac{V^2}{R}</div>
+            <div class="formula-desc">
+              Dissipated thermal power $P$ causes temperature rise governed by Newton's law of cooling: $\frac{dT}{dt} = \frac{P - h(T - T_0)}{C_{\text{th}}}$.
+            </div>
+          </div>
+          <div class="formula-card">
+            <div class="formula-math">R(T) = R_0 \left[1 + \alpha (T - T_0)\right]</div>
+            <div class="formula-desc">
+              As temperature $T$ rises, lattice ions vibrate with larger amplitude, increasing electron scattering cross-section and elevating resistance. This causes non-linear curvature in the V-I characteristic at high power, illustrating why Ohm's law strictly holds only at <em>constant temperature</em>.
+            </div>
+          </div>
+        </div>
+
+        <!-- Section 4: Meter Topology -->
+        <div class="theory-section">
+          <h3 class="theory-section-title">4. Instrument Topologies &amp; Laboratory Safety</h3>
+          <p class="formula-desc">
+            Accurate laboratory measurements depend on proper instrument connection:
+          </p>
+          <div class="formula-card">
+            <div class="formula-math">\text{Ammeter: } R_A \to 0\ \Omega \quad \text{(Connected in SERIES)}</div>
+            <div class="formula-desc">
+              Because an ammeter has near-zero internal resistance, placing it in parallel across a power supply creates a direct <strong>short circuit</strong>, producing catastrophic current surges and risking meter destruction or fires!
+            </div>
+          </div>
+          <div class="formula-card">
+            <div class="formula-math">\text{Voltmeter: } R_V \to \infty\ \Omega \quad \text{(Connected in PARALLEL)}</div>
+            <div class="formula-desc">
+              A voltmeter possesses extremely high input impedance (~100 kΩ to 10 MΩ) so it draws negligible current. Placing it in series choke-blocks the circuit loop, dropping total current to near zero (open loop).
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ==========================================================================
+       MODAL: STUDENT LABORATORY QUESTS
+       ========================================================================== -->
+  <div id="modalQuests" class="modal-wrapper" role="dialog" aria-modal="true" aria-labelledby="modalQuestsTitle">
+    <div class="modal-box">
+      <div class="modal-header">
+        <div class="modal-title-group">
+          <span style="font-size:22px;">⭐</span>
+          <h2 id="modalQuestsTitle" class="modal-title">Student Laboratory Quests</h2>
+        </div>
+        <button id="btnCloseQuests" class="modal-close-btn" title="Close dialog">✕</button>
+      </div>
+
+      <div class="modal-body">
+        <p style="font-size:13px; color:var(--text-muted);">
+          Complete these guided inquiry missions to master electrical conduction, circuit safety, and linear regression analysis:
+        </p>
+        <div class="quest-list" id="questListContainer">
+          <!-- Dynamically populated by ui.js -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==========================================================================
+       APP TOAST NOTIFICATIONS
+       ========================================================================== -->
+  <div id="appToast" class="app-toast"></div>
+
+  <!-- ==========================================================================
+       APPLICATION SCRIPTS (EXPLICIT ORDER MATTERS)
+       ========================================================================== -->
+  <script src="js/circuit.js"></script>
+  <script src="js/sound.js"></script>
+  <script src="js/state.js"></script>
+  <script src="js/renderer.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/main.js"></script>
+</body>
+
+</html>
