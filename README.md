@@ -107,6 +107,81 @@ A collection of interactive, client-side STEM physics simulations built with HTM
 - **Authentic Cytology Specimen Slides**: Onion Root Tip Squash (*Allium cepa*) with primary cellulose cell plate cytokinesis, and Whitefish Blastula (*Coregonus*) with radiating astral rays (asters) and cleavage furrow.
 - **All 5 Stages of Mitosis**: Interphase, Prophase, Metaphase, Anaphase, and Telophase with stained chromatin, kinetochores, and spindle fiber tracking.
 - **Interactive Cell Tagging & Mitotic Index**: Live scorecard calculating meristematic Mitotic Index ($\text{MI} = \frac{\text{Dividing}}{\text{Total}} \times 100\%$) and stage micrometer calibration ($0.01\text{ mm} / 10\ \mu\text{m}$).
+
+### 17. 🔥 [Flame Test & Atomic Emission Spectra Simulator (`/flame_test_simulation`)](flame_test_simulation/)
+- **Quantum Electron Transitions & Bohr Model**: Real-time photon emission ($\Delta E = h\nu = \frac{hc}{\lambda}$) during valence orbital de-excitation.
+- **Precision Bunsen Burner**: Adjustable gas valve ($0–100\%$) and rotating brass air collar (luminous yellow safety flame $\to$ non-luminous roaring blue heating cone at $\sim 1300^\circ\text{C}$).
+- **7 Supported Metal Salts**: $\text{NaCl}$ (Golden Yellow D-line, $589\text{ nm}$), $\text{KCl}$ (Lilac, $404\text{ nm}$), $\text{CuCl}_2$ (Emerald Green/Cyan, $521\text{ nm}$), $\text{SrCl}_2$ (Crimson, $660\text{ nm}$), $\text{CaCl}_2$ (Brick Red, $622\text{ nm}$), $\text{BaCl}_2$ (Apple Green, $553\text{ nm}$), $\text{LiCl}$ (Carmine Magenta, $671\text{ nm}$).
+- **Calibrated Quantum Spectroscope**: High-resolution nanometer diffraction scale ($380–750\text{ nm}$) rendering discrete emission lines with live photon energy ($\text{eV}$).
+- **Cobalt Blue Glass Filter & Mystery Cation Detective**: $\text{Co}^{2+}$ optical silicate filter for yellow absorption, loop decontamination with conc. $\text{HCl}$, and blind mystery sample deduction challenges.
+
+### 18. 🧪 [Reaction Kinetics & The Disappearing Cross Simulator (`/kinetics_simulation`)](kinetics_simulation/)
+- **Colloidal Sulfur Precipitation Dynamics**: $\text{Na}_2\text{S}_2\text{O}_3 + 2\text{HCl} \to 2\text{NaCl} + \text{SO}_2 + \text{S}\downarrow + \text{H}_2\text{O}$ scattering light through solution.
+- **Top-Down Erlenmeyer Flask & Ceramic Tile**: White porcelain tile with bold black cross ("X") progressively obscured as sulfur turbidity reaches critical threshold ($<8\%$ transmittance).
+- **Differential Rate Laws & Concentration Series**: Verification of first-order kinetics with respect to thiosulfate ($\text{Rate} \propto [\text{Na}_2\text{S}_2\text{O}_3]$).
+- **Arrhenius Equation & Activation Energy**: Temperature regulation ($10^\circ\text{C}–65^\circ\text{C}$), live $\ln(1/t)$ vs. $1/T$ plot, and automatic $E_a$ calculation ($\approx 52\text{ kJ/mol}$).
+- **Analytical Lab Notebook & CSV Export**: Automated stopwatch timer, photometer extinction alarm bell, trial history recording, and one-click data export.
+
+### 19. 🎈 [Kinetic Gas Laws & Ideal Gas Simulator (`/gas_laws_simulation`)](gas_laws_simulation/)
+- **Ideal Gas Equation & KMT Engine**: Full microscopic hard-sphere elastic wall collision physics yielding macroscopic $PV = nRT$.
+- **Draggable Piston Cylinder Chamber**: Smooth interactive volume variation from $5.0\text{ L}$ to $25.0\text{ L}$ with live Bourdon tube analog pressure manometer.
+- **Classical Gas Law Locks**: Lock Temperature (Boyle: $P \propto 1/V$), Lock Pressure (Charles: $V \propto T$), or Lock Volume (Gay-Lussac: $P \propto T$).
+- **Maxwell-Boltzmann Velocity Distributions**: Real-time speed histograms comparing light Helium ($v_{\text{rms}} \approx 1370\text{ m/s}$) against heavy Argon ($v_{\text{rms}} \approx 430\text{ m/s}$).
+- **Bicycle Pump & Substage Thermal Bath**: Inject gas moles ($n$), vent gas, and adjust absolute temperature from $100\text{ K}$ to $750\text{ K}$ with live P-V and V-T state diagrams.
+
+### 20. ⚡ [Electrolysis of Water & Copper Electroplating Simulator (`/electrolysis_simulation`)](electrolysis_simulation/)
+- **Hofmann Voltameter & Acidified Water**: Dilute $0.1\text{ M } \text{H}_2\text{SO}_4$ decomposition on platinum electrodes with dynamic meniscus displacement.
+- **Stoichiometric 2:1 Gas Volume Ratio**: Accurate analytical evolution of Hydrogen ($V_{\text{H}_2}$, cathode) and Oxygen ($V_{\text{O}_2}$, anode) at exactly $2 : 1$ molar and volumetric ratio.
+- **Interactive Gas Identification Tests**: Test Hydrogen tap with a burning splint to trigger the characteristic **Squeaky Pop explosion**, and test Oxygen with a glowing splint to observe **flame reignition**.
+- **Copper Electroplating Bath**: Faraday's First Law ($m = \frac{M \cdot I \cdot t}{z \cdot F}$) depositing pure copper onto an iron key cathode in blue $\text{CuSO}_4$ solution with real-time thickness ($\mu\text{m}$) and $\text{Cu}^{2+}$ ion migration drift.
+- **Digital DC Power Supply**: Variable voltage ($0–12\text{ V}$), decomposition overpotential threshold ($1.78\text{ V}$), procedural effervescent bubbling audio, and 5 NCERT curriculum quests.
+
+### 21. ⚗️ [Reactivity Series & Metal Displacement Reactions Simulator (`/reactivity_series_simulation`)](reactivity_series_simulation/)
+- **Single Replacement Reactions**: Explore electropositivity and displacement ($A + BC \to AC + B$) across $\text{Fe}$, $\text{Zn}$, $\text{Cu}$, $\text{Mg}$, and $\text{Ag}$ metals.
+- **Color Transitions & Precipitation**: Iron nail turning blue $\text{CuSO}_4$ into pale green $\text{FeSO}_4$, zinc decolorizing copper sulfate with spongy copper precipitate, and sparkling dendritic silver crystal needles growing on copper wire in $\text{AgNO}_3$.
+- **Thermodynamic Enthalpy Rise**: Measurable exothermic temperature rise with submerged digital thermometer probe ($\Delta T > 6^\circ\text{C}$).
+- **Electrochemical Ladder & Coaching Mnemonic**: Complete reduction potentials ($E^\circ$) and audio speech synthesis reciting the classic Hinglish mnemonic *"Kedar Nath Ka Mali Aalu Zara Pheeke Pakata Hai, Kyun-ki Hoga Ag Au"*.
+
+### 22. ⚖️ [Law of Conservation of Mass Simulator (`/conservation_of_mass_simulation`)](conservation_of_mass_simulation/)
+- **Antoine Lavoisier (1789) & NCERT Activity 3.1**: Verify mass invariance ($m_1 = m_2, \Delta m = 0.000\text{ g}$) across chemical reactions.
+- **Precipitation Systems**: $\text{BaCl}_2 + \text{Na}_2\text{SO}_4 \to \text{BaSO}_4\downarrow + 2\text{NaCl}$ (milky white precipitate) and $\text{Pb(NO}_3)_2 + 2\text{KI} \to \text{PbI}_2\downarrow + 2\text{KNO}_3$ (golden canary yellow precipitate).
+- **Closed vs. Open Flask Investigation**: $\text{CaCO}_3 + 2\text{HCl} \to \text{CaCl}_2 + \text{H}_2\text{O} + \text{CO}_2\uparrow$ demonstrating that sealed cork preserves mass, while uncorked flask shows an apparent mass drop from escaping $\text{CO}_2$ gas.
+- **Digital Analytical Balance & Flask Tilting**: High-precision $\pm 0.001\text{ g}$ balance, $250\text{ mL}$ conical flask with suspended ignition tube, tilt and swirl animation, and real-time atomic accounting ledger.
+
+### 23. ⚛️ [Rutherford Alpha Particle Scattering & Planetary Atom Simulator (`/rutherford_simulation`)](rutherford_simulation/)
+- **Ernest Rutherford (1911) Gold Foil Experiment**: Polonium alpha source ($\text{He}^{2+}$, $5.5\text{ MeV}$), $100\text{ nm}$ gold foil, and circular Zinc Sulfide ($\text{ZnS}$) phosphorescent screen.
+- **Three Landmark Observations**: Overwhelming pass-through ($>99\%$ with $\theta < 5^\circ$ proving mostly empty space), small/moderate deflections ($5^\circ \le \theta < 90^\circ$), and rare dramatic backscattering ($\theta \ge 90^\circ$, 1 in ~8,000 to 12,000) discovering the dense nucleus.
+- **Dual Perspective & Plum Pudding Model**: Switch between Macro Bench Apparatus view and Microscopic Nuclear zoom with hyperbolic Coulomb trajectories, plus side-by-side comparison with J.J. Thomson's 1904 Plum Pudding model.
+- **Real-Time Angular Histogram**: Live $N(\theta) \propto \frac{1}{\sin^4(\theta / 2)}$ bar chart, movable detector telescope on $\pm 180^\circ$ track, and Geiger counter audio clicks.
+
+### 24. 🧊 [Solubility Curves, Saturated Solutions & Crystallization Simulator (`/solubility_simulation`)](solubility_simulation/)
+- **Thermodynamic Solubility Equilibrium**: Analytical $S(T)$ polynomials in $g\text{ solute} / 100g\ \text{H}_2\text{O}$ across $\text{KNO}_3$ (steep endothermic), $\text{NaCl}$ (flat), $\text{CuSO}_4$ (blue crystals), and $\text{Ce}_2(\text{SO}_4)_3$ (retrograde exothermic).
+- **Interactive Laboratory Apparatus**: $250\text{ mL}$ borosilicate beaker on ceramic wire gauze with cast-iron tripod and adjustable Bunsen burner flame ($20^\circ\text{C} \to 100^\circ\text{C}$).
+- **Crystallization from Supersaturation**: Cooling with ice bath and introducing a seed crystal to grow sparkling pure geometric crystal clusters.
+- **Dynamic Phase Diagram ($S$ vs. $T$)**: Live operating coordinate $(T, m_{\text{added}})$, saturation boundary curve, and unsaturated vs. supersaturated zones.
+
+### 25. 🔦 [Tyndall Effect, Colloids & Suspensions Virtual Lab (`/tyndall_simulation`)](tyndall_simulation/)
+- **NCERT Class 9 Activities 2.1 & 2.2**: Direct comparative investigation of True Solutions ($<1\text{ nm}$), Colloidal Sols ($1\text{–}1000\text{ nm}$), and Suspensions ($>1000\text{ nm}$).
+- **Rayleigh-Tyndall Scattering ($I \propto 1/\lambda^4$)**: Tunable laser diode across Red ($650\text{ nm}$), Green ($532\text{ nm}$), and Blue ($405\text{ nm}$) demonstrating $6.6\times$ scattering intensification for shorter wavelengths.
+- **Three-Beaker Optical Bench**: Simultaneous visual alignment comparing invisible beam in $\text{CuSO}_4$, bright Tyndall cone in milk/starch sol, and turbid light scattering in chalk suspension.
+- **Brownian Motion Ultramicroscope**: Thermal molecular collision simulation tracking chaotic zig-zag trajectories of colloidal particles.
+- **Filtration Funnel Separation**: Porous filter paper retention testing proving suspension coarse particles are retained while colloids and true solutions pass through.
+
+### 26. 🧪 [Thermal Decomposition of Ferrous Sulfate Crystals (`/ferrous_sulfate_simulation`)](ferrous_sulfate_simulation/)
+- **Class 10 NCERT Chapter 1 Activity 1.5**: Direct thermal heating of $\text{FeSO}_4 \cdot 7\text{H}_2\text{O}$ crystals in a borosilicate boiling tube clamped at $45^\circ$ safety tilt.
+- **Two-Stage Reaction Thermodynamics**:
+  - Stage 1: Dehydration ($\sim 100\text{–}300^\circ\text{C}$) losing 7 water molecules, converting pale green crystals into dirty white anhydrous $\text{FeSO}_4$, with condensed water droplets forming on cooler upper tube walls.
+  - Stage 2: Strong decomposition ($>500^\circ\text{C}$) yielding reddish-brown ferric oxide ($\text{Fe}_2\text{O}_3$) residue and evolving acidic, choking $\text{SO}_2$ and $\text{SO}_3$ gases.
+- **Gas Identification Tests**: Moist blue litmus paper turning red on contact with acidic sulfur fumes, and acidified potassium dichromate ($\text{K}_2\text{Cr}_2\text{O}_7$) paper turning from orange to green ($\text{Cr}^{3+}$).
+- **NCERT Safety Wafting Motion**: Interactive hand-wafting gesture to detect burning sulfur odor safely without direct inhalation.
+- **Dynamic Stoichiometric Mass Ledger**: Live tracking of crystal mass ($2.000\text{ g}$ initial $\to 0.575\text{ g}$ residue) with procedural flame hissing and crystal crackling audio.
+
+### 27. 🎢 [Roller Coaster Kinematics & Loop Fail Dynamics (`/roller_coaster_simulation`)](roller_coaster_simulation/)
+- **Real-Time Numerical Kinematics & Energy**: Continuous numerical integration of cart velocity, arc-distance $s$, height $y$, and local track curvature $\kappa$ with live $KE$ and $PE$ telemetry.
+- **The 2.5R Rule & Critical Apex Velocity**: Interactive demonstration showing why drop height $h_{\text{min}} \ge 2.5R$ and apex velocity $v \ge \sqrt{gR}$ are required for normal force $N \ge 0$.
+- **Loop Fail Dynamics & Ballistic Projectile Flight**: Automatic detachment and transition into 2D projectile motion ($a_x = 0, a_y = -g$) with rotational tumbling and impact FX when $N \le 0$.
+- **Circular vs. Clothoid (Teardrop) Loops**: Comparative analysis of spine-compressing circular G-forces against smooth modern Euler spiral clothoids.
+
 ---
 
 ## 💻 Tech Stack
@@ -119,6 +194,50 @@ A collection of interactive, client-side STEM physics simulations built with HTM
 You can run any simulation using any static web server:
 
 ```bash
+# Roller Coaster Kinematics & Loop Fail Dynamics
+cd roller_coaster_simulation
+python -m http.server 3000
+
+# Thermal Decomposition of Ferrous Sulfate Crystals
+cd ferrous_sulfate_simulation
+node server.js   # http://localhost:8075
+
+# Tyndall Effect, Colloids & Suspensions Simulator
+cd tyndall_simulation
+node server.js   # http://localhost:8076
+
+# Solubility Curves & Crystallization Simulator
+cd solubility_simulation
+node server.js   # http://localhost:8077
+
+# Rutherford Alpha Particle Scattering & Planetary Atom Simulator
+cd rutherford_simulation
+node server.js   # http://localhost:8078
+
+# Law of Conservation of Mass Simulator
+cd conservation_of_mass_simulation
+node server.js   # http://localhost:8079
+
+# Reactivity Series & Metal Displacement Reactions Simulator
+cd reactivity_series_simulation
+node server.js   # http://localhost:8081
+
+# Electrolysis of Water & Copper Electroplating Simulator
+cd electrolysis_simulation
+node server.js   # http://localhost:8083
+
+# Kinetic Gas Laws & Ideal Gas Simulator
+cd gas_laws_simulation
+node server.js   # http://localhost:8084
+
+# Reaction Kinetics & The Disappearing Cross Simulator
+cd kinetics_simulation
+node server.js   # http://localhost:8086
+
+# Flame Test & Atomic Emission Spectra Simulator
+cd flame_test_simulation
+node server.js   # http://localhost:8087
+
 # Virtual Compound Microscope & Mitosis Simulator
 cd microscope_simulation
 node server.js   # http://localhost:8099

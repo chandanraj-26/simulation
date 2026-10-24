@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Law of Conservation of Mass Virtual Lab (NCERT Activity 3.1)</title>
+  <meta name="description" content="Interactive STEM chemistry simulation for Class 9. Verify Antoine Lavoisier's Law of Conservation of Mass using a digital analytical balance, sealed conical flask, and ignition tube.">
+
+  <!-- Google Fonts: Dual-Font Typography System -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <!-- Header -->
+  <header class="lab-header">
+    <div class="header-brand">
+      <div class="lab-icon-badge">⚖️</div>
+      <div class="lab-title-group">
+        <h1>Law of Conservation of Mass Virtual Lab</h1>
+        <div class="lab-subtitle">Class 9 Chemistry • Antoine Lavoisier (1789) & NCERT Activity 3.1</div>
+      </div>
+    </div>
+
+    <div class="header-actions">
+      <!-- Reaction System Tabs -->
+      <div class="system-switch-group" role="tablist">
+        <button id="sysBariumBtn" class="system-btn active" role="tab">BaCl₂ + Na₂SO₄</button>
+        <button id="sysLeadBtn" class="system-btn" role="tab">Pb(NO₃)₂ + KI</button>
+        <button id="sysGasBtn" class="system-btn" role="tab">CaCO₃ + HCl (Gas)</button>
+      </div>
+
+      <button id="soundToggleBtn" class="btn-secondary" title="Toggle procedural sound synthesis">🔊 Sound: ON</button>
+      <button id="guideBtn" class="btn-secondary" title="View lab manual and experimental guide">📖 Lab Manual</button>
+    </div>
+  </header>
+
+  <!-- Main Unified Workspace Grid -->
+  <main class="main-layout">
+    <!-- Left: Canvas Stage & Telemetry -->
+    <section class="stage-container">
+      <div class="canvas-wrapper">
+        <canvas id="simCanvas"></canvas>
+
+        <div class="canvas-hud-top">
+          <div class="hud-pill">
+            <span class="hud-pill-pulse"></span>
+            <span>Digital Analytical Balance (±0.001 g)</span>
+          </div>
+          <div class="hud-pill">
+            <span>250 mL Pyrex Conical Flask</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Action Stage Controls -->
+      <div class="stage-controls">
+        <div class="stage-btn-group">
+          <button id="tiltBtn" class="btn-tilt">🔄 Tilt & Mix Solutions</button>
+          <button id="corkBtn" class="btn-cork">🔒 Remove Cork</button>
+          <button id="tareBtn" class="btn-tare">⊘ Tare Scale</button>
+        </div>
+        <button id="resetBtn" class="btn-secondary">↺ Reset Apparatus</button>
+      </div>
+
+      <!-- Telemetry Grid -->
+      <div class="telemetry-grid">
+        <div class="telemetry-card">
+          <div class="telemetry-card-title">MEASURED SCALE MASS</div>
+          <div id="card1Val" class="telemetry-card-value">195.420</div>
+          <div id="card1Unit" class="telemetry-card-unit">Grams (Gross Total)</div>
+        </div>
+        <div class="telemetry-card">
+          <div class="telemetry-card-title">INITIAL MASS (m₁)</div>
+          <div id="card2Val" class="telemetry-card-value">195.420</div>
+          <div id="card2Unit" class="telemetry-card-unit">Initial Mass m₁ (g)</div>
+        </div>
+        <div class="telemetry-card">
+          <div class="telemetry-card-title">MASS DIFFERENCE (Δm)</div>
+          <div id="card3Val" class="telemetry-card-value">0.000</div>
+          <div id="card3Unit" class="telemetry-card-unit">Δm = 0 (100% Conserved)</div>
+        </div>
+        <div class="telemetry-card">
+          <div class="telemetry-card-title">SEAL STATUS</div>
+          <div id="card4Val" class="telemetry-card-value">SEALED</div>
+          <div id="card4Unit" class="telemetry-card-unit">Closed System (Cork on)</div>
+        </div>
+      </div>
+
+      <!-- Live Reaction Equation Banner -->
+      <div class="reaction-banner">
+        <div id="reactionTitle" class="reaction-title">Barium Chloride + Sodium Sulfate (Precipitation)</div>
+        <div id="equationBlock" class="equation-block">BaCl₂ (aq) + Na₂SO₄ (aq) → BaSO₄ (s)↓ + 2NaCl (aq)</div>
+        <div id="explanationText" class="explanation-text">Double displacement precipitation reaction. White insoluble barium sulfate settles down while sodium chloride stays in solution. Total mass is strictly conserved.</div>
+      </div>
+    </section>
+
+    <!-- Right: Parameter Control Sidebar -->
+    <aside class="control-sidebar">
+      <!-- Mass Breakdown Panel -->
+      <div class="sidebar-panel">
+        <div class="panel-header">
+          <h2 class="panel-title">System Mass Breakdown</h2>
+        </div>
+
+        <table class="mass-breakdown-table">
+          <tbody id="massBreakdownBody">
+            <!-- Dynamically populated -->
+          </tbody>
+        </table>
+
+        <div style="font-size: 0.78rem; color: var(--text-muted); line-height: 1.4;">
+          <strong>Lavoisier's Principle:</strong> In any closed chemical reaction, the total mass of the products equals the total mass of the reactants ($m_{\text{reactants}} = m_{\text{products}}$).
+        </div>
+      </div>
+
+      <!-- Laboratory Quests (NCERT) -->
+      <div class="sidebar-panel">
+        <div class="panel-header">
+          <h2 class="panel-title">Laboratory Quests (NCERT)</h2>
+        </div>
+
+        <div id="questList" class="quest-list">
+          <!-- Dynamically populated by state -->
+        </div>
+      </div>
+    </aside>
+  </main>
+
+  <!-- Lab Manual Guide Modal -->
+  <div id="guideModal" class="modal-overlay">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 class="modal-title">📖 Laboratory Manual: Law of Conservation of Mass</h3>
+        <button id="closeModalBtn" class="modal-close-btn">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p><strong>1. Historical Context:</strong> Formulated by French chemist <em>Antoine Lavoisier</em> in 1789. The law states that mass is neither created nor destroyed during a chemical reaction.</p>
+        <br>
+        <p><strong>2. NCERT Activity 3.1 Procedure:</strong></p>
+        <ul style="padding-left: 20px; margin-top: 4px;">
+          <li>Take $10\text{ mL}$ of Solution Y in a small ignition tube and suspend it inside a conical flask containing $40\text{ mL}$ of Solution X.</li>
+          <li>Put a rubber cork tightly on the mouth of the flask so that no gas or liquid escapes.</li>
+          <li>Weigh the whole flask assembly with precision balance: record mass $m_1$.</li>
+          <li>Now tilt and swirl the flask so that the solutions X and Y mix together.</li>
+          <li>Weigh the flask again: record mass $m_2$. You will find that $m_2 = m_1$.</li>
+        </ul>
+        <br>
+        <p><strong>3. Open vs Closed System (Activity 3.2):</strong> If the reaction produces a gas (like $\text{CO}_2$ from $\text{CaCO}_3 + \text{HCl}$) and the cork is removed, the gas escapes into the room causing an apparent mass deficit. In a closed flask, the gas is trapped and mass is conserved.</p>
+      </div>
+      <div class="modal-footer">
+        <button id="modalGotItBtn" class="btn-tilt" style="padding: 8px 18px;">Understood, Start Lab</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="js/mass_data.js"></script>
+  <script src="js/sound.js"></script>
+  <script src="js/state.js"></script>
+  <script src="js/mass_engine.js"></script>
+  <script src="js/renderer.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>

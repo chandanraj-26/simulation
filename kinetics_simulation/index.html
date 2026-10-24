@@ -1,0 +1,298 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Reaction Kinetics &amp; The Disappearing Cross Simulator</title>
+  <meta name="description"
+    content="Interactive STEM Chemistry laboratory investigating reaction rates, colloidal sulfur precipitation, temperature dependence, and Arrhenius activation energy calculation.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+
+<body>
+
+  <!-- MAIN APPLICATION HEADER -->
+  <header class="app-header">
+    <div class="header-container">
+      <div class="brand-wrapper">
+        <div class="brand-icon">🧪</div>
+        <div>
+          <div style="display:flex; align-items:center;">
+            <h1 class="brand-title">ChemLab</h1>
+            <span class="brand-tag">Class 10–12 &amp; AP Chemistry</span>
+          </div>
+          <div class="brand-sub">Reaction Kinetics &amp; The Disappearing Cross Simulator</div>
+        </div>
+      </div>
+
+      <!-- Header Actions -->
+      <div class="header-actions">
+        <button id="btnOpenQuests" class="action-btn" title="Complete Student Laboratory Quests">
+          <span>⭐</span> Quests <span id="questBadgeCount" class="badge-counter">0/5</span>
+        </button>
+        <button id="btnOpenTheory" class="action-btn btn-primary" title="View Kinetics Theory &amp; Arrhenius Equations">
+          <span>📚</span> Theory &amp; Arrhenius
+        </button>
+        <button id="btnAudioToggle" class="action-btn active" title="Toggle Mechanical Audio FX">
+          🔊 Sound: ON
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- UNIFIED WORKSPACE LAYOUT (CSS GRID) -->
+  <main class="main-layout">
+
+    <!-- PRIMARY CANVAS STAGE COLUMN -->
+    <div class="stage-wrapper">
+      <div class="canvas-container">
+        <canvas id="kineticsCanvas"></canvas>
+      </div>
+
+      <!-- STAGE ACTION CONTROLS BAR -->
+      <div class="stage-controls">
+        <div class="button-group">
+          <button id="btnStart" class="action-btn btn-success" title="Pour reactants and start stopwatch">
+            ▶ Pour &amp; Start
+          </button>
+          <button id="btnPause" class="action-btn" title="Pause reaction stopwatch">
+            ⏸ Pause
+          </button>
+          <button id="btnReset" class="action-btn" title="Clean flask and reset stopwatch">
+            ↺ Clean &amp; Reset
+          </button>
+          <button id="btnStirrer" class="action-btn active" title="Toggle magnetic stir bar">
+            🌀 Stirrer: ON
+          </button>
+        </div>
+
+        <div class="button-group">
+          <label for="selectSpeed" style="font-size:12px; font-weight:700; color:#475569;">Speed:</label>
+          <select id="selectSpeed" style="padding:6px 10px; border-radius:6px; border:1px solid #CBD5E1; font-family:'JetBrains Mono', monospace; font-size:12px; font-weight:700;">
+            <option value="1">1.0×</option>
+            <option value="2">2.0×</option>
+            <option value="5">5.0×</option>
+          </select>
+
+          <!-- Guided Presets -->
+          <button id="btnPresetConc" class="action-btn" title="Concentration Series Preset (25°C)">
+            Conc Series
+          </button>
+          <button id="btnPresetTemp" class="action-btn" title="Temperature Series Preset (45°C)">
+            Temp Series
+          </button>
+          <button id="btnPresetChilled" class="action-btn" title="Chilled Ice-Bath Preset (12°C)">
+            Chilled 12°C
+          </button>
+        </div>
+      </div>
+
+      <!-- UNIFIED TELEMETRY CARD GRID -->
+      <div class="telemetry-grid">
+        <div class="telemetry-card">
+          <div class="telemetry-card-title">Reaction Time (t)</div>
+          <div id="telTime" class="telemetry-card-val">0.00 s</div>
+          <div class="telemetry-card-sub">Time to cross extinction</div>
+        </div>
+
+        <div class="telemetry-card">
+          <div class="telemetry-card-title">Relative Rate (1/t)</div>
+          <div id="telRate" class="telemetry-card-val">—</div>
+          <div class="telemetry-card-sub">Precipitation velocity</div>
+        </div>
+
+        <div class="telemetry-card">
+          <div class="telemetry-card-title">Light Transmittance</div>
+          <div id="telTransmittance" class="telemetry-card-val">100.0 %</div>
+          <div class="telemetry-card-sub">Extinction at &lt;8%</div>
+        </div>
+
+        <div class="telemetry-card">
+          <div class="telemetry-card-title">Activation Energy (Ea)</div>
+          <div id="telEa" class="telemetry-card-val">Need 2+ Temps</div>
+          <div class="telemetry-card-sub">Arrhenius slope (kJ/mol)</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CONTROL SIDEBAR -->
+    <aside class="control-sidebar">
+
+      <!-- REACTION PARAMETERS PANEL -->
+      <section class="sidebar-panel">
+        <h2 class="panel-title">
+          <span>🌡️</span> Reaction Parameters
+        </h2>
+
+        <!-- Temperature Slider -->
+        <div class="control-group">
+          <div class="control-label-row">
+            <span>Water Bath Temp (T)</span>
+            <span id="valTemp" class="control-val">25.0 °C</span>
+          </div>
+          <input type="range" id="sliderTemp" class="slider-input" min="10" max="65" step="1" value="25" aria-label="Reaction Temperature">
+        </div>
+
+        <!-- Na2S2O3 Concentration Slider -->
+        <div class="control-group">
+          <div class="control-label-row">
+            <span>[Na₂S₂O₃] Concentration</span>
+            <span id="valConc" class="control-val">0.10 M</span>
+          </div>
+          <input type="range" id="sliderConc" class="slider-input" min="0.02" max="0.20" step="0.02" value="0.10" aria-label="Thiosulfate Concentration">
+        </div>
+
+        <!-- HCl Concentration Slider -->
+        <div class="control-group">
+          <div class="control-label-row">
+            <span>[HCl] Concentration</span>
+            <span id="valHCl" class="control-val">1.00 M</span>
+          </div>
+          <input type="range" id="sliderHCl" class="slider-input" min="0.5" max="2.0" step="0.25" value="1.0" aria-label="HCl Concentration">
+        </div>
+
+        <div style="font-size:11px; color:#475569; background:#F8FAFC; padding:8px; border-radius:6px; border:1px solid #E2E8F0;">
+          Volumetric Ratio: <strong>50 mL Na₂S₂O₃ + 10 mL HCl</strong> (Total 60 mL constant volume)
+        </div>
+      </section>
+
+      <!-- ANALYTICAL PLOT MODES -->
+      <section class="sidebar-panel">
+        <h2 class="panel-title">
+          <span>📈</span> Kinetics Analytics Plot
+        </h2>
+
+        <div style="display:flex; gap:8px; margin-bottom:12px;">
+          <button id="btnPlotRateConc" class="action-btn active" style="flex:1; justify-content:center; font-size:11px;">
+            Rate vs. [Conc]
+          </button>
+          <button id="btnPlotArrhenius" class="action-btn" style="flex:1; justify-content:center; font-size:11px;">
+            Arrhenius ln(k) vs 1/T
+          </button>
+        </div>
+
+        <p style="font-size:11px; color:#64748B;">
+          Runs will automatically append data points onto the analytical chart to calculate the reaction order and activation energy.
+        </p>
+      </section>
+
+      <!-- LAB NOTEBOOK / TRIAL HISTORY -->
+      <section class="sidebar-panel">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+          <h2 class="panel-title" style="margin-bottom:0;">
+            <span>📋</span> Lab Notebook
+          </h2>
+          <div style="display:flex; gap:6px;">
+            <button id="btnClearTrials" class="action-btn" style="padding:4px 8px; font-size:11px;" title="Clear all trials">
+              Clear
+            </button>
+            <button id="btnExportCSV" class="action-btn btn-primary" style="padding:4px 8px; font-size:11px;" title="Export trials to CSV">
+              CSV
+            </button>
+          </div>
+        </div>
+
+        <div class="data-table-container">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Trial</th>
+                <th>Temp</th>
+                <th>[Na₂S₂O₃]</th>
+                <th>Time (s)</th>
+                <th>Rate (s⁻¹)</th>
+              </tr>
+            </thead>
+            <tbody id="trialTableBody">
+              <tr>
+                <td colspan="5" style="text-align:center; color:#94A3B8;">No trials recorded yet.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+    </aside>
+
+  </main>
+
+  <!-- MODALS -->
+
+  <!-- 1. Quests Modal -->
+  <div id="modalQuests" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="questsTitle">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h2 id="questsTitle" class="modal-title">⭐ Laboratory Quests</h2>
+        <button id="btnCloseQuests" class="modal-close-btn" aria-label="Close dialog">✕</button>
+      </div>
+      <div id="questsContainer">
+        <!-- Injected via UI controller -->
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. Chemical Kinetics Theory Modal -->
+  <div id="modalTheory" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="theoryTitle">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h2 id="theoryTitle" class="modal-title">📚 Chemical Kinetics &amp; Arrhenius Theory</h2>
+        <button id="btnCloseTheory" class="modal-close-btn" aria-label="Close dialog">✕</button>
+      </div>
+      <div style="font-size:13px; color:#334155; line-height:1.6;">
+        <h3 style="font-size:15px; font-weight:700; color:#0F172A; margin: 10px 0 6px;">1. The Disappearing Cross Reaction</h3>
+        <p>
+          When sodium thiosulfate reacts with hydrochloric acid, insoluble elemental sulfur precipitates in colloidal form ($S_8$ rings), creating a milky yellow cloud that scatters light:
+        </p>
+        <div style="background:#F1F5F9; padding:8px 12px; border-radius:6px; font-family:'JetBrains Mono', monospace; font-size:12px; margin:8px 0;">
+          Na₂S₂O₃ (aq) + 2HCl (aq) → 2NaCl (aq) + SO₂ (g) + S (colloidal s) + H₂O (l)
+        </div>
+        <p>
+          Because the amount of sulfur required to obscure the black cross is fixed ($m_S = \text{constant}$), the reaction rate is inversely proportional to the time ($t$) taken for the cross to disappear:
+        </p>
+        <div style="background:#F1F5F9; padding:8px 12px; border-radius:6px; font-family:'JetBrains Mono', monospace; font-size:12px; margin:8px 0;">
+          Relative Rate ∝ 1 / t (s⁻¹)
+        </div>
+
+        <h3 style="font-size:15px; font-weight:700; color:#0F172A; margin: 14px 0 6px;">2. Effect of Concentration (Reaction Order)</h3>
+        <p>
+          According to Collision Theory, increasing reactant concentration increases the frequency of collisions between reacting ions per unit volume per second. The rate law is:
+        </p>
+        <div style="background:#F1F5F9; padding:8px 12px; border-radius:6px; font-family:'JetBrains Mono', monospace; font-size:12px; margin:8px 0;">
+          Rate = k · [Na₂S₂O₃]¹ · [HCl]⁰
+        </div>
+        <p>
+          The reaction is strictly first-order with respect to thiosulfate, so doubling $[\text{Na}_2\text{S}_2\text{O}_3]$ halves the time ($t$) required for extinction.
+        </p>
+
+        <h3 style="font-size:15px; font-weight:700; color:#0F172A; margin: 14px 0 6px;">3. Effect of Temperature &amp; The Arrhenius Equation</h3>
+        <p>
+          Rising temperature gives molecules higher kinetic energy ($E_k = \frac{3}{2}kT$), dramatically increasing the fraction of collisions that exceed the activation energy ($E_a$):
+        </p>
+        <div style="background:#F1F5F9; padding:8px 12px; border-radius:6px; font-family:'JetBrains Mono', monospace; font-size:12px; margin:8px 0;">
+          k = A · exp(-Ea / (R · T))  ⟹  ln(k) = ln(A) - (Ea / R) · (1 / T)
+        </div>
+        <p>
+          Plotting $\ln(1/t)$ vs. $1/T$ yields a straight line with slope $= -E_a / R$. Multiplying by $R = 8.314\text{ J/(mol}\cdot\text{K)}$ directly gives the activation energy of the reaction ($\approx 52\text{ kJ/mol}$).
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- JAVASCRIPT MODULES -->
+  <script src="js/kinetics_data.js"></script>
+  <script src="js/state.js"></script>
+  <script src="js/sound.js"></script>
+  <script src="js/kinetics_engine.js"></script>
+  <script src="js/renderer.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/main.js"></script>
+
+</body>
+
+</html>

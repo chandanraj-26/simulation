@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rutherford Alpha Particle Scattering Virtual Lab (NCERT Class 9)</title>
+  <meta name="description" content="Interactive STEM atomic physics and chemistry simulation. Explore Ernest Rutherford's 1911 gold foil alpha scattering experiment, Coulomb nuclear repulsion, and discovery of the atomic nucleus.">
+
+  <!-- Google Fonts: Dual-Font Typography System -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <!-- Header -->
+  <header class="lab-header">
+    <div class="header-brand">
+      <div class="lab-icon-badge">⚛️</div>
+      <div class="lab-title-group">
+        <h1>Rutherford Alpha Scattering Virtual Lab</h1>
+        <div class="lab-subtitle">Class 9 & 12 • Discovery of the Atomic Nucleus & Planetary Atom (1911)</div>
+      </div>
+    </div>
+
+    <div class="header-actions">
+      <!-- Perspective View Switcher -->
+      <div class="switch-group" role="tablist">
+        <button id="viewMacroBtn" class="switch-btn active" role="tab">🔬 Macro Bench View</button>
+        <button id="viewMicroBtn" class="switch-btn" role="tab">⚛️ Micro Nuclear Zoom</button>
+      </div>
+
+      <!-- Atomic Model Switcher -->
+      <div class="switch-group" role="tablist">
+        <button id="modelRutherfordBtn" class="switch-btn active" role="tab">Rutherford Nuclear</button>
+        <button id="modelThomsonBtn" class="switch-btn" role="tab">Thomson Plum Pudding</button>
+      </div>
+
+      <button id="soundToggleBtn" class="btn-secondary" title="Toggle Geiger clicks and scintillation pings">🔊 Sound: ON</button>
+      <button id="guideBtn" class="btn-secondary" title="View lab manual and historical context">📖 Lab Manual</button>
+    </div>
+  </header>
+
+  <!-- Main Unified Workspace Grid -->
+  <main class="main-layout">
+    <!-- Left: Canvas Stage & Telemetry -->
+    <section class="stage-container">
+      <div class="canvas-wrapper">
+        <canvas id="simCanvas"></canvas>
+
+        <div class="canvas-hud-top">
+          <div class="hud-pill">
+            <span class="hud-pill-pulse"></span>
+            <span>Evacuated Chamber & ZnS Screen</span>
+          </div>
+          <div class="hud-pill">
+            <span>Target: Gold Foil (Z = 79)</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Action Controls below canvas -->
+      <div class="stage-controls">
+        <div class="stage-btn-group">
+          <button id="beamBtn" class="btn-beam">⏸ Pause Alpha Beam</button>
+          <button id="resetBtn" class="btn-secondary">↺ Reset Statistics</button>
+        </div>
+
+        <div style="display: flex; align-items: center; gap: 10px; font-size: 0.85rem; font-weight: 600; color: var(--text-muted);">
+          <span>Detector Angle:</span>
+          <span id="detectorAngleVal" class="control-value-readout" style="min-width: 45px;">0°</span>
+        </div>
+      </div>
+
+      <!-- Telemetry Grid -->
+      <div class="telemetry-grid">
+        <div class="telemetry-card">
+          <div class="telemetry-card-title">TOTAL PARTICLES</div>
+          <div id="card1Val" class="telemetry-card-value">0</div>
+          <div id="card1Unit" class="telemetry-card-unit">Alphas Tracked</div>
+        </div>
+        <div class="telemetry-card">
+          <div class="telemetry-card-title">UNDEFLECTED RATIO</div>
+          <div id="card2Val" class="telemetry-card-value">100.0%</div>
+          <div id="card2Unit" class="telemetry-card-unit">Pass-through (θ &lt; 5°)</div>
+        </div>
+        <div class="telemetry-card">
+          <div class="telemetry-card-title">DEFLECTED FRACTION</div>
+          <div id="card3Val" class="telemetry-card-value">0.00%</div>
+          <div id="card3Unit" class="telemetry-card-unit">Scattered (5° ≤ θ &lt; 90°)</div>
+        </div>
+        <div class="telemetry-card">
+          <div class="telemetry-card-title">BACKSCATTERED REBOUNDS</div>
+          <div id="card4Val" class="telemetry-card-value">0</div>
+          <div id="card4Unit" class="telemetry-card-unit">θ ≥ 90° (Rare Coulomb Reb.)</div>
+        </div>
+      </div>
+
+      <!-- Live Scientific Formula Banner -->
+      <div class="reaction-banner">
+        <div id="reactionTitle" class="reaction-title">Rutherford Planetary Nuclear Model (1911)</div>
+        <div id="equationBlock" class="equation-block">b = (z · Z · e²) / (4πε₀ · m · v²) · cot(θ / 2)   |   N(θ) ∝ 1 / sin⁴(θ / 2)</div>
+        <div id="explanationText" class="explanation-text">Atom is mostly empty space. All positive charge and nearly all mass is concentrated in an ultra-dense, minute nucleus at the center. Produces rare large-angle rebounds.</div>
+      </div>
+    </section>
+
+    <!-- Right: Parameter Control Sidebar -->
+    <aside class="control-sidebar">
+      <!-- Detector & Beam Controls -->
+      <div class="sidebar-panel">
+        <div class="panel-header">
+          <h2 class="panel-title">Apparatus Adjustments</h2>
+        </div>
+
+        <div class="control-group">
+          <div class="control-label-row">
+            <span>Movable Detector Position</span>
+            <span style="font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; color: var(--primary);">±180° Track</span>
+          </div>
+          <input type="range" id="detectorSlider" class="styled-slider" min="-180" max="180" step="5" value="0">
+        </div>
+
+        <div class="control-group">
+          <div class="control-label-row">
+            <span>Alpha Beam Rate</span>
+            <span id="beamRateVal" class="control-value-readout">6x</span>
+          </div>
+          <input type="range" id="beamRateSlider" class="styled-slider" min="1" max="12" step="1" value="6">
+        </div>
+
+        <div class="control-group">
+          <div class="control-label-row">
+            <span>Target Metal Foil</span>
+          </div>
+          <select id="targetMetalSelect" style="width: 100%; padding: 8px 10px; border-radius: 8px; border: 1px solid var(--border); font-family: inherit; font-weight: 600;">
+            <option value="Au">Gold Foil (Au, Z = 79) — Classic 100 nm</option>
+            <option value="Ag">Silver Foil (Ag, Z = 47)</option>
+            <option value="Cu">Copper Foil (Cu, Z = 29)</option>
+            <option value="Al">Aluminium Foil (Al, Z = 13)</option>
+          </select>
+        </div>
+
+        <!-- Historical Quote Card -->
+        <div style="background: #FFFBEB; border: 1px solid #FDE68A; border-radius: 8px; padding: 12px; margin-top: 12px;">
+          <div style="font-size: 0.78rem; font-weight: 700; color: #B45309; text-transform: uppercase; margin-bottom: 4px;">📜 Rutherford's Surprise</div>
+          <div style="font-size: 0.78rem; color: #78350F; font-style: italic; line-height: 1.4;">
+            "It was almost as incredible as if you fired a 15-inch shell at a piece of tissue paper and it came back and hit you."
+          </div>
+        </div>
+      </div>
+
+      <!-- Laboratory Quests (NCERT) -->
+      <div class="sidebar-panel">
+        <div class="panel-header">
+          <h2 class="panel-title">Laboratory Quests (NCERT)</h2>
+        </div>
+
+        <div id="questList" class="quest-list">
+          <!-- Dynamically populated by state -->
+        </div>
+      </div>
+    </aside>
+  </main>
+
+  <!-- Lab Manual Guide Modal -->
+  <div id="guideModal" class="modal-overlay">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 class="modal-title">📖 Laboratory Manual: Rutherford Alpha Scattering</h3>
+        <button id="closeModalBtn" class="modal-close-btn">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p><strong>1. Historical Background:</strong> In 1911, Ernest Rutherford (with Hans Geiger and Ernest Marsden) bombarded a 100 nm thin gold foil with energetic alpha particles ($\text{He}^{2+}$, $+2e$).</p>
+        <br>
+        <p><strong>2. The Three Landmark Observations:</strong></p>
+        <ul style="padding-left: 20px; margin-top: 4px;">
+          <li><strong>Most particles (&gt; 99%) passed straight through</strong> without any deflection $\implies$ Most of the atom is completely empty space.</li>
+          <li><strong>A few particles were deflected by small to moderate angles</strong> $\implies$ There must be a concentrated positive charge inside the atom.</li>
+          <li><strong>Surprisingly, 1 in about 12,000 particles rebounded backwards ($\theta \ge 90^\circ$)</strong> $\implies$ All the positive charge and almost all the mass of the atom is concentrated in an unimaginably tiny, dense nucleus at the center.</li>
+        </ul>
+        <br>
+        <p><strong>3. Nuclear vs. Atomic Scale:</strong> The radius of an atom is $\approx 10^{-10}\text{ m}$ ($1\text{ \AA}$), while the radius of the nucleus is only $\approx 10^{-15}\text{ to } 10^{-14}\text{ m}$ (about 10,000 to 100,000 times smaller!).</p>
+      </div>
+      <div class="modal-footer">
+        <button id="modalGotItBtn" class="btn-beam" style="padding: 8px 18px;">Understood, Start Lab</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="js/rutherford_data.js"></script>
+  <script src="js/sound.js"></script>
+  <script src="js/state.js"></script>
+  <script src="js/rutherford_engine.js"></script>
+  <script src="js/renderer.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>

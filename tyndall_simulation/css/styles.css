@@ -1,0 +1,656 @@
+/* ==========================================================================
+   Tyndall Effect, Colloids & Suspensions Virtual Lab — Design System
+   NCERT Class 9 Chemistry: Is Matter Around Us Pure (Activities 2.1 & 2.2)
+   Soft Light-Blue Study Environment Palette & Responsive Layout Law
+   ========================================================================== */
+
+:root {
+  --bg-page: #F0F7FF;
+  --bg-card: #FFFFFF;
+  --bg-card-hover: #F8FAFC;
+  --bg-canvas: #E6F2FF;
+  --border-color: #CBD5E1;
+  --border-focus: #0EA5E9;
+
+  --text-primary: #0F172A;
+  --text-secondary: #475569;
+  --text-muted: #64748B;
+
+  --color-primary: #2563EB;
+  --color-primary-light: #DBEAFE;
+  --color-accent: #0EA5E9;
+  --color-success: #10B981;
+  --color-warning: #F59E0B;
+  --color-danger: #EF4444;
+
+  --laser-red: #EF4444;
+  --laser-green: #22C55E;
+  --laser-blue: #3B82F6;
+
+  --font-sans: 'Plus Jakarta Sans', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.08), 0 2px 4px -1px rgba(0, 0, 0, 0.04);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -2px rgba(0, 0, 0, 0.04);
+
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --radius-full: 9999px;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  width: 100%;
+  min-height: 100vh;
+  background-color: var(--bg-page);
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+  font-size: 15px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* App Header */
+.app-header {
+  background: #FFFFFF;
+  border-bottom: 1px solid var(--border-color);
+  padding: 12px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: var(--shadow-sm);
+  position: sticky;
+  top: 0;
+  z-index: 50;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.logo-badge {
+  background: linear-gradient(135deg, #0EA5E9, #2563EB);
+  color: white;
+  font-weight: 800;
+  font-size: 14px;
+  padding: 6px 12px;
+  border-radius: var(--radius-md);
+  letter-spacing: 0.5px;
+  box-shadow: 0 2px 4px rgba(37, 99, 235, 0.25);
+}
+
+.app-title-group h1 {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.app-title-group p {
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.btn-icon {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  color: var(--text-secondary);
+  padding: 8px 14px;
+  border-radius: var(--radius-md);
+  font-family: var(--font-sans);
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s ease;
+  min-height: 44px;
+}
+
+.btn-icon:hover {
+  background: var(--bg-card-hover);
+  color: var(--text-primary);
+  border-color: #94A3B8;
+}
+
+/* Main Layout Grid */
+.main-layout {
+  display: grid;
+  grid-template-columns: 340px 1fr 320px;
+  gap: 16px;
+  padding: 16px;
+  max-width: 1720px;
+  margin: 0 auto;
+  min-height: calc(100vh - 72px);
+}
+
+@media (max-width: 1300px) {
+  .main-layout {
+    grid-template-columns: 320px 1fr;
+  }
+  .telemetry-column {
+    grid-column: span 2;
+  }
+}
+
+@media (max-width: 900px) {
+  .main-layout {
+    grid-template-columns: 1fr;
+  }
+  .telemetry-column {
+    grid-column: span 1;
+  }
+}
+
+/* Panel Containers */
+.panel {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: 18px;
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid #F1F5F9;
+  padding-bottom: 10px;
+}
+
+.panel-title {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Control Elements */
+.control-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.control-label {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* View Mode Selector Tabs */
+.view-tabs {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  background: #E2E8F0;
+  padding: 3px;
+  border-radius: var(--radius-md);
+  gap: 2px;
+}
+
+.tab-btn {
+  background: transparent;
+  border: none;
+  padding: 8px 6px;
+  border-radius: 8px;
+  font-family: var(--font-sans);
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-height: 44px;
+}
+
+.tab-btn.active {
+  background: white;
+  color: var(--color-primary);
+  box-shadow: var(--shadow-sm);
+}
+
+/* Laser Toggle & Laser Color Pills */
+.laser-control-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.btn-toggle-laser {
+  flex: 1;
+  padding: 10px 14px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-color);
+  font-family: var(--font-sans);
+  font-size: 0.88rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-height: 44px;
+  background: #FEF2F2;
+  color: var(--color-danger);
+  border-color: #FECACA;
+}
+
+.btn-toggle-laser.active {
+  background: #EF4444;
+  color: white;
+  border-color: #DC2626;
+  box-shadow: 0 0 12px rgba(239, 68, 68, 0.45);
+}
+
+.laser-pills {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 8px;
+}
+
+.pill-laser {
+  background: #F8FAFC;
+  border: 2px solid #E2E8F0;
+  border-radius: var(--radius-md);
+  padding: 8px 6px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-height: 44px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.pill-laser .laser-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  margin-bottom: 4px;
+}
+
+.pill-laser span {
+  font-size: 0.75rem;
+  font-weight: 700;
+  font-family: var(--font-mono);
+}
+
+.pill-laser[data-color="red"] .laser-dot { background: var(--laser-red); }
+.pill-laser[data-color="green"] .laser-dot { background: var(--laser-green); }
+.pill-laser[data-color="blue"] .laser-dot { background: var(--laser-blue); }
+
+.pill-laser.active[data-color="red"] {
+  border-color: var(--laser-red);
+  background: #FEF2F2;
+  color: var(--laser-red);
+}
+
+.pill-laser.active[data-color="green"] {
+  border-color: var(--laser-green);
+  background: #F0FDF4;
+  color: var(--laser-green);
+}
+
+.pill-laser.active[data-color="blue"] {
+  border-color: var(--laser-blue);
+  background: #EFF6FF;
+  color: var(--laser-blue);
+}
+
+/* Beaker Selection Cards */
+.beaker-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.beaker-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 10px 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.beaker-card:hover {
+  border-color: var(--color-accent);
+  background: var(--bg-card-hover);
+}
+
+.beaker-card.active {
+  border-color: var(--color-primary);
+  background: #F0F7FF;
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.15);
+}
+
+.beaker-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 4px;
+}
+
+.beaker-title {
+  font-weight: 700;
+  font-size: 0.85rem;
+  color: var(--text-primary);
+}
+
+.beaker-tag {
+  font-size: 0.70rem;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-family: var(--font-mono);
+}
+
+.tag-true { background: #E0F2FE; color: #0369A1; }
+.tag-colloid { background: #FEF3C7; color: #B45309; }
+.tag-suspension { background: #F1F5F9; color: #475569; }
+
+.beaker-desc {
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+}
+
+/* Stir Action Button */
+.btn-action {
+  background: var(--color-primary);
+  color: white;
+  border: none;
+  padding: 10px 16px;
+  border-radius: var(--radius-md);
+  font-family: var(--font-sans);
+  font-size: 0.88rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all 0.2s ease;
+  min-height: 44px;
+}
+
+.btn-action:hover {
+  background: #1D4ED8;
+  box-shadow: 0 4px 8px rgba(37, 99, 235, 0.25);
+}
+
+/* Center Stage Canvas Container */
+.canvas-wrapper {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  box-shadow: var(--shadow-md);
+  min-height: 520px;
+}
+
+.canvas-toolbar {
+  background: white;
+  border-bottom: 1px solid var(--border-color);
+  padding: 8px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.canvas-status {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--color-success);
+}
+
+.canvas-container {
+  flex: 1;
+  position: relative;
+  background: var(--bg-canvas);
+  cursor: crosshair;
+}
+
+#simulation-canvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* Scientific Telemetry & Analysis Panels */
+.telemetry-column {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.data-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.data-box {
+  background: #F8FAFC;
+  border: 1px solid #E2E8F0;
+  border-radius: var(--radius-md);
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+}
+
+.data-box-title {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+}
+
+.data-box-value {
+  font-family: var(--font-mono);
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-top: 4px;
+}
+
+.data-box-desc {
+  font-size: 0.72rem;
+  color: var(--text-secondary);
+  margin-top: 2px;
+}
+
+/* Formula Banner */
+.formula-banner {
+  background: #EFF6FF;
+  border: 1px dashed #93C5FD;
+  border-radius: var(--radius-md);
+  padding: 10px 14px;
+}
+
+.formula-title {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #1E40AF;
+}
+
+.formula-body {
+  font-family: var(--font-mono);
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #1D4ED8;
+  margin: 4px 0;
+}
+
+.formula-caption {
+  font-size: 0.72rem;
+  color: #3B82F6;
+}
+
+/* NCERT Quests Tracker */
+.quest-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.quest-item {
+  background: #F8FAFC;
+  border: 1px solid #E2E8F0;
+  border-radius: var(--radius-md);
+  padding: 10px 12px;
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  transition: all 0.2s ease;
+}
+
+.quest-item.completed {
+  background: #F0FDF4;
+  border-color: #86EFAC;
+}
+
+.quest-checkbox {
+  width: 18px;
+  height: 18px;
+  border-radius: 4px;
+  border: 2px solid #CBD5E1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 2px;
+  flex-shrink: 0;
+  color: white;
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.quest-item.completed .quest-checkbox {
+  background: var(--color-success);
+  border-color: var(--color-success);
+}
+
+.quest-content {
+  flex: 1;
+}
+
+.quest-title {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.quest-desc {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  margin-top: 2px;
+}
+
+/* Comparative Database Table */
+.comparison-section {
+  grid-column: span 3;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: 18px;
+  box-shadow: var(--shadow-sm);
+  margin-top: 8px;
+}
+
+@media (max-width: 1300px) {
+  .comparison-section {
+    grid-column: span 2;
+  }
+}
+
+@media (max-width: 900px) {
+  .comparison-section {
+    grid-column: span 1;
+  }
+}
+
+.table-responsive {
+  width: 100%;
+  overflow-x: auto;
+  margin-top: 12px;
+}
+
+.comparison-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+}
+
+.comparison-table th {
+  background: #F8FAFC;
+  border-bottom: 2px solid var(--border-color);
+  padding: 10px 12px;
+  text-align: left;
+  font-weight: 700;
+  color: var(--text-secondary);
+}
+
+.comparison-table td {
+  border-bottom: 1px solid #E2E8F0;
+  padding: 10px 12px;
+  color: var(--text-primary);
+}
+
+.comparison-table tr:hover td {
+  background: #F8FAFC;
+}
+
+.comparison-table tr.highlighted td {
+  background: #EFF6FF;
+  font-weight: 600;
+}
+
+.badge-true {
+  background: #DCFCE7;
+  color: #15803D;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 4px;
+  font-size: 0.75rem;
+}
+
+.badge-false {
+  background: #FEE2E2;
+  color: #B91C1C;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 4px;
+  font-size: 0.75rem;
+}

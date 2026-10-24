@@ -1,0 +1,302 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Flame Test &amp; Atomic Emission Spectra Simulator</title>
+  <meta name="description"
+    content="Interactive STEM Chemistry laboratory exploring flame test colors, quantum electron excitation, Bohr energy levels, and calibrated optical emission spectroscopy.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+
+<body>
+
+  <!-- MAIN APPLICATION HEADER -->
+  <header class="app-header">
+    <div class="header-container">
+      <div class="brand-wrapper">
+        <div class="brand-icon">🔥</div>
+        <div>
+          <div style="display:flex; align-items:center;">
+            <h1 class="brand-title">ChemLab</h1>
+            <span class="brand-tag">Class 9–12 &amp; AP Chemistry</span>
+          </div>
+          <div class="brand-sub">Flame Test &amp; Atomic Emission Spectra Simulator</div>
+        </div>
+      </div>
+
+      <!-- Header Actions -->
+      <div class="header-actions">
+        <button id="btnOpenQuests" class="action-btn" title="Complete Student Laboratory Quests">
+          <span>⭐</span> Quests <span id="questBadgeCount" class="badge-counter">1/5</span>
+        </button>
+        <button id="btnOpenTheory" class="action-btn btn-primary" title="View Atomic Spectroscopy Theory &amp; Equations">
+          <span>📚</span> Theory &amp; Spectra
+        </button>
+        <button id="btnAudioToggle" class="action-btn active" title="Toggle Mechanical Audio FX">
+          🔊 Sound: ON
+        </button>
+        <button id="btnResetAll" class="action-btn" title="Reset burner and loop">
+          <span>↺</span> Reset
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- UNIFIED WORKSPACE LAYOUT (CSS GRID) -->
+  <main class="main-layout">
+
+    <!-- PRIMARY CANVAS STAGE COLUMN -->
+    <div class="stage-wrapper">
+      <div class="canvas-container">
+        <canvas id="flameCanvas"></canvas>
+      </div>
+
+      <!-- STAGE BOTTOM SELECTION CONTROLS -->
+      <div class="stage-controls">
+        <div class="salt-selection-tray" role="group" aria-label="Metal Salt Samples">
+          <button class="salt-pill-btn active" data-salt="cu" title="Copper(II) Chloride">
+            <span class="salt-dot" style="background:#10B981;"></span> CuCl₂ (Cu²⁺)
+          </button>
+          <button class="salt-pill-btn" data-salt="na" title="Sodium Chloride">
+            <span class="salt-dot" style="background:#F59E0B;"></span> NaCl (Na⁺)
+          </button>
+          <button class="salt-pill-btn" data-salt="k" title="Potassium Chloride">
+            <span class="salt-dot" style="background:#A855F7;"></span> KCl (K⁺)
+          </button>
+          <button class="salt-pill-btn" data-salt="sr" title="Strontium Chloride">
+            <span class="salt-dot" style="background:#E11D48;"></span> SrCl₂ (Sr²⁺)
+          </button>
+          <button class="salt-pill-btn" data-salt="ca" title="Calcium Chloride">
+            <span class="salt-dot" style="background:#EA580C;"></span> CaCl₂ (Ca²⁺)
+          </button>
+          <button class="salt-pill-btn" data-salt="ba" title="Barium Chloride">
+            <span class="salt-dot" style="background:#84CC16;"></span> BaCl₂ (Ba²⁺)
+          </button>
+          <button class="salt-pill-btn" data-salt="li" title="Lithium Chloride">
+            <span class="salt-dot" style="background:#BE123C;"></span> LiCl (Li⁺)
+          </button>
+          <button class="salt-pill-btn" data-salt="none" title="Clean Loop Without Salt">
+            <span class="salt-dot" style="background:#CBD5E1;"></span> Clean Loop
+          </button>
+        </div>
+
+        <div style="display:flex; gap:8px;">
+          <button id="btnLoopInFlame" class="action-btn active" title="Move nichrome loop into hottest burner zone">
+            📍 Loop in Flame
+          </button>
+          <button id="btnDipHCl" class="action-btn" title="Dip loop in concentrated HCl wash dish">
+            🧪 Dip in HCl
+          </button>
+        </div>
+      </div>
+
+      <!-- UNIFIED TELEMETRY CARD GRID -->
+      <div class="telemetry-grid">
+        <div class="telemetry-card">
+          <div class="telemetry-card-title">Flame Temperature</div>
+          <div id="telTemp" class="telemetry-card-val">950 °C</div>
+          <div class="telemetry-card-sub">Thermal heating zone</div>
+        </div>
+
+        <div class="telemetry-card">
+          <div class="telemetry-card-title">Active Metal Salt</div>
+          <div id="telSalt" class="telemetry-card-val">CuCl₂ (Cu²⁺)</div>
+          <div class="telemetry-card-sub">Excited atomic cation</div>
+        </div>
+
+        <div class="telemetry-card">
+          <div class="telemetry-card-title">Dominant Wavelength (λ)</div>
+          <div id="telWavelength" class="telemetry-card-val">521.8 nm</div>
+          <div class="telemetry-card-sub">Emission peak</div>
+        </div>
+
+        <div class="telemetry-card">
+          <div class="telemetry-card-title">Photon Energy (ΔE = hc/λ)</div>
+          <div id="telEnergy" class="telemetry-card-val">2.38 eV</div>
+          <div class="telemetry-card-sub">Quantum orbital relaxation</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CONTROL SIDEBAR -->
+    <aside class="control-sidebar">
+
+      <!-- BURNER APPARATUS CONTROLS -->
+      <section class="sidebar-panel">
+        <h2 class="panel-title">
+          <span>🔥</span> Bunsen Burner Controls
+        </h2>
+
+        <!-- Gas Flow Valve -->
+        <div class="control-group">
+          <div class="control-label-row">
+            <span>Gas Needle Valve</span>
+            <span id="valGas" class="control-val">70%</span>
+          </div>
+          <input type="range" id="sliderGas" class="slider-input" min="0" max="100" value="70" aria-label="Gas Needle Valve">
+        </div>
+
+        <!-- Air Collar Aperture -->
+        <div class="control-group">
+          <div class="control-label-row">
+            <span>Air Collar Aperture</span>
+            <span id="valAir" class="control-val">80%</span>
+          </div>
+          <input type="range" id="sliderAir" class="slider-input" min="0" max="1" step="0.05" value="0.80" aria-label="Air Collar Aperture">
+        </div>
+
+        <div style="font-size:11px; color:#475569; margin-bottom:12px;">
+          Flame Profile: <strong id="lblFlameType" style="color:#0284C7;">Roaring Blue (~1300°C)</strong>
+        </div>
+
+        <button id="btnIgnite" class="action-btn active" style="width:100%; justify-content:center;">
+          🔥 Burner: LIT
+        </button>
+      </section>
+
+      <!-- OPTICAL VIEWING & FILTERS -->
+      <section class="sidebar-panel">
+        <h2 class="panel-title">
+          <span>👓</span> Optical Filters &amp; Analysis
+        </h2>
+
+        <p style="font-size:12px; color:#475569; margin-bottom:12px;">
+          Cobalt Blue Glass absorbs the intense yellow 589 nm light of sodium impurities, revealing delicate violet potassium and crimson strontium emissions.
+        </p>
+
+        <button id="btnCobaltGlass" class="action-btn" style="width:100%; justify-content:center; margin-bottom:10px;">
+          👓 Cobalt Blue Glass: OFF
+        </button>
+      </section>
+
+      <!-- MYSTERY DETECTIVE SAMPLES -->
+      <section class="sidebar-panel">
+        <h2 class="panel-title">
+          <span>🕵️</span> Mystery Cation Challenge
+        </h2>
+
+        <p style="font-size:12px; color:#475569; margin-bottom:12px;">
+          Test an unlabelled mystery salt in the flame, record its emission wavelength, and deduce its identity.
+        </p>
+
+        <div style="display:flex; flex-direction:column; gap:6px;">
+          <button id="btnMysteryAlpha" class="action-btn" style="justify-content:center;">
+            🧪 Test Mystery Sample Alpha
+          </button>
+          <button id="btnMysteryBeta" class="action-btn" style="justify-content:center;">
+            🧪 Test Mystery Sample Beta
+          </button>
+          <button id="btnMysteryGamma" class="action-btn" style="justify-content:center;">
+            🧪 Test Mystery Sample Gamma
+          </button>
+        </div>
+      </section>
+
+    </aside>
+
+  </main>
+
+  <!-- MODALS -->
+
+  <!-- 1. Quests Modal -->
+  <div id="modalQuests" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="questsTitle">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h2 id="questsTitle" class="modal-title">⭐ Laboratory Quests</h2>
+        <button id="btnCloseQuests" class="modal-close-btn" aria-label="Close dialog">✕</button>
+      </div>
+      <div id="questsContainer">
+        <!-- Injected via UI controller -->
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. Chemical Theory & Spectra Modal -->
+  <div id="modalTheory" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="theoryTitle">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h2 id="theoryTitle" class="modal-title">📚 Atomic Emission Spectroscopy Theory</h2>
+        <button id="btnCloseTheory" class="modal-close-btn" aria-label="Close dialog">✕</button>
+      </div>
+      <div style="font-size:13px; color:#334155; line-height:1.6;">
+        <h3 style="font-size:15px; font-weight:700; color:#0F172A; margin: 10px 0 6px;">1. The Physics of Flame Colors</h3>
+        <p>
+          When a metal salt is introduced into the high-temperature zone of a Bunsen burner, thermal kinetic energy vaporizes and dissociates the salt into gaseous metal atoms and cations. Valence electrons absorb discrete quanta of energy and undergo promotion from ground state orbitals to higher energy excited orbitals:
+        </p>
+        <div style="background:#F1F5F9; padding:8px 12px; border-radius:6px; font-family:'JetBrains Mono', monospace; font-size:12px; margin:8px 0;">
+          Atom (Ground State) + Thermal Energy → Atom* (Excited State)
+        </div>
+
+        <h3 style="font-size:15px; font-weight:700; color:#0F172A; margin: 14px 0 6px;">2. Quantum Photon Emission (Planck-Einstein Equation)</h3>
+        <p>
+          The excited state is unstable and has a lifetime of mere nanoseconds. As the electron relaxes back down to a lower energy level, it releases the excess energy as a single photon of electromagnetic radiation:
+        </p>
+        <div style="background:#F1F5F9; padding:8px 12px; border-radius:6px; font-family:'JetBrains Mono', monospace; font-size:12px; margin:8px 0;">
+          ΔE = E₂ - E₁ = hν = (h · c) / λ
+        </div>
+        <ul style="margin-left: 20px; margin-top: 6px;">
+          <li><strong>h</strong> = Planck's Constant ($6.626 \times 10^{-34}\text{ J}\cdot\text{s}$)</li>
+          <li><strong>c</strong> = Speed of Light ($3.00 \times 10^{8}\text{ m/s}$)</li>
+          <li><strong>λ</strong> = Wavelength of emitted light in nanometers (nm)</li>
+          <li><strong>ΔE</strong> = Energy transition in electronvolts (eV)</li>
+        </ul>
+
+        <h3 style="font-size:15px; font-weight:700; color:#0F172A; margin: 14px 0 6px;">3. Role of Cobalt Blue Glass</h3>
+        <p>
+          Sodium is an exceptionally ubiquitous element found in glassware, dust, and human skin oils. Because its 589 nm D-line emission is intensely brilliant, even trace sodium contaminants mask weaker violet potassium emissions. Cobalt blue glass contains $\text{Co}^{2+}$ ions that absorb yellow light ($580–600\text{ nm}$), transmitting only blue, violet, and deep red.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. Mystery Deduction Modal -->
+  <div id="modalMystery" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="mysteryTitle">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h2 id="mysteryTitle" class="modal-title">🕵️ Cation Detective Submission</h2>
+        <button id="btnCloseMystery" class="modal-close-btn" aria-label="Close dialog">✕</button>
+      </div>
+      <p style="font-size:13px; color:#475569; margin-bottom:14px;">
+        Examine the active flame color and read the dominant wavelength in the spectroscope bar. Which cation is present in this sample?
+      </p>
+
+      <div style="margin-bottom:14px;">
+        <label for="mysterySubmitSelect" style="display:block; font-size:12px; font-weight:700; margin-bottom:6px;">Select Identified Metal Cation:</label>
+        <select id="mysterySubmitSelect" style="width:100%; padding:8px 12px; border-radius:6px; border:1px solid #CBD5E1; font-size:13px; font-weight:600;">
+          <option value="na">Sodium (Na⁺) — 589 nm (Yellow)</option>
+          <option value="k">Potassium (K⁺) — 404 nm (Lilac)</option>
+          <option value="cu">Copper(II) (Cu²⁺) — 521 nm (Green/Cyan)</option>
+          <option value="sr">Strontium (Sr²⁺) — 660 nm (Crimson)</option>
+          <option value="ca">Calcium (Ca²⁺) — 622 nm (Brick Red)</option>
+          <option value="ba">Barium (Ba²⁺) — 553 nm (Apple Green)</option>
+          <option value="li">Lithium (Li⁺) — 671 nm (Carmine Magenta)</option>
+        </select>
+      </div>
+
+      <button id="btnSubmitMysteryGuess" class="action-btn btn-primary" style="width:100%; justify-content:center; margin-bottom:10px;">
+        Submit Verification
+      </button>
+
+      <div id="lblMysteryFeedback" style="font-size:13px; text-align:center; min-height:22px;"></div>
+    </div>
+  </div>
+
+  <!-- JAVASCRIPT MODULES -->
+  <script src="js/elements_data.js"></script>
+  <script src="js/state.js"></script>
+  <script src="js/sound.js"></script>
+  <script src="js/flame_engine.js"></script>
+  <script src="js/renderer.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/main.js"></script>
+
+</body>
+
+</html>

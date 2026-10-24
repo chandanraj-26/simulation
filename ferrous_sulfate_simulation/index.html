@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Thermal Decomposition of Ferrous Sulfate Crystals | Class 10 NCERT Chemistry</title>
+  <meta name="description" content="Interactive STEM virtual lab for NCERT Class 10 Chemistry Activity 1.5: Thermal decomposition of ferrous sulfate crystals, water of crystallization loss, gas wafting, and litmus test.">
+
+  <!-- Typography: Google Fonts Inter, Plus Jakarta Sans & JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+  <!-- App Header -->
+  <header class="app-header">
+    <div class="header-left">
+      <div class="logo-badge">NCERT 10</div>
+      <div class="app-title-group">
+        <h1>Thermal Decomposition of Ferrous Sulfate Crystals</h1>
+        <p>Class 10 Chapter 1: Chemical Reactions and Equations (Activity 1.5)</p>
+      </div>
+    </div>
+    <div class="header-right">
+      <button id="btn-sound" class="btn-icon" aria-label="Toggle Sound">
+        <span>🔊</span> Sound: ON
+      </button>
+      <button id="btn-reset" class="btn-icon" aria-label="Reset Experiment">
+        <span>🔄</span> Reset
+      </button>
+    </div>
+  </header>
+
+  <!-- Main Layout Grid -->
+  <main class="main-layout">
+
+    <!-- Left Controls Panel -->
+    <aside class="panel">
+      <div class="panel-header">
+        <h2 class="panel-title">🔥 Bunsen & Reagents</h2>
+      </div>
+
+      <!-- Flame Intensity Controls -->
+      <div class="control-group">
+        <label class="control-label">Bunsen Burner Flame</label>
+        <div class="flame-grid">
+          <div class="flame-pill active" data-flame="0">
+            <span>⭕ Off</span>
+            <small>Ambient 25°C</small>
+          </div>
+          <div class="flame-pill" data-flame="1">
+            <span>🟡 Mild</span>
+            <small>~250°C Warm</small>
+          </div>
+          <div class="flame-pill" data-flame="2">
+            <span>🔵 Strong</span>
+            <small>~640°C Roaring</small>
+          </div>
+        </div>
+      </div>
+
+      <!-- Chemical Gas Testing Probes -->
+      <div class="control-group">
+        <label class="control-label">Gas Detection Test Strips</label>
+        <div class="probe-grid">
+          <div class="probe-pill" data-probe="litmus">
+            <span class="probe-title">Moist Blue Litmus Paper</span>
+            <span class="probe-badge" style="background: #DBEAFE; color: #1E40AF;">Acidic Test</span>
+          </div>
+          <div class="probe-pill" data-probe="dichromate">
+            <span class="probe-title">Acidified K₂Cr₂O₇ Strip</span>
+            <span class="probe-badge" style="background: #FFEDD5; color: #C2410C;">Redox Test</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Safety Odor Action: Waft Vapors -->
+      <div class="control-group">
+        <label class="control-label">NCERT Laboratory Technique</label>
+        <button id="btn-waft" class="btn-action">
+          <span>👋</span> Waft Vapors Toward Nose
+        </button>
+        <small style="color: var(--text-muted); font-size: 0.75rem;">
+          Gently wave your hand over the boiling tube mouth to check for the characteristic suffocating odor of burning sulfur without inhaling deeply.
+        </small>
+      </div>
+
+      <!-- Quick Guidance Callout -->
+      <div class="equation-card" style="margin-top: 8px;">
+        <div class="equation-title">Laboratory Tip</div>
+        <p class="equation-notes">
+          Always use a dry hard glass boiling tube tilted away at 45°. Notice the water droplets condensing on the cooler upper walls first before decomposition begins.
+        </p>
+      </div>
+    </aside>
+
+    <!-- Center Stage Canvas Area -->
+    <section class="canvas-wrapper">
+      <div class="canvas-toolbar">
+        <div class="canvas-status">
+          <span class="status-dot"></span>
+          <span>Boiling Tube Clamped at 45° Safety Tilt on Retort Stand</span>
+        </div>
+        <div id="telemetry-temp" style="font-family: var(--font-mono); font-size: 0.95rem; font-weight: 700; color: #DC2626;">
+          25 °C
+        </div>
+      </div>
+
+      <div class="canvas-container">
+        <canvas id="simulation-canvas"></canvas>
+      </div>
+    </section>
+
+    <!-- Right Telemetry & Quests Column -->
+    <aside class="telemetry-column">
+
+      <!-- Real-time Thermal Telemetry -->
+      <div class="panel">
+        <div class="panel-header">
+          <h2 class="panel-title">📊 Reaction Telemetry</h2>
+        </div>
+
+        <div class="data-grid">
+          <div class="data-box" style="grid-column: span 2;">
+            <span class="data-box-title">Active Reaction Phase</span>
+            <span id="telemetry-stage" class="data-box-value" style="font-size: 0.85rem;">Initial Ambient State</span>
+          </div>
+
+          <div class="data-box" style="grid-column: span 2;">
+            <span class="data-box-title">Solid Compound Residue</span>
+            <span id="telemetry-solid" class="data-box-value" style="font-size: 0.88rem; color: #15803D;">FeSO₄·7H₂O (Pale Green)</span>
+          </div>
+
+          <div class="data-box" style="grid-column: span 2;">
+            <span class="data-box-title">Evolving Vapor / Gas</span>
+            <span id="telemetry-gases" class="data-box-value" style="font-size: 0.82rem;">
+              <span class="badge-neutral">None</span>
+            </span>
+          </div>
+
+          <div class="data-box">
+            <span class="data-box-title">Sample Mass</span>
+            <span id="telemetry-mass-current" class="data-box-value">2.000 g</span>
+            <span class="data-box-desc">Solid inside tube</span>
+          </div>
+
+          <div class="data-box">
+            <span class="data-box-title">H₂O Vapor Lost</span>
+            <span id="telemetry-water-evolved" class="data-box-value">0.000 g</span>
+            <span class="data-box-desc">Water of cryst.</span>
+          </div>
+
+          <div class="data-box" style="grid-column: span 2;">
+            <span class="data-box-title">SO₂ + SO₃ Gas Released</span>
+            <span id="telemetry-sox-evolved" class="data-box-value">0.000 g</span>
+            <span class="data-box-desc">Acidic choking fumes</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- NCERT Activity 1.5 Quest Tracker -->
+      <div class="panel">
+        <div class="panel-header">
+          <h2 class="panel-title">🎯 NCERT Quests</h2>
+        </div>
+        <div id="quest-list" class="quest-list">
+          <!-- Populated by ui.js -->
+        </div>
+      </div>
+
+    </aside>
+
+    <!-- Bottom Chemical Equations & Theory Section -->
+    <section class="reactions-section">
+      <div class="panel-header">
+        <h2 class="panel-title">📚 Chemical Equations & Theory (NCERT Chapter 1)</h2>
+      </div>
+
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 14px; margin-top: 14px;">
+        <div class="equation-card">
+          <div class="equation-title">Stage 1: Dehydration (Loss of Water of Crystallization)</div>
+          <div class="equation-code">FeSO₄·7H₂O(s) ⟶ FeSO₄(s) + 7H₂O(g)</div>
+          <p class="equation-notes">
+            Hydrated green vitriol (pale green) loses 7 water molecules on mild heating (~100–300°C), turning into dirty white anhydrous FeSO₄. Droplets of condensed water appear on cooler upper tube walls.
+          </p>
+        </div>
+
+        <div class="equation-card">
+          <div class="equation-title">Stage 2: Strong Thermal Decomposition</div>
+          <div class="equation-code">2FeSO₄(s) ⟶ Fe₂O₃(s) + SO₂(g) + SO₃(g)</div>
+          <p class="equation-notes">
+            On strong heating (>500°C), ferrous sulfate decomposes into solid ferric oxide (Fe₂O₃, reddish-brown) and two suffocating acidic gases: sulfur dioxide (SO₂) and sulfur trioxide (SO₃).
+          </p>
+        </div>
+
+        <div class="equation-card">
+          <div class="equation-title">Acidic Gas & Redox Confirmation Tests</div>
+          <div class="equation-code">SO₂ + H₂O ⟶ H₂SO₃ (Turns Blue Litmus Red)</div>
+          <p class="equation-notes">
+            Both SO₂ and SO₃ are acidic non-metal oxides. They dissolve in the moisture of moist blue litmus paper to turn it red. SO₂ also reduces orange potassium dichromate to green chromium sulfate: Cr₂O₇²⁻ + 3SO₂ + 2H⁺ ⟶ 2Cr³⁺ + 3SO₄²⁻ + H₂O.
+          </p>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Simulation Modules -->
+  <script src="js/reaction_data.js"></script>
+  <script src="js/sound.js"></script>
+  <script src="js/state.js"></script>
+  <script src="js/thermal_engine.js"></script>
+  <script src="js/renderer.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>
