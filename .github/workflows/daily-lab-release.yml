@@ -15,37 +15,39 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout main branch
+      - name: Checkout staging branch
         uses: actions/checkout@v4
         with:
-          ref: main
+          ref: staging
           fetch-depth: 0
 
-      - name: Fetch staging branch containing pre-built labs
+      - name: Fetch unreleased branch containing queued labs
         run: |
-          git fetch origin staging:staging
+          git fetch origin unreleased:unreleased || true
 
       - name: Execute daily lab release runner
         id: lab_step
+        env:
+          SOURCE_BRANCH: unreleased
         run: |
           node .github/scripts/release_next_lab.js
 
-      - name: Commit and push released lab to main
+      - name: Commit and push released lab to staging
         if: steps.lab_step.outputs.released == 'true'
         run: |
           git config user.name "Chandan Raj"
           git config user.email "rajchandan02468@gmail.com"
           git add -A
           git commit -m "${{ steps.lab_step.outputs.commit_msg }}"
-          git push origin main
+          git push origin staging
 
-      - name: Synchronize queue status with staging branch
+      - name: Synchronize queue status with unreleased branch
         if: steps.lab_step.outputs.released == 'true'
         run: |
-          git checkout staging
-          git checkout main -- .github/daily_queue.json
+          git checkout unreleased || true
+          git checkout staging -- .github/daily_queue.json
           git config user.name "Chandan Raj"
           git config user.email "rajchandan02468@gmail.com"
           git add .github/daily_queue.json
-          git commit -m "chore(queue): sync release status for ${{ steps.lab_step.outputs.lab_id }}" || true
-          git push origin staging
+          git commit -m "chore(queue): sync release status for daily batch (${{ steps.lab_step.outputs.batch_count }} labs)" || true
+          git push origin unreleased || true
