@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Paper Chromatography & Plant Pigments Virtual Lab</title>
+  <meta name="description" content="Interactive STEM simulation of paper chromatography modeling capillary action, solvent partition, and retention factor (Rf) for plant chloroplast pigments and synthetic inks.">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <header class="app-header">
+    <div class="header-title-box">
+      <h1><span>🌿</span> Paper Chromatography & Plant Pigments Lab</h1>
+      <span class="header-subtitle">NCERT Class 9 & Class 11 Practical Chemistry • Capillary Partition Dynamics</span>
+    </div>
+    <div class="header-actions">
+      <button id="btn-ruler" class="btn-secondary active">📏 Metric Ruler</button>
+      <button id="btn-lid" class="btn-secondary">Lid: Sealed</button>
+      <button id="btn-mute" class="btn-secondary">🔊 Audio Active</button>
+    </div>
+  </header>
+
+  <main class="main-layout">
+    <!-- Simulation & Stage Section -->
+    <section class="stage-container">
+      <div class="canvas-card">
+        <div class="canvas-wrapper">
+          <canvas id="simulation-canvas"></canvas>
+        </div>
+      </div>
+
+      <!-- Playback and Controls -->
+      <div class="stage-controls">
+        <div class="playback-controls">
+          <button id="btn-play" class="btn-primary">
+            <span>▶</span> Start Migration
+          </button>
+          <button id="btn-reset" class="btn-secondary">
+            <span>↺</span> Reset Strip
+          </button>
+        </div>
+
+        <div class="speed-control-group">
+          <span>Migration Speed:</span>
+          <input type="range" id="speed-slider" min="0.5" max="5.0" step="0.5" value="1.0">
+          <span id="speed-label" class="speed-badge">1.0x</span>
+        </div>
+      </div>
+
+      <!-- Live Telemetry Card Grid -->
+      <div class="telemetry-grid">
+        <div class="telemetry-card">
+          <div class="telemetry-card-title">Solvent Front Rise</div>
+          <div id="val-solvent-dist" class="telemetry-card-val">0.00 cm</div>
+        </div>
+        <div class="telemetry-card">
+          <div class="telemetry-card-title">Elapsed Time</div>
+          <div id="val-elapsed-time" class="telemetry-card-val">0.0 s</div>
+        </div>
+        <div class="telemetry-card">
+          <div class="telemetry-card-title">Resolved Bands</div>
+          <div id="val-bands-count" class="telemetry-card-val">0</div>
+        </div>
+        <div class="telemetry-card">
+          <div class="telemetry-card-title">Capillary Speed</div>
+          <div id="val-cap-speed" class="telemetry-card-val">0.000 cm/s</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Sidebar Controls and Analysis -->
+    <aside class="control-sidebar">
+      <div class="sidebar-panel">
+        <h3>Experimental Setup</h3>
+        <div class="form-group">
+          <label for="sample-select">Spotting Sample Analytes</label>
+          <select id="sample-select" class="form-select">
+            <option value="spinach" selected>Spinach Leaf Extract (Chloroplasts)</option>
+            <option value="black_ink">Water-Soluble Black Marker Ink</option>
+            <option value="hibiscus">Red Hibiscus Petal Extract</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="solvent-select">Developing Solvent System</label>
+          <select id="solvent-select" class="form-select">
+            <option value="pet_ether_acetone" selected>Petroleum Ether : Acetone (9:1)</option>
+            <option value="water_ethanol">Water : Ethanol (1:1)</option>
+            <option value="pure_water">Distilled Water (100%)</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="sidebar-panel">
+        <h3>Resolved Pigment Bands</h3>
+        <div class="table-responsive">
+          <table class="pigment-table">
+            <thead>
+              <tr>
+                <th>Pigment</th>
+                <th>Distance</th>
+                <th>Calc Rf</th>
+                <th>Ref Rf</th>
+              </tr>
+            </thead>
+            <tbody id="pigment-table-body">
+              <!-- Rendered dynamically -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="sidebar-panel">
+        <h3>Band Chemical Profile</h3>
+        <div id="pigment-detail-card">
+          <!-- Rendered dynamically -->
+        </div>
+      </div>
+
+      <div class="sidebar-panel">
+        <h3>Laboratory Quests</h3>
+        <ul id="quest-list" class="quest-list">
+          <!-- Rendered dynamically -->
+        </ul>
+      </div>
+    </aside>
+  </main>
+
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>

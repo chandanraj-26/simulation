@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Galvanic Daniell Cell & Nernst Equation Virtual Lab</title>
+  <meta name="description" content="Interactive STEM electrochemical simulation modeling standard reduction potentials, half-cell reactions, draggable salt bridge ion migration, and Nernst equation.">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <header class="app-header">
+    <div class="header-title-box">
+      <h1><span>⚡</span> Galvanic Daniell Cell & Nernst Equation Lab</h1>
+      <span class="header-subtitle">NCERT Class 12 Chapter 3 Electrochemistry • Standard EMF & Ion Drift</span>
+    </div>
+    <div class="header-actions">
+      <button id="btn-circuit" class="btn-secondary active">Open Circuit Switch</button>
+      <button id="btn-salt-bridge" class="btn-secondary">Remove Salt Bridge</button>
+      <button id="btn-mute" class="btn-secondary">🔊 Audio Active</button>
+    </div>
+  </header>
+
+  <main class="main-layout">
+    <section class="stage-container">
+      <div class="canvas-card">
+        <div class="canvas-wrapper">
+          <canvas id="simulation-canvas"></canvas>
+        </div>
+      </div>
+
+      <div class="stage-controls">
+        <button id="btn-reset" class="btn-secondary">↺ Reset Standard State (1.0 M, 298 K)</button>
+      </div>
+
+      <div class="telemetry-grid">
+        <div class="telemetry-card">
+          <div class="telemetry-card-title">Cell Potential (E_cell)</div>
+          <div id="val-voltage" class="telemetry-card-val">1.100 V</div>
+        </div>
+        <div class="telemetry-card">
+          <div class="telemetry-card-title">Standard EMF (E°)</div>
+          <div id="val-standard-e" class="telemetry-card-val">1.10 V</div>
+        </div>
+        <div class="telemetry-card">
+          <div class="telemetry-card-title">Gibbs Energy (ΔG)</div>
+          <div id="val-delta-g" class="telemetry-card-val">-212.27 kJ/mol</div>
+        </div>
+        <div class="telemetry-card">
+          <div class="telemetry-card-title">Reaction Quotient (Q)</div>
+          <div id="val-quotient-q" class="telemetry-card-val">1.0000</div>
+        </div>
+      </div>
+    </section>
+
+    <aside class="control-sidebar">
+      <div class="sidebar-panel">
+        <h3>Electrolyte Concentrations</h3>
+        <div class="slider-group">
+          <div class="slider-header">
+            <label for="slider-zn">Anode [Zn²⁺] Concentration:</label>
+            <span id="label-zn">1.000 M</span>
+          </div>
+          <input type="range" id="slider-zn" min="0.001" max="2.0" step="0.005" value="1.0">
+        </div>
+
+        <div class="slider-group">
+          <div class="slider-header">
+            <label for="slider-cu">Cathode [Cu²⁺] Concentration:</label>
+            <span id="label-cu">1.000 M</span>
+          </div>
+          <input type="range" id="slider-cu" min="0.001" max="2.0" step="0.005" value="1.0">
+        </div>
+
+        <div class="slider-group">
+          <div class="slider-header">
+            <label for="slider-temp">Absolute Temperature (T):</label>
+            <span id="label-temp">298.2 K (25°C)</span>
+          </div>
+          <input type="range" id="slider-temp" min="273.15" max="350.15" step="1.0" value="298.15">
+        </div>
+      </div>
+
+      <div class="sidebar-panel">
+        <h3>Nernst Equation (298 K)</h3>
+        <div class="nernst-box">
+          E_cell = E° - (0.0591 / 2) · log₁₀([Zn²⁺] / [Cu²⁺])<br><br>
+          Zn(s) + Cu²⁺(aq) ⇌ Zn²⁺(aq) + Cu(s)
+        </div>
+      </div>
+
+      <div class="sidebar-panel">
+        <h3>Electrode Mass Balance</h3>
+        <div style="font-size:0.85rem; display:flex; justify-content:space-between; margin-bottom:6px;">
+          <span>Anode Dissolved (Zn):</span>
+          <strong id="val-anode-mass" style="color:#DC2626; font-family:'JetBrains Mono',monospace;">-0.0000 g</strong>
+        </div>
+        <div style="font-size:0.85rem; display:flex; justify-content:space-between;">
+          <span>Cathode Deposited (Cu):</span>
+          <strong id="val-cathode-mass" style="color:#16A34A; font-family:'JetBrains Mono',monospace;">+0.0000 g</strong>
+        </div>
+      </div>
+
+      <div class="sidebar-panel">
+        <h3>Laboratory Quests</h3>
+        <ul id="quest-list" class="quest-list"></ul>
+      </div>
+    </aside>
+  </main>
+
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>
