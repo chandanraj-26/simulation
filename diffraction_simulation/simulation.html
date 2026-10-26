@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Single-Slit Fraunhofer Diffraction | STEM Virtual Lab</title>
+  <meta name="description" content="Interactive single-slit optical diffraction simulation with adjustable lasers, micrometer slit width, screen distance, and real-time sinc-squared irradiance profiling.">
+  <link rel="stylesheet" href="./css/styles.css">
+</head>
+<body>
+  <header>
+    <div class="header-title">
+      <h1>Single-Slit Fraunhofer Diffraction</h1>
+      <span>Wave Optics Virtual Bench • High-Precision Intensity Profiler</span>
+    </div>
+    <div class="header-actions">
+      <button id="laserToggleBtn" class="btn btn-primary">Laser Beam: ACTIVE</button>
+      <button id="resetBtn" class="btn btn-secondary">Reset Apparatus</button>
+    </div>
+  </header>
+
+  <main class="app-container">
+    <!-- Center Visualizer Canvas -->
+    <section class="canvas-section">
+      <div class="canvas-toolbar">
+        <span id="canvasStatusText">Optical Axis View & Photodetector Probe</span>
+        <span>Drag anywhere on screen to reposition photometer wand</span>
+      </div>
+      <div class="canvas-wrapper">
+        <canvas id="diffractionCanvas"></canvas>
+      </div>
+    </section>
+
+    <!-- Sidebar Controls -->
+    <aside class="controls-sidebar">
+      <!-- Laser & Slit Controls -->
+      <div class="card">
+        <h2>Apparatus Parameters</h2>
+
+        <div class="control-group">
+          <label class="control-label-row" for="laserPresetSelect">
+            <span>Laser Source (λ)</span>
+          </label>
+          <select id="laserPresetSelect" class="input-select">
+            <option value="red">He-Ne / Red Diode (650 nm)</option>
+            <option value="yellow">Sodium D-Line (589 nm)</option>
+            <option value="green">DPSS Green (532 nm)</option>
+            <option value="blue">InGaN Violet-Blue (405 nm)</option>
+          </select>
+        </div>
+
+        <div class="control-group">
+          <div class="control-label-row">
+            <label for="slitSlider">Slit Width (a)</label>
+            <span id="slitVal" class="val-badge">0.08 mm</span>
+          </div>
+          <input type="range" id="slitSlider" min="0.02" max="0.30" step="0.01" value="0.08">
+        </div>
+
+        <div class="control-group">
+          <div class="control-label-row">
+            <label for="distSlider">Distance to Screen (D)</label>
+            <span id="distVal" class="val-badge">1.5 m</span>
+          </div>
+          <input type="range" id="distSlider" min="0.5" max="3.0" step="0.1" value="1.5">
+        </div>
+
+        <div class="control-group">
+          <div class="control-label-row">
+            <label for="probeSlider">Photometer Wand Position (y)</label>
+            <span id="probeVal" class="val-badge">0.00 mm</span>
+          </div>
+          <input type="range" id="probeSlider" min="-25" max="25" step="0.1" value="0">
+        </div>
+      </div>
+
+      <!-- Realtime Telemetry -->
+      <div class="card">
+        <h2>Optical Telemetry</h2>
+        <div class="telemetry-grid">
+          <div class="telemetry-item">
+            <span class="tel-label">Central Max Width (W₀ = 2λD/a):</span>
+            <span id="telCentralWidth" class="tel-value">--</span>
+          </div>
+          <div class="telemetry-item">
+            <span class="tel-label">1st Dark Fringe (±y₁ = ±λD/a):</span>
+            <span id="telFirstMin" class="tel-value">--</span>
+          </div>
+          <div class="telemetry-item">
+            <span class="tel-label">Angular Half-Width (θ₁ ≈ λ/a):</span>
+            <span id="telAngularWidth" class="tel-value">--</span>
+          </div>
+          <div class="telemetry-item">
+            <span class="tel-label">Photometer Irradiance (I/I₀):</span>
+            <span id="telProbeIrradiance" class="tel-value">--</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Theory Card -->
+      <div class="card">
+        <h2>Diffraction Law</h2>
+        <div class="theory-box">
+          <p>Fraunhofer single slit intensity profile is governed by:</p>
+          <div class="theory-formula">I(θ) = I₀ · [sin(β) / β]²</div>
+          <p>Where phase parameter <strong>β = (π · a · sin θ) / λ</strong>.</p>
+          <p>Destructive interference minima occur at:</p>
+          <div class="theory-formula">a · sin θ = m · λ &nbsp; (m = ±1, ±2, ...)</div>
+        </div>
+      </div>
+    </aside>
+  </main>
+
+  <script type="module" src="./js/main.js"></script>
+</body>
+</html>

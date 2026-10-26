@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Colloidal Sols Preparation & Hardy-Schulze Rule Lab</title>
+  <meta name="description" content="Interactive STEM surface chemistry simulation modeling colloidal sol preparation, Tyndall laser cone scattering, and Hardy-Schulze coagulation law.">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <header class="app-header">
+    <div class="header-title-box">
+      <h1><span>✨</span> Colloidal Sols & Hardy-Schulze Rule Lab</h1>
+      <span class="header-subtitle">NCERT Class 12 Surface Chemistry • Tyndall Effect & Valency Coagulation</span>
+    </div>
+    <div class="header-actions">
+      <button id="btn-laser" class="btn-secondary active">Green Laser: ON</button>
+      <button id="btn-reset" class="btn-secondary">↺ Reset Cuvette</button>
+      <button id="btn-mute" class="btn-secondary">🔊 Audio Active</button>
+    </div>
+  </header>
+
+  <main class="main-layout">
+    <section class="stage-container">
+      <div class="canvas-card">
+        <div class="canvas-wrapper">
+          <canvas id="simulation-canvas"></canvas>
+        </div>
+      </div>
+
+      <div class="stage-controls">
+        <div style="font-size:0.85rem; font-weight:600; color:var(--text-muted);">Optical Bench: 532 nm Green Laser Tyndall Scattering</div>
+      </div>
+
+      <div class="telemetry-grid">
+        <div class="telemetry-card">
+          <div class="telemetry-card-title">Colloidal Sol</div>
+          <div id="val-sol" class="telemetry-card-val">Fe(OH)₃ Sol</div>
+        </div>
+        <div class="telemetry-card">
+          <div class="telemetry-card-title">Surface Charge</div>
+          <div id="val-charge" class="telemetry-card-val">Positive (+)</div>
+        </div>
+        <div class="telemetry-card">
+          <div class="telemetry-card-title">Added Coagulant</div>
+          <div id="val-electrolyte" class="telemetry-card-val">None</div>
+        </div>
+        <div class="telemetry-card">
+          <div class="telemetry-card-title">Coagulation</div>
+          <div id="val-coagulation" class="telemetry-card-val">0%</div>
+        </div>
+      </div>
+    </section>
+
+    <aside class="control-sidebar">
+      <div class="sidebar-panel">
+        <h3>Colloid System</h3>
+        <div class="form-group">
+          <label for="sol-select">Select Colloidal Sol</label>
+          <select id="sol-select" class="form-select">
+            <option value="ferric_hydroxide" selected>Ferric Hydroxide Sol [Fe(OH)₃] - Positive Sol</option>
+            <option value="starch">Starch Sol (Amylose / Amylopectin) - Negative Sol</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="sidebar-panel">
+        <h3>Add Coagulating Electrolyte (Hardy-Schulze)</h3>
+        <div id="electrolyte-container" class="reagents-grid"></div>
+      </div>
+
+      <div class="sidebar-panel">
+        <h3>Laboratory Quests</h3>
+        <ul id="quest-list" class="quest-list"></ul>
+      </div>
+    </aside>
+  </main>
+
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>

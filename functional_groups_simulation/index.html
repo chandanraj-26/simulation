@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Organic Functional Group Identification Virtual Lab</title>
+  <meta name="description" content="Interactive STEM organic chemistry simulation testing for unsaturation, alcohols, aldehydes, ketones, and carboxylic acids with real-time diagnostic observations.">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <header class="app-header">
+    <div class="header-title-box">
+      <h1><span>🧪</span> Organic Functional Group Identification Lab</h1>
+      <span class="header-subtitle">NCERT Class 12 Practical Chemistry • Diagnostic Confirmatory Tests</span>
+    </div>
+    <div class="header-actions">
+      <button id="btn-squeaky-pop" class="btn-secondary" style="display:none; background:#FEF3C7; color:#B45309; border-color:#FDE68A;">🔥 Burning Splint (Test H₂ Gas)</button>
+      <button id="btn-reset" class="btn-secondary">↺ Empty Test Tube</button>
+      <button id="btn-mute" class="btn-secondary">🔊 Audio Active</button>
+    </div>
+  </header>
+
+  <main class="main-layout">
+    <section class="stage-container">
+      <div class="canvas-card">
+        <div class="canvas-wrapper">
+          <canvas id="simulation-canvas"></canvas>
+        </div>
+      </div>
+
+      <div class="stage-controls">
+        <div style="font-size:0.85rem; font-weight:600; color:var(--text-muted);">Apparatus: Micro-scale Borosilicate Test Tube Bench</div>
+      </div>
+
+      <div class="telemetry-grid">
+        <div class="telemetry-card">
+          <div class="telemetry-card-title">Organic Sample</div>
+          <div id="val-compound" class="telemetry-card-val">Ethanol</div>
+        </div>
+        <div class="telemetry-card">
+          <div class="telemetry-card-title">Functional Group</div>
+          <div id="val-group" class="telemetry-card-val">Alcoholic (-OH)</div>
+        </div>
+        <div class="telemetry-card">
+          <div class="telemetry-card-title">Active Reagent</div>
+          <div id="val-reagent" class="telemetry-card-val">None Added</div>
+        </div>
+      </div>
+
+      <div id="val-obs-box" class="observation-card">
+        Add a diagnostic reagent from the sidebar to observe functional group response.
+      </div>
+    </section>
+
+    <aside class="control-sidebar">
+      <div class="sidebar-panel">
+        <h3>Sample Compound</h3>
+        <div class="form-group">
+          <label for="compound-select">Select Organic Compound</label>
+          <select id="compound-select" class="form-select">
+            <option value="cyclohexene">Cyclohexene (Alkene - Unsaturation)</option>
+            <option value="ethanol" selected>Ethanol (Alcohol -OH)</option>
+            <option value="acetaldehyde">Acetaldehyde (Aldehyde -CHO)</option>
+            <option value="acetic_acid">Acetic Acid (Carboxylic -COOH)</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="sidebar-panel">
+        <h3>Diagnostic Reagents</h3>
+        <div id="reagents-container" class="reagents-grid"></div>
+      </div>
+
+      <div class="sidebar-panel">
+        <h3>Laboratory Quests</h3>
+        <ul id="quest-list" class="quest-list"></ul>
+      </div>
+    </aside>
+  </main>
+
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>
