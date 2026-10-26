@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chemical Equilibrium & Le Chatelier's Principle Virtual Lab</title>
+  <meta name="description" content="Interactive STEM simulation of chemical equilibrium shifts under concentration and temperature perturbations across Iron(III) thiocyanate and Cobalt chloride complexes.">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <header class="app-header">
+    <div class="header-title-box">
+      <h1><span>⚖️</span> Chemical Equilibrium & Le Chatelier's Principle Lab</h1>
+      <span class="header-subtitle">NCERT Class 11 Chapter 7 Chemical Equilibrium • Dynamic Reversible Shifts</span>
+    </div>
+    <div class="header-actions">
+      <button id="btn-reset" class="btn-secondary">↺ Reset Rack</button>
+      <button id="btn-mute" class="btn-secondary">🔊 Audio Active</button>
+    </div>
+  </header>
+
+  <main class="main-layout">
+    <section class="stage-container">
+      <div class="canvas-card">
+        <div class="canvas-wrapper">
+          <canvas id="simulation-canvas"></canvas>
+        </div>
+      </div>
+
+      <div class="stage-controls">
+        <div style="font-size:0.85rem; font-weight:600; color:var(--text-muted);">Select Active Tube:</div>
+        <div id="tube-buttons-container" class="tube-buttons-group"></div>
+      </div>
+
+      <div class="telemetry-grid">
+        <div class="telemetry-card">
+          <div class="telemetry-card-title">Equilibrium Position</div>
+          <div id="val-equil-pos" class="telemetry-card-val">50.0%</div>
+        </div>
+        <div class="telemetry-card">
+          <div class="telemetry-card-title">Absorbance (A)</div>
+          <div id="val-absorbance" class="telemetry-card-val">0.900</div>
+        </div>
+        <div class="telemetry-card">
+          <div class="telemetry-card-title">Transmittance (%T)</div>
+          <div id="val-transmittance" class="telemetry-card-val">12.6%</div>
+        </div>
+        <div class="telemetry-card">
+          <div class="telemetry-card-title">Shift Direction</div>
+          <div id="val-shift-dir" class="telemetry-card-val" style="font-size:0.88rem;">Balanced</div>
+        </div>
+      </div>
+    </section>
+
+    <aside class="control-sidebar">
+      <div class="sidebar-panel">
+        <h3>Equilibrium System</h3>
+        <div class="form-group">
+          <label for="system-select">Select Reversible Reaction</label>
+          <select id="system-select" class="form-select">
+            <option value="iron_thiocyanate" selected>Iron(III) Thiocyanate System</option>
+            <option value="cobalt_chloride">Cobalt(II) Hexaaqua / Tetrachloro System</option>
+          </select>
+        </div>
+        <div class="system-info-card">
+          <div id="system-eq-tag" class="eq-code"></div>
+          <div id="system-enthalpy-tag" style="font-size:0.8rem; font-weight:600; color:#475569;"></div>
+        </div>
+      </div>
+
+      <div class="sidebar-panel">
+        <h3>Apply Perturbation to Active Tube</h3>
+        <div id="reagents-container" class="reagents-grid"></div>
+      </div>
+
+      <div class="sidebar-panel">
+        <h3>Laboratory Quests</h3>
+        <ul id="quest-list" class="quest-list"></ul>
+      </div>
+    </aside>
+  </main>
+
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>
