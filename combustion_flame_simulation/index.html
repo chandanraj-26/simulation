@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Combustion, Flame Zones & Air Supply | CBSE Chemistry Virtual Lab</title>
+  <meta name="description" content="Interactive CBSE Class 8 Chemistry virtual lab exploring candle flame zones, complete vs incomplete combustion, and fire triangle air supply testing.">
+  <link rel="stylesheet" href="./css/styles.css">
+</head>
+<body>
+  <header>
+    <div class="header-title">
+      <h1>Combustion, Flame Zones & Air Supply</h1>
+      <span>CBSE Chemistry Class 8 Chapter 6 • Candle Flame Zones & Fire Triangle Bench</span>
+    </div>
+    <div class="header-actions">
+      <button id="resetBtn" class="btn btn-secondary">Reset Apparatus</button>
+    </div>
+  </header>
+
+  <main class="app-container">
+    <!-- Visualizer Canvas -->
+    <section class="canvas-section">
+      <div class="canvas-toolbar">
+        <span id="canvasStatusText">Candle Flame Apparatus & Chimney Air Ingress Bench</span>
+        <span>Select Air Supply mode and Experimental Probe Tool to test combustion zones</span>
+      </div>
+      <div class="canvas-wrapper">
+        <canvas id="combustionCanvas"></canvas>
+      </div>
+    </section>
+
+    <!-- Sidebar Controls -->
+    <aside class="controls-sidebar">
+      <!-- Controls -->
+      <div class="card">
+        <h2>Combustion Parameters</h2>
+
+        <div class="control-group">
+          <label class="control-label-row" for="airModeSelect">
+            <span>Chimney Air Supply Condition</span>
+          </label>
+          <select id="airModeSelect" class="input-select">
+            <option value="open" selected>Case A: Free Air Ingress (Wooden Blocks)</option>
+            <option value="restricted">Case B: Restricted Air (Chimney Flat on Table)</option>
+            <option value="sealed">Case C: Zero Air (Glass Plate Sealed)</option>
+          </select>
+        </div>
+
+        <div class="control-group">
+          <label class="control-label-row" for="toolSelect">
+            <span>Experimental Zone Probe Tool</span>
+          </label>
+          <select id="toolSelect" class="input-select">
+            <option value="none" selected>None (Observation Only)</option>
+            <option value="glass_slide">Glass Slide (Middle Luminous Zone - Soot Ring Test)</option>
+            <option value="copper_wire">Copper Wire (Outer Blue Zone - Hottest Zone Test)</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Telemetry -->
+      <div class="card">
+        <h2>Combustion Observations</h2>
+        <div class="telemetry-grid">
+          <div class="telemetry-item">
+            <span class="tel-label">Flame State:</span>
+            <span id="telFlameState" class="tel-value">STEADY</span>
+          </div>
+          <div class="telemetry-item">
+            <span class="tel-label">Air Supply:</span>
+            <span id="telOxygenSupply" class="tel-value">100% (Case A)</span>
+          </div>
+          <div class="telemetry-item">
+            <span class="tel-label">Experimental Observation:</span>
+            <span id="telObservation" class="tel-value">Apparatus idling. Select an experimental probe tool.</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Theory Card -->
+      <div class="card">
+        <h2>Three Flame Zones</h2>
+        <div class="theory-box">
+          <p><strong>1. Outer Zone (Blue):</strong> Complete combustion, hottest zone (~1400°C).</p>
+          <p><strong>2. Middle Zone (Yellow):</strong> Incomplete combustion, moderately hot (~1000°C), glowing carbon particles.</p>
+          <p><strong>3. Inner Zone (Dark):</strong> Coolest zone (~600°C), unburnt wax vapor straight from the wick.</p>
+        </div>
+      </div>
+    </aside>
+  </main>
+
+  <script type="module" src="./js/main.js"></script>
+</body>
+</html>

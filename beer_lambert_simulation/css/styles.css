@@ -1,0 +1,255 @@
+/**
+ * styles.css
+ * Soft light-blue academic design system for Beer-Lambert simulation.
+ */
+
+:root {
+  --bg-page: #F0F7FF;
+  --bg-canvas: #E6F2FF;
+  --surface: #FFFFFF;
+  --surface-alt: #F8FAFC;
+  --text-main: #0F172A;
+  --text-muted: #64748B;
+  --border: #CBD5E1;
+  --primary: #2563EB;
+  --primary-hover: #1D4ED8;
+  --accent: #10B981;
+  --danger: #DC2626;
+  --success: #16A34A;
+  --radius: 8px;
+  --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.03);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  height: 100%;
+  overflow-x: hidden;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  background-color: var(--bg-page);
+  color: var(--text-main);
+  display: flex;
+  flex-direction: column;
+}
+
+header {
+  background-color: var(--surface);
+  border-bottom: 1px solid var(--border);
+  padding: 10px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: var(--shadow);
+  flex-shrink: 0;
+}
+
+.header-title h1 {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+.header-title span {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.header-actions {
+  display: flex;
+  gap: 10px;
+}
+
+main.app-container {
+  display: grid;
+  grid-template-columns: 1fr 340px;
+  gap: 14px;
+  padding: 12px 18px;
+  flex: 1;
+  min-height: 0;
+}
+
+@media (max-width: 960px) {
+  main.app-container {
+    grid-template-columns: 1fr;
+    overflow-y: auto;
+  }
+}
+
+.canvas-section {
+  display: flex;
+  flex-direction: column;
+  background-color: var(--surface);
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+  min-height: 0;
+  height: 100%;
+}
+
+.canvas-toolbar {
+  padding: 6px 14px;
+  background-color: var(--surface-alt);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.8rem;
+  flex-shrink: 0;
+}
+
+.canvas-wrapper {
+  flex: 1;
+  position: relative;
+  min-height: 0;
+  width: 100%;
+  height: 100%;
+}
+
+canvas#spectroCanvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* Sidebar */
+.controls-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  overflow-y: auto;
+  padding-right: 2px;
+}
+
+.card {
+  background-color: var(--surface);
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow);
+  padding: 10px 14px;
+}
+
+.card h2 {
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin-bottom: 10px;
+  color: var(--text-main);
+}
+
+.control-group {
+  margin-bottom: 10px;
+}
+
+.control-group:last-child {
+  margin-bottom: 0;
+}
+
+.control-label-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.82rem;
+  font-weight: 500;
+  margin-bottom: 4px;
+}
+
+.val-badge {
+  color: var(--primary);
+  font-family: monospace;
+  font-weight: 600;
+}
+
+select.input-select {
+  width: 100%;
+  padding: 6px 8px;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  background-color: var(--surface-alt);
+  font-size: 0.82rem;
+  color: var(--text-main);
+  cursor: pointer;
+}
+
+input[type="range"] {
+  width: 100%;
+  cursor: pointer;
+  accent-color: var(--primary);
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: all 0.15s ease;
+}
+
+.btn-secondary {
+  background-color: var(--surface-alt);
+  border-color: var(--border);
+  color: var(--text-main);
+}
+
+.btn-secondary:hover {
+  background-color: #E2E8F0;
+}
+
+/* Telemetry list */
+.telemetry-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 6px;
+}
+
+.telemetry-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 5px 8px;
+  background-color: var(--surface-alt);
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  font-size: 0.8rem;
+}
+
+.tel-label {
+  color: var(--text-muted);
+}
+
+.tel-value {
+  font-weight: 600;
+  font-family: monospace;
+  color: var(--text-main);
+}
+
+/* Theory */
+.theory-box {
+  font-size: 0.8rem;
+  line-height: 1.4;
+  color: var(--text-muted);
+}
+
+.theory-formula {
+  background-color: var(--bg-canvas);
+  padding: 5px 6px;
+  border-radius: 4px;
+  font-family: monospace;
+  color: var(--primary);
+  font-weight: bold;
+  text-align: center;
+  margin: 5px 0;
+}

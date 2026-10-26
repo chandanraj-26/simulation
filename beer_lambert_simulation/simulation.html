@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Spectrophotometry & Beer-Lambert Law | CBSE Chemistry Virtual Lab</title>
+  <meta name="description" content="Interactive CBSE Class 11 and 12 Chemistry simulation on UV-Visible absorption spectrophotometry, absorbance, transmittance, and the Beer-Lambert Law.">
+  <link rel="stylesheet" href="./css/styles.css">
+</head>
+<body>
+  <header>
+    <div class="header-title">
+      <h1>Spectrophotometry & Beer-Lambert Law</h1>
+      <span>CBSE Chemistry Class 11/12 • UV-Vis Molar Absorptivity & Calibration Bench</span>
+    </div>
+    <div class="header-actions">
+      <button id="resetBtn" class="btn btn-secondary">Reset Spectrometer</button>
+    </div>
+  </header>
+
+  <main class="app-container">
+    <!-- Visualizer Canvas -->
+    <section class="canvas-section">
+      <div class="canvas-toolbar">
+        <span id="canvasStatusText">Spectrophotometer Optics: Lamp → Monochromator → Cuvette → Detector</span>
+        <span>Vary path length and solute concentration to observe beam attenuation and calibration plot</span>
+      </div>
+      <div class="canvas-wrapper">
+        <canvas id="spectroCanvas"></canvas>
+      </div>
+    </section>
+
+    <!-- Sidebar Controls -->
+    <aside class="controls-sidebar">
+      <!-- Controls -->
+      <div class="card">
+        <h2>Optical & Solute Parameters</h2>
+
+        <div class="control-group">
+          <label class="control-label-row" for="soluteSelect">
+            <span>Colored Chemical Solute</span>
+          </label>
+          <select id="soluteSelect" class="input-select">
+            <option value="cuso4" selected>Copper Sulfate CuSO₄ (λmax = 630 nm)</option>
+            <option value="kmno4">Potassium Permanganate KMnO₄ (λmax = 525 nm)</option>
+            <option value="k2cr2o7">Potassium Dichromate K₂Cr₂O₇ (λmax = 450 nm)</option>
+          </select>
+        </div>
+
+        <div class="control-group">
+          <label class="control-label-row" for="pathSelect">
+            <span>Cuvette Optical Path Length (b)</span>
+          </label>
+          <select id="pathSelect" class="input-select">
+            <option value="0.5">0.5 cm Micro-Cuvette</option>
+            <option value="1.0" selected>1.0 cm Standard Quartz Cuvette</option>
+            <option value="2.0">2.0 cm Extended Optical Cell</option>
+          </select>
+        </div>
+
+        <div class="control-group">
+          <div class="control-label-row">
+            <label for="concSlider">Solute Concentration (c)</label>
+            <span id="concVal" class="val-badge">0.0800 M</span>
+          </div>
+          <input type="range" id="concSlider" min="0.01" max="0.20" step="0.001" value="0.08">
+        </div>
+      </div>
+
+      <!-- Telemetry -->
+      <div class="card">
+        <h2>Spectrophotometer Readouts</h2>
+        <div class="telemetry-grid">
+          <div class="telemetry-item">
+            <span class="tel-label">Absorbance (A = ε·b·c):</span>
+            <span id="telAbsorbance" class="tel-value">--</span>
+          </div>
+          <div class="telemetry-item">
+            <span class="tel-label">Transmittance (%T = 10⁻ᴬ·100%):</span>
+            <span id="telTransmittance" class="tel-value">--</span>
+          </div>
+          <div class="telemetry-item">
+            <span class="tel-label">Molar Absorptivity (ε):</span>
+            <span id="telMolarAbs" class="tel-value">--</span>
+          </div>
+          <div class="telemetry-item">
+            <span class="tel-label">Selected Wavelength (λ):</span>
+            <span id="telLambda" class="tel-value">--</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Theory Card -->
+      <div class="card">
+        <h2>Beer-Lambert Law</h2>
+        <div class="theory-box">
+          <p>Linear relationship between absorbance and concentration:</p>
+          <div class="theory-formula">A = -log₁₀(T) = ε · b · c</div>
+          <p>Where <strong>A</strong> is absorbance, <strong>ε</strong> is molar absorptivity, <strong>b</strong> is path length, and <strong>c</strong> is molar concentration.</p>
+        </div>
+      </div>
+    </aside>
+  </main>
+
+  <script type="module" src="./js/main.js"></script>
+</body>
+</html>

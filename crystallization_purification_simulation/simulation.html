@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Purification of Copper Sulfate by Crystallization | CBSE Chemistry Virtual Lab</title>
+  <meta name="description" content="Interactive CBSE Class 9 and 11 Chemistry simulation on crystallization and purification of crude copper sulfate pentahydrate.">
+  <link rel="stylesheet" href="./css/styles.css">
+</head>
+<body>
+  <header>
+    <div class="header-title">
+      <h1>Purification of Copper Sulfate by Crystallization</h1>
+      <span>CBSE Chemistry Class 9/11 • 5-Stage NCERT Practical Protocol Bench</span>
+    </div>
+    <div class="header-actions">
+      <button id="resetBtn" class="btn btn-secondary">Reset Experiment</button>
+    </div>
+  </header>
+
+  <main class="app-container">
+    <!-- Visualizer Canvas -->
+    <section class="canvas-section">
+      <div class="canvas-toolbar">
+        <span id="canvasStatusText">Apparatus View: Dissolution, Filtration, Evaporation & Crystallization</span>
+        <span>Use navigation buttons to step through the protocol stages</span>
+      </div>
+      <div class="canvas-wrapper">
+        <canvas id="crystCanvas"></canvas>
+      </div>
+    </section>
+
+    <!-- Sidebar Controls -->
+    <aside class="controls-sidebar">
+      <!-- Controls -->
+      <div class="card">
+        <h2>Experimental Protocol Steps</h2>
+
+        <div class="control-group">
+          <label class="control-label-row" for="stageSelect">
+            <span>Select Active Protocol Stage</span>
+          </label>
+          <select id="stageSelect" class="input-select">
+            <option value="0" selected>Stage 1: Dissolution & Acidification</option>
+            <option value="1">Stage 2: Hot Gravity Filtration</option>
+            <option value="2">Stage 3: Concentration to Crystallization Point</option>
+            <option value="3">Stage 4: Slow Undisturbed Cooling</option>
+            <option value="4">Stage 5: Crystal Harvesting & Weighing</option>
+          </select>
+        </div>
+
+        <div class="btn-nav-row">
+          <button id="prevBtn" class="btn btn-secondary" disabled>◀ Previous</button>
+          <button id="nextBtn" class="btn btn-primary">Next Stage ▶</button>
+        </div>
+      </div>
+
+      <!-- Telemetry -->
+      <div class="card">
+        <h2>Laboratory Accounting & Yield</h2>
+        <div class="telemetry-grid">
+          <div class="telemetry-item">
+            <span class="tel-label" id="telStageTitle">Stage 1: Dissolution</span>
+            <span class="tel-value" id="telInstruction" style="font-family: inherit; font-size: 0.78rem;">--</span>
+          </div>
+          <div class="telemetry-item">
+            <span class="tel-label">Initial Crude Sample:</span>
+            <span id="telCrudeMass" class="tel-value">10.00 g</span>
+          </div>
+          <div class="telemetry-item">
+            <span class="tel-label">Insoluble Sand Residue:</span>
+            <span id="telSandResidue" class="tel-value">0.00 g (Pending)</span>
+          </div>
+          <div class="telemetry-item">
+            <span class="tel-label">Pure Crystal Yield:</span>
+            <span id="telPureYield" class="tel-value">In Progress</span>
+          </div>
+          <div class="telemetry-item">
+            <span class="tel-label">Percentage Recovery Yield:</span>
+            <span id="telPercentYield" class="tel-value">--</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Theory Card -->
+      <div class="card">
+        <h2>Crystallization Principles</h2>
+        <div class="theory-box">
+          <p><strong>Crystallization</strong> is superior to simple evaporation because soluble impurities remain dissolved in the mother liquor.</p>
+          <div class="theory-formula">CuSO₄·5H₂O (Triclinic Crystals)</div>
+          <p>Dilute H₂SO₄ is added to prevent hydrolysis of Cu²⁺ into insoluble basic cupric sulfate.</p>
+        </div>
+      </div>
+    </aside>
+  </main>
+
+  <script type="module" src="./js/main.js"></script>
+</body>
+</html>
