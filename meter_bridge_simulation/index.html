@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Meter Bridge & Specific Resistance | STEM Virtual Lab</title>
+  <meta name="description" content="Interactive Meter Bridge simulation based on Wheatstone Bridge balance principle with scalable wire lengths (100 cm to 1000 cm) to determine unknown resistance and specific resistance (resistivity).">
+  <link rel="stylesheet" href="./css/styles.css">
+</head>
+<body>
+  <header>
+    <div class="header-title">
+      <h1>Meter Bridge & Specific Resistance</h1>
+      <span>NCERT Physics Class 12 • Scalable Wheatstone Bridge Metrology Bench</span>
+    </div>
+    <div class="header-actions">
+      <button id="resetBtn" class="btn btn-secondary">Reset Apparatus</button>
+    </div>
+  </header>
+
+  <main class="app-container">
+    <!-- Visualizer Canvas -->
+    <section class="canvas-section">
+      <div class="canvas-toolbar">
+        <span id="canvasStatusText">Scalable Stretched Wire Bench & Center-Zero Galvanometer</span>
+        <span>Drag jockey or click anywhere along the meter scale</span>
+      </div>
+      <div class="canvas-wrapper">
+        <canvas id="meterBridgeCanvas"></canvas>
+      </div>
+    </section>
+
+    <!-- Sidebar Controls -->
+    <aside class="controls-sidebar">
+      <!-- Balance indicator alert -->
+      <div id="balanceAlert" class="null-alert-box" style="display: none;">
+        ✨ Null Point Balance Achieved! (Ig = 0)
+      </div>
+
+      <!-- Controls -->
+      <div class="card">
+        <h2>Bridge Apparatus Parameters</h2>
+
+        <div class="control-group">
+          <label class="control-label-row" for="wireLengthSelect">
+            <span>Bridge Wire Length Scale (L)</span>
+          </label>
+          <select id="wireLengthSelect" class="input-select">
+            <option value="100" selected>100 cm (1.0 m - Standard NCERT)</option>
+            <option value="200">200 cm (2.0 m - Extended Sensitivity)</option>
+            <option value="400">400 cm (4.0 m - 4-Wire Precision Bench)</option>
+            <option value="1000">1000 cm (10.0 m - Metrology Grade Calibration)</option>
+          </select>
+        </div>
+
+        <div class="control-group">
+          <label class="control-label-row" for="wireSelect">
+            <span>Unknown Resistance Coil (X)</span>
+          </label>
+          <select id="wireSelect" class="input-select">
+            <option value="nichrome">Nichrome Wire Coil (~4.80 Ω)</option>
+            <option value="constantan">Constantan Wire Coil (~3.12 Ω)</option>
+            <option value="manganin">Manganin Wire Coil (~6.40 Ω)</option>
+            <option value="copper">Copper Thin Coil (~1.25 Ω)</option>
+          </select>
+        </div>
+
+        <div class="control-group">
+          <label class="control-label-row" for="knownRSelect">
+            <span>Known Resistance Box R (Left Gap)</span>
+          </label>
+          <select id="knownRSelect" class="input-select">
+            <option value="1">1.0 Ω</option>
+            <option value="2">2.0 Ω</option>
+            <option value="3">3.0 Ω</option>
+            <option value="4" selected>4.0 Ω</option>
+            <option value="5">5.0 Ω</option>
+            <option value="6">6.0 Ω</option>
+            <option value="8">8.0 Ω</option>
+            <option value="10">10.0 Ω</option>
+          </select>
+        </div>
+
+        <div class="control-group">
+          <div class="control-label-row">
+            <label for="jockeySlider">Sliding Jockey Position (l)</label>
+            <span id="jockeyVal" class="val-badge">50.0 cm</span>
+          </div>
+          <input type="range" id="jockeySlider" min="1.0" max="99.5" step="0.1" value="50.0">
+        </div>
+      </div>
+
+      <!-- Telemetry -->
+      <div class="card">
+        <h2>Measurement Telemetry</h2>
+        <div class="telemetry-grid">
+          <div class="telemetry-item">
+            <span class="tel-label">Balancing Length l:</span>
+            <span id="telL" class="tel-value">50.0 cm</span>
+          </div>
+          <div class="telemetry-item">
+            <span class="tel-label">Remaining Length (L - l):</span>
+            <span id="telRemL" class="tel-value">50.0 cm</span>
+          </div>
+          <div class="telemetry-item">
+            <span class="tel-label">Galvanometer Deflection:</span>
+            <span id="telGalvDeflection" class="tel-value">0.0 div</span>
+          </div>
+          <div class="telemetry-item">
+            <span class="tel-label">Calculated Resistance X:</span>
+            <span id="telCalcX" class="tel-value">4.00 Ω</span>
+          </div>
+          <div class="telemetry-item">
+            <span class="tel-label">Specific Resistance ρ:</span>
+            <span id="telResistivity" class="tel-value">--</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Theory Formula -->
+      <div class="card">
+        <h2>Wheatstone Bridge Formula</h2>
+        <div class="theory-box">
+          <p>At null deflection ($I_g = 0$):</p>
+          <div class="theory-formula">X = R · [(L_wire - l) / l]</div>
+          <p>Specific resistance (resistivity $\rho$) of the material:</p>
+          <div class="theory-formula">ρ = (X · π · r²) / L_coil</div>
+          <p>Where $r$ is the wire radius and $L_{\text{coil}}$ is the physical length of the wire coil.</p>
+        </div>
+      </div>
+    </aside>
+  </main>
+
+  <script type="module" src="./js/main.js"></script>
+</body>
+</html>
