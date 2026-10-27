@@ -207,6 +207,41 @@ A collection of interactive, client-side STEM physics simulations built with HTM
   - Cobalt(II) Hexaaqua / Tetrachloro: $[\text{Co(H}_2\text{O})_6]^{2+} + 4\text{Cl}^- \rightleftharpoons [\text{CoCl}_4]^{2-} + 6\text{H}_2\text{O}$ (endothermic blue forward shift vs pink reverse shift).
 - **Perturbation Testing**: Interactive addition of $\text{FeCl}_3$, $\text{KSCN}$, Oxalic acid (complexation), $\text{AgNO}_3$ (precipitation), $\text{HCl}$, and hot ($80^\circ\text{C}$) / ice ($0^\circ\text{C}$) immersion baths.
 - **4-Tube Laboratory Rack & Spectrophotometer**: Side-by-side comparison with reference standard tube, live laser absorption beam, and optical absorbance/transmittance readouts.
+
+### 32. 💧 [Complexometric EDTA Titration & Water Hardness Virtual Lab (`/edta_titration_simulation`)](edta_titration_simulation/)
+- **Complexometric Chelation Chemistry**: Standard $0.01\text{ M } \text{Na}_2\text{H}_2\text{Y}$ complexing $\text{Ca}^{2+}$ and $\text{Mg}^{2+}$ ($1 : 1$ stoichiometric stability constant $\log K_f \approx 10.7$).
+- **Eriochrome Black T (EBT) Metal-Ion Indicator**: Sharp wine-red $[\text{M-In}]^-$ to free sky-blue $\text{HIn}^{2-}$ transition at equivalence point ($pH = 10.0$ buffered by $\text{NH}_3/\text{NH}_4\text{Cl}$).
+- **Dual Hardness Diagnostics**: Analyze and compare Tap Water, Temporary Hard Water (boiling $\to$ precipitates $\text{CaCO}_3\downarrow$), Permanent Hard Water, and Distilled Water.
+- **Precision Titration Bench & Dynamic Equivalence Curve**: $50\text{ mL}$ micro-stopcock burette, magnetic stirrer vortex, dynamic pCa titration curve, and hardness quantification in $\text{ppm } \text{CaCO}_3$.
+
+### 33. 🧪 [Qualitative Organic Analysis & Functional Groups Virtual Lab (`/functional_groups_simulation`)](functional_groups_simulation/)
+- **Comprehensive Organic Classifications**: Alkenes / Unsaturation, Alcohols ($-OH$), Aldehydes ($-CHO$), Ketones ($>C=O$), and Carboxylic Acids ($-COOH$).
+- **Diagnostic Chemical Spot Tests**:
+  - Unsaturation: Bromine Water decolourisation and Baeyer's alkaline $\text{KMnO}_4$ oxidation (purple to brown $\text{MnO}_2\downarrow$).
+  - Alcohols: Sodium metal effervescence ($2\text{R-OH} + 2\text{Na} \to 2\text{R-ONa} + \text{H}_2\uparrow$) with burning splint squeaky pop sound.
+  - Aldehydes: Tollens' Silver Mirror test ($[\text{Ag(NH}_3)_2]^+$ reduction to reflective metallic silver mirror coating) and Fehling's red cuprous oxide ($\text{Cu}_2\text{O}\downarrow$).
+  - Carboxylic Acids: Saturated $\text{NaHCO}_3$ brisk effervescence of $\text{CO}_2\uparrow$ with lime water milky test.
+- **Blind Mystery Sample Deduction**: Unknown compound challenge with structured elimination algorithm and animated test-tube reactions.
+
+### 34. 🌡️ [Calorimetry & Heat of Neutralization Virtual Lab (`/calorimetry_simulation`)](calorimetry_simulation/)
+- **Thermochemistry & Hess's Law**: High-precision Coffee-Cup Calorimeter measuring enthalpy of neutralization:
+  $\Delta H_{\text{neut}} = -\frac{(m_{\text{sol}} c_{\text{sol}} + C_{\text{cal}}) \Delta T}{n_{\text{water}}}$
+- **Three Prototypical Acid-Base Systems**:
+  - Strong Acid + Strong Base: $\text{HCl} + \text{NaOH} \to \Delta H \approx -57.1\text{ kJ/mol}$ (theoretical benchmark).
+  - Weak Acid + Strong Base: $\text{CH}_3\text{COOH} + \text{NaOH} \to \Delta H \approx -55.2\text{ kJ/mol}$ (accounting for dissociation enthalpy).
+  - Strong Acid + Weak Base: $\text{HCl} + \text{NH}_4\text{OH} \to \Delta H \approx -51.5\text{ kJ/mol}$.
+- **Interactive Calorimetric Bench**: Nested insulated polystyrene cups, rubber stopper with mechanical wire stirrer, and digital immersion thermometer probe ($\pm 0.01^\circ\text{C}$).
+- **Real-Time Thermogram $T(t)$**: Dynamic temperature-time graph plotting thermal equilibration, peak exothermic surge, and asymptotic Newton's law cooling extrapolation.
+
+### 35. 🧪 [Colloid Preparation & Hardy-Schulze Coagulation Virtual Lab (`/colloids_simulation`)](colloids_simulation/)
+- **Lyophobic & Lyophilic Sol Synthesis**:
+  - Ferric Hydroxide Sol: Boiling hydrolysis $\text{FeCl}_3 + 3\text{H}_2\text{O} \to \text{Fe(OH)}_3(\text{sol}) + 3\text{HCl}$ with positive surface charge ($[\text{Fe(OH)}_3]\text{Fe}^{3+}:3\text{Cl}^-$).
+  - Starch Sol: Dispersion and heating of potato starch paste forming reversible lyophilic sol.
+- **Hardy-Schulze Coagulation Law ($z^6$ Rule)**: Coagulation power scales with the 6th power of the valency of the opposing flocculating ion:
+  $\text{Coagulation Power} \propto z^6$
+  Demonstrated using $\text{NaCl}$ ($z = 1$), $\text{Na}_2\text{SO}_4$ ($z = 2$), and $\text{Na}_3\text{PO}_4$ / $\text{K}_3[\text{Fe(CN)}_6]$ ($z = 3$).
+- **Collimated 532 nm Laser Tyndall Detection**: Active laser scattering verification before and after flocculation, with sedimented precipitate rendering.
+- **Interactive Hotplate & Centrifuge Bench**: Temperature control, dropwise burette addition, and live flocculation kinetics telemetry.
 ---
 
 ## 💻 Tech Stack
@@ -219,6 +254,22 @@ A collection of interactive, client-side STEM physics simulations built with HTM
 You can run any simulation using any static web server:
 
 ```bash
+# Complexometric EDTA Titration & Water Hardness Virtual Lab
+cd edta_titration_simulation
+node server.js   # http://localhost:8092
+
+# Qualitative Organic Analysis & Functional Groups Virtual Lab
+cd functional_groups_simulation
+node server.js   # http://localhost:8093
+
+# Calorimetry & Heat of Neutralization Virtual Lab
+cd calorimetry_simulation
+node server.js   # http://localhost:8094
+
+# Colloid Preparation & Hardy-Schulze Coagulation Virtual Lab
+cd colloids_simulation
+node server.js   # http://localhost:8095
+
 # Paper Chromatography & Plant Pigments Virtual Lab
 cd chromatography_simulation
 node server.js   # http://localhost:8088

@@ -172,7 +172,8 @@
     "commitMsg": "feat(edta-titration): add Complexometric EDTA Titration & Water Hardness Virtual Lab (NCERT Class 11/12)",
     "readmeSection": "### 32. 💧 [Complexometric EDTA Titration & Water Hardness Virtual Lab (`/edta_titration_simulation`)](edta_titration_simulation/)\n- **Complexometric Chelation Chemistry**: Standard $0.01\\text{ M } \\text{Na}_2\\text{H}_2\\text{Y}$ complexing $\\text{Ca}^{2+}$ and $\\text{Mg}^{2+}$ ($1 : 1$ stoichiometric stability constant $\\log K_f \\approx 10.7$).\n- **Eriochrome Black T (EBT) Metal-Ion Indicator**: Sharp wine-red $[\\text{M-In}]^-$ to free sky-blue $\\text{HIn}^{2-}$ transition at equivalence point ($pH = 10.0$ buffered by $\\text{NH}_3/\\text{NH}_4\\text{Cl}$).\n- **Dual Hardness Diagnostics**: Analyze and compare Tap Water, Temporary Hard Water (boiling $\\to$ precipitates $\\text{CaCO}_3\\downarrow$), Permanent Hard Water, and Distilled Water.\n- **Precision Titration Bench & Dynamic Equivalence Curve**: $50\\text{ mL}$ micro-stopcock burette, magnetic stirrer vortex, dynamic pCa titration curve, and hardness quantification in $\\text{ppm } \\text{CaCO}_3$.",
     "runSection": "# Complexometric EDTA Titration & Water Hardness Virtual Lab\ncd edta_titration_simulation\nnode server.js   # http://localhost:8092",
-    "released": false
+    "released": true,
+    "releasedAt": "2026-10-27T10:49:01.756Z"
   },
   {
     "id": "functional_groups_simulation",
@@ -182,7 +183,8 @@
     "commitMsg": "feat(functional-groups): add Qualitative Organic Analysis & Functional Groups Virtual Lab (NCERT Class 11/12)",
     "readmeSection": "### 33. 🧪 [Qualitative Organic Analysis & Functional Groups Virtual Lab (`/functional_groups_simulation`)](functional_groups_simulation/)\n- **Comprehensive Organic Classifications**: Alkenes / Unsaturation, Alcohols ($-OH$), Aldehydes ($-CHO$), Ketones ($>C=O$), and Carboxylic Acids ($-COOH$).\n- **Diagnostic Chemical Spot Tests**:\n  - Unsaturation: Bromine Water decolourisation and Baeyer's alkaline $\\text{KMnO}_4$ oxidation (purple to brown $\\text{MnO}_2\\downarrow$).\n  - Alcohols: Sodium metal effervescence ($2\\text{R-OH} + 2\\text{Na} \\to 2\\text{R-ONa} + \\text{H}_2\\uparrow$) with burning splint squeaky pop sound.\n  - Aldehydes: Tollens' Silver Mirror test ($[\\text{Ag(NH}_3)_2]^+$ reduction to reflective metallic silver mirror coating) and Fehling's red cuprous oxide ($\\text{Cu}_2\\text{O}\\downarrow$).\n  - Carboxylic Acids: Saturated $\\text{NaHCO}_3$ brisk effervescence of $\\text{CO}_2\\uparrow$ with lime water milky test.\n- **Blind Mystery Sample Deduction**: Unknown compound challenge with structured elimination algorithm and animated test-tube reactions.",
     "runSection": "# Qualitative Organic Analysis & Functional Groups Virtual Lab\ncd functional_groups_simulation\nnode server.js   # http://localhost:8093",
-    "released": false
+    "released": true,
+    "releasedAt": "2026-10-27T10:49:01.811Z"
   },
   {
     "id": "calorimetry_simulation",
@@ -192,7 +194,8 @@
     "commitMsg": "feat(calorimetry): add Calorimetry & Heat of Neutralization Virtual Lab (NCERT Class 11)",
     "readmeSection": "### 34. 🌡️ [Calorimetry & Heat of Neutralization Virtual Lab (`/calorimetry_simulation`)](calorimetry_simulation/)\n- **Thermochemistry & Hess's Law**: High-precision Coffee-Cup Calorimeter measuring enthalpy of neutralization:\n  $$\\Delta H_{\\text{neut}} = -\\frac{(m_{\\text{sol}} c_{\\text{sol}} + C_{\\text{cal}}) \\Delta T}{n_{\\text{water}}}$$\n- **Three Prototypical Acid-Base Systems**:\n  - Strong Acid + Strong Base: $\\text{HCl} + \\text{NaOH} \\to \\Delta H \\approx -57.1\\text{ kJ/mol}$ (theoretical benchmark).\n  - Weak Acid + Strong Base: $\\text{CH}_3\\text{COOH} + \\text{NaOH} \\to \\Delta H \\approx -55.2\\text{ kJ/mol}$ (accounting for dissociation enthalpy).\n  - Strong Acid + Weak Base: $\\text{HCl} + \\text{NH}_4\\text{OH} \\to \\Delta H \\approx -51.5\\text{ kJ/mol}$.\n- **Interactive Calorimetric Bench**: Nested insulated polystyrene cups, rubber stopper with mechanical wire stirrer, and digital immersion thermometer probe ($\\pm 0.01^\\circ\\text{C}$).\n- **Real-Time Thermogram $T(t)$**: Dynamic temperature-time graph plotting thermal equilibration, peak exothermic surge, and asymptotic Newton's law cooling extrapolation.",
     "runSection": "# Calorimetry & Heat of Neutralization Virtual Lab\ncd calorimetry_simulation\nnode server.js   # http://localhost:8094",
-    "released": false
+    "released": true,
+    "releasedAt": "2026-10-27T10:49:01.811Z"
   },
   {
     "id": "colloids_simulation",
@@ -202,7 +205,8 @@
     "commitMsg": "feat(colloids): add Colloid Preparation & Hardy-Schulze Coagulation Virtual Lab (NCERT Class 12)",
     "readmeSection": "### 35. 🧪 [Colloid Preparation & Hardy-Schulze Coagulation Virtual Lab (`/colloids_simulation`)](colloids_simulation/)\n- **Lyophobic & Lyophilic Sol Synthesis**:\n  - Ferric Hydroxide Sol: Boiling hydrolysis $\\text{FeCl}_3 + 3\\text{H}_2\\text{O} \\to \\text{Fe(OH)}_3(\\text{sol}) + 3\\text{HCl}$ with positive surface charge ($[\\text{Fe(OH)}_3]\\text{Fe}^{3+}:3\\text{Cl}^-$).\n  - Starch Sol: Dispersion and heating of potato starch paste forming reversible lyophilic sol.\n- **Hardy-Schulze Coagulation Law ($z^6$ Rule)**: Coagulation power scales with the 6th power of the valency of the opposing flocculating ion:\n  $$\\text{Coagulation Power} \\propto z^6$$\n  Demonstrated using $\\text{NaCl}$ ($z = 1$), $\\text{Na}_2\\text{SO}_4$ ($z = 2$), and $\\text{Na}_3\\text{PO}_4$ / $\\text{K}_3[\\text{Fe(CN)}_6]$ ($z = 3$).\n- **Collimated 532 nm Laser Tyndall Detection**: Active laser scattering verification before and after flocculation, with sedimented precipitate rendering.\n- **Interactive Hotplate & Centrifuge Bench**: Temperature control, dropwise burette addition, and live flocculation kinetics telemetry.",
     "runSection": "# Colloid Preparation & Hardy-Schulze Coagulation Virtual Lab\ncd colloids_simulation\nnode server.js   # http://localhost:8095",
-    "released": false
+    "released": true,
+    "releasedAt": "2026-10-27T10:49:01.811Z"
   },
   {
     "id": "potentiometer_simulation",
