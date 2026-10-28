@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Systematic Qualitative Salt Analysis | CBSE Chemistry Virtual Lab</title>
+  <meta name="description" content="Interactive qualitative inorganic salt analysis simulation for CBSE Class 11 and 12 Chemistry identifying cations and anions through systematic spot tests.">
+  <link rel="stylesheet" href="./css/styles.css">
+</head>
+<body>
+  <header>
+    <div class="header-title">
+      <h1>Qualitative Inorganic Salt Analysis</h1>
+      <span>CBSE Chemistry Class 11/12 • Systematic Cation & Anion Identification Bench</span>
+    </div>
+    <div class="header-actions">
+      <button id="resetBtn" class="btn btn-secondary">Reset Workbench</button>
+    </div>
+  </header>
+
+  <main class="app-container">
+    <!-- Visualizer Canvas -->
+    <section class="canvas-section">
+      <div class="canvas-toolbar">
+        <span id="canvasStatusText">Reagent Testing Bench & Flame Emission Zone</span>
+        <span>Select reagent and click 'Add Chemical Reagent' to observe test-tube changes</span>
+      </div>
+      <div class="canvas-wrapper">
+        <canvas id="saltCanvas"></canvas>
+      </div>
+    </section>
+
+    <!-- Sidebar Controls -->
+    <aside class="controls-sidebar">
+      <!-- Controls -->
+      <div class="card">
+        <h2>Apparatus & Chemical Reagents</h2>
+
+        <div class="control-group">
+          <label class="control-label-row" for="saltSelect">
+            <span>Inorganic Salt Sample</span>
+          </label>
+          <select id="saltSelect" class="input-select">
+            <option value="NH4Cl">Ammonium Chloride (NH₄Cl)</option>
+            <option value="CuSO4">Copper Sulfate (CuSO₄)</option>
+            <option value="FeCl3">Ferric Chloride (FeCl₃)</option>
+            <option value="BaCO3">Barium Carbonate (BaCO₃)</option>
+          </select>
+        </div>
+
+        <div class="control-group">
+          <label class="control-label-row" for="reagentSelect">
+            <span>Analytical Chemical Reagent</span>
+          </label>
+          <select id="reagentSelect" class="input-select">
+            <option value="dil_h2so4">Dilute H₂SO₄ (Anion Group I - Carbonate/Sulfide)</option>
+            <option value="agno3">Silver Nitrate AgNO₃ (Anion Group II - Halide)</option>
+            <option value="bacl2">Barium Chloride BaCl₂ (Special Anion - Sulfate)</option>
+            <option value="nessler">Nessler's Reagent (Group 0 Cation - NH₄⁺)</option>
+            <option value="nh4oh">Ammonium Hydroxide NH₄OH (Group II Cation - Cu²⁺)</option>
+            <option value="k4fecn6">Potassium Ferrocyanide (Group III Cation - Fe³⁺)</option>
+            <option value="flame">Flame Test with Platinum Wire (Barium / Copper)</option>
+          </select>
+        </div>
+
+        <button id="applyBtn" class="btn btn-primary" style="width: 100%; margin-top: 6px;">Add Chemical Reagent</button>
+      </div>
+
+      <!-- Telemetry -->
+      <div class="card">
+        <h2>Laboratory Observation & Inference</h2>
+        <div class="telemetry-grid">
+          <div class="telemetry-item">
+            <span class="tel-label">Experimental Observation:</span>
+            <span id="telObservation" class="tel-value">Awaiting chemical reagent addition...</span>
+          </div>
+          <div class="telemetry-item">
+            <span class="tel-label">Systematic Inference:</span>
+            <span id="telInference" class="tel-value">--</span>
+          </div>
+          <div class="telemetry-item">
+            <span class="tel-label">Basic Radical (Cation):</span>
+            <span id="telCationStatus" class="tel-value">NH₄⁺</span>
+          </div>
+          <div class="telemetry-item">
+            <span class="tel-label">Acidic Radical (Anion):</span>
+            <span id="telAnionStatus" class="tel-value">Cl⁻</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Theory Formula -->
+      <div class="card">
+        <h2>Salt Analysis Principles</h2>
+        <div class="theory-box">
+          <p><strong>Carbonate:</strong> CO₃²⁻ + 2H⁺ → H₂O + CO₂↑ (effervescence)</p>
+          <p><strong>Chloride:</strong> Cl⁻ + Ag⁺ → AgCl↓ (curdy white ppt)</p>
+          <p><strong>Sulfate:</strong> SO₄²⁻ + Ba²⁺ → BaSO₄↓ (insoluble in HCl)</p>
+          <p><strong>Prussian Blue:</strong> 4Fe³⁺ + 3[Fe(CN)₆]⁴⁻ → Fe₄[Fe(CN)₆]₃↓</p>
+        </div>
+      </div>
+    </aside>
+  </main>
+
+  <script type="module" src="./js/main.js"></script>
+</body>
+</html>

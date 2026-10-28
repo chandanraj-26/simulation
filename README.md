@@ -242,6 +242,31 @@ A collection of interactive, client-side STEM physics simulations built with HTM
   Demonstrated using $\text{NaCl}$ ($z = 1$), $\text{Na}_2\text{SO}_4$ ($z = 2$), and $\text{Na}_3\text{PO}_4$ / $\text{K}_3[\text{Fe(CN)}_6]$ ($z = 3$).
 - **Collimated 532 nm Laser Tyndall Detection**: Active laser scattering verification before and after flocculation, with sedimented precipitate rendering.
 - **Interactive Hotplate & Centrifuge Bench**: Temperature control, dropwise burette addition, and live flocculation kinetics telemetry.
+
+### 36. 📏 [Potentiometer EMF Comparison & Internal Resistance Virtual Lab (`/potentiometer_simulation`)](potentiometer_simulation/)
+- **400 cm Precision Constantan/Manganin Wire Bench**: 4 segments of $100\text{ cm}$ high-resistivity uniform wire connected by heavy brass strips.
+- **Dual Classical Physics Applications**:
+  - 1. EMF Comparison of Two Primary Cells: $\frac{E_1}{E_2} = \frac{l_1}{l_2}$ comparing Leclanché ($1.45\text{ V}$) and Daniell ($1.08\text{ V}$) cells.
+  - 2. Determination of Internal Resistance ($r$): $r = R \left(\frac{l_1 - l_2}{l_2}\right)$ with plug key resistance box ($R \in [1, 50]\ \Omega$).
+- **Interactive Sliding Jockey & Center-Zero Galvanometer**: Draggable knife-edge contact along all 4 wire segments with bi-directional pointer deflection and sensitive null detection ($I_g = 0$).
+- **Secondary Driver Circuitry**: Storage accumulator ($2.0\text{ V}$), variable rheostat, and two-way key toggle with authentic electrical click/buzz audio synthesis.
+
+### 37. 🌈 [Single-Slit Fraunhofer Diffraction Virtual Lab (`/diffraction_simulation`)](diffraction_simulation/)
+- **Fraunhofer Diffraction Theory**: High-precision sinc-squared optical intensity profiler:
+  $I(\theta) = I_0 \left(\frac{\sin \beta}{\beta}\right)^2, \quad \beta = \frac{\pi a \sin\theta}{\lambda} \approx \frac{\pi a y}{\lambda D}$
+- **Multispectral Coherent Laser Sources**: Switchable laser diodes: Red ($650\text{ nm}$), Yellow Sodium ($589\text{ nm}$), Green ($532\text{ nm}$), and Blue ($405\text{ nm}$).
+- **Precision Micrometer Slit & Bench Geometry**: Continuous slit width variation ($a \in [0.02, 0.30]\text{ mm}$) and screen distance ($D \in [0.5, 3.0]\text{ m}$) verifying central fringe width $W_0 = \frac{2\lambda D}{a}$.
+- **Photometer Probe Wand & Live Reticle**: Draggable optical sensor across the screen with real-time digital relative irradiance ($I/I_0$), minima location tags ($\pm y_1$), and audio detector hum.
+
+### 38. 🔩 [Conditions for Rusting of Iron & Prevention Virtual Lab (`/rusting_of_iron_simulation`)](rusting_of_iron_simulation/)
+- **NCERT 4-Tube Comparative Investigation**: Direct side-by-side comparison of Tube A (Air + Tap Water), Tube B (Boiled water + Oil seal, excluding dissolved oxygen), Tube C (Dry air with anhydrous $\text{CaCl}_2$ desiccant), and Tube D (Accelerated corrosion in $3.5\%\ \text{NaCl}$ saline).
+- **Anti-Corrosion Surface Protection**: Test Galvanization (sacrificial zinc layer, $E^\circ = -0.76\text{ V}$), Grease/Oil hydrophobic barrier coating, and Cathodic Protection with coiled magnesium ribbon ($E^\circ = -2.37\text{ V}$).
+- **Electrochemical Corrosion Dynamics**: Anodic iron dissolution ($\text{Fe} \to \text{Fe}^{2+} + 2e^-$), cathodic reduction ($\text{O}_2 + 2\text{H}_2\text{O} + 4e^- \to 4\text{OH}^-$), and mass ledger of hydrated ferric oxide ($\text{Fe}_2\text{O}_3 \cdot x\text{H}_2\text{O}$) accumulation over a 7-day time-lapse.
+
+### 39. 🧪 [Systematic Qualitative Inorganic Salt Analysis Virtual Lab (`/salt_analysis_simulation`)](salt_analysis_simulation/)
+- **Systematic Anion Group Analysis**: Dilute $\text{H}_2\text{SO}_4$ group ($\text{CO}_3^{2-}$ brisk effervescence of $\text{CO}_2\uparrow$ turning lime water milky), Concentrated acid group ($\text{Cl}^-$ curdy white $\text{AgCl}\downarrow$ soluble in $\text{NH}_4\text{OH}$), and Special group ($\text{SO}_4^{2-}$ dense white $\text{BaSO}_4\downarrow$ insoluble in $\text{HCl}$).
+- **Systematic Cation Group Analysis**: Group 0 ($\text{NH}_4^+$ reddish-brown precipitate with Nessler's Reagent), Group II ($\text{Cu}^{2+}$ deep royal blue complex $[\text{Cu(NH}_3)_4]^{2+}$ with excess $\text{NH}_4\text{OH}$), Group III ($\text{Fe}^{3+}$ Prussian Blue $\text{Fe}_4[\text{Fe(CN)}_6]_3\downarrow$), and Flame Test platinum wire loop emission (Apple Green $\text{Ba}^{2+}$ vs Emerald Green $\text{Cu}^{2+}$).
+- **Comprehensive Practical Bench**: Reagent droppers, test-tube rack, effervescence bubble animation, precipitate formation, and deductive identification scorecard.
 ---
 
 ## 💻 Tech Stack
@@ -254,6 +279,22 @@ A collection of interactive, client-side STEM physics simulations built with HTM
 You can run any simulation using any static web server:
 
 ```bash
+# Potentiometer EMF Comparison & Internal Resistance Virtual Lab
+cd potentiometer_simulation
+node server.js   # http://localhost:8096
+
+# Single-Slit Fraunhofer Diffraction Virtual Lab
+cd diffraction_simulation
+node server.js   # http://localhost:8097
+
+# Conditions for Rusting of Iron & Prevention Virtual Lab
+cd rusting_of_iron_simulation
+node server.js   # http://localhost:8101
+
+# Systematic Qualitative Inorganic Salt Analysis Virtual Lab
+cd salt_analysis_simulation
+node server.js   # http://localhost:8102
+
 # Complexometric EDTA Titration & Water Hardness Virtual Lab
 cd edta_titration_simulation
 node server.js   # http://localhost:8092

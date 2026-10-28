@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Conditions for Rusting of Iron | CBSE Chemistry Virtual Lab</title>
+  <meta name="description" content="Interactive CBSE Class 8/10 chemistry simulation investigating air and water conditions for iron rusting, galvanization, and sacrificial cathodic protection.">
+  <link rel="stylesheet" href="./css/styles.css">
+</head>
+<body>
+  <header>
+    <div class="header-title">
+      <h1>Conditions for Rusting of Iron & Prevention</h1>
+      <span>CBSE Chemistry Class 8/10 • NCERT 4-Tube Comparative Electrochemical Investigation</span>
+    </div>
+    <div class="header-actions">
+      <button id="playTimeBtn" class="btn btn-primary">▶ Play Time Lapse</button>
+      <button id="resetBtn" class="btn btn-secondary">Reset Experiment</button>
+    </div>
+  </header>
+
+  <main class="app-container">
+    <!-- Visualizer Canvas -->
+    <section class="canvas-section">
+      <div class="canvas-toolbar">
+        <span id="canvasStatusText">NCERT Comparative Test Tube Rack</span>
+        <span>Compare Air + Water vs Boiled Water + Oil vs Dry Air CaCl₂ vs Saline</span>
+      </div>
+      <div class="canvas-wrapper">
+        <canvas id="rustingCanvas"></canvas>
+      </div>
+    </section>
+
+    <!-- Sidebar Controls -->
+    <aside class="controls-sidebar">
+      <!-- Controls -->
+      <div class="card">
+        <h2>Experimental Parameters</h2>
+
+        <div class="control-group">
+          <div class="control-label-row">
+            <label for="daySlider">Exposure Duration</label>
+            <span id="dayVal" class="val-badge">Day 0.0</span>
+          </div>
+          <input type="range" id="daySlider" min="0.0" max="7.0" step="0.1" value="0.0">
+        </div>
+
+        <div class="control-group">
+          <label class="control-label-row" for="protectionSelect">
+            <span>Anti-Corrosion Surface Treatment</span>
+          </label>
+          <select id="protectionSelect" class="input-select">
+            <option value="none" selected>Bare Iron Nail (Unprotected)</option>
+            <option value="galvanized">Galvanized Zinc Layer (Sacrificial Anode)</option>
+            <option value="grease">Grease / Oil Film (Hydrophobic Barrier)</option>
+            <option value="mg_ribbon">Cathodic Protection (Coiled Mg Ribbon)</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Telemetry -->
+      <div class="card">
+        <h2>Observations & Mass Accounting</h2>
+        <div class="telemetry-grid">
+          <div class="telemetry-item">
+            <span class="tel-label">Tube A (Air + Tap Water):</span>
+            <span id="telA" class="tel-value">No Rust (5.000g)</span>
+          </div>
+          <div class="telemetry-item">
+            <span class="tel-label">Tube B (Boiled Water + Oil Seal):</span>
+            <span id="telB" class="tel-value">No Rust (No Dissolved O₂)</span>
+          </div>
+          <div class="telemetry-item">
+            <span class="tel-label">Tube C (Dry Air + CaCl₂ Desiccant):</span>
+            <span id="telC" class="tel-value">No Rust (No Moisture)</span>
+          </div>
+          <div class="telemetry-item">
+            <span class="tel-label">Tube D (Saline 3.5% NaCl + Air):</span>
+            <span id="telD" class="tel-value">No Rust (5.000g)</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Chemistry Theory -->
+      <div class="card">
+        <h2>Electrochemical Rusting Mechanism</h2>
+        <div class="theory-box">
+          <p>Rusting is an electrochemical process requiring <strong>both Oxygen and Water</strong>:</p>
+          <div class="theory-formula">4Fe + 3O₂ + 2xH₂O → 2Fe₂O₃·xH₂O</div>
+          <p><strong>Anode:</strong> Fe(s) → Fe²⁺(aq) + 2e⁻</p>
+          <p><strong>Cathode:</strong> O₂(g) + 2H₂O(l) + 4e⁻ → 4OH⁻(aq)</p>
+          <p>Electrolytes (salts) accelerate electron transfer, increasing corrosion rate.</p>
+        </div>
+      </div>
+    </aside>
+  </main>
+
+  <script type="module" src="./js/main.js"></script>
+</body>
+</html>
