@@ -267,6 +267,27 @@ A collection of interactive, client-side STEM physics simulations built with HTM
 - **Systematic Anion Group Analysis**: Dilute $\text{H}_2\text{SO}_4$ group ($\text{CO}_3^{2-}$ brisk effervescence of $\text{CO}_2\uparrow$ turning lime water milky), Concentrated acid group ($\text{Cl}^-$ curdy white $\text{AgCl}\downarrow$ soluble in $\text{NH}_4\text{OH}$), and Special group ($\text{SO}_4^{2-}$ dense white $\text{BaSO}_4\downarrow$ insoluble in $\text{HCl}$).
 - **Systematic Cation Group Analysis**: Group 0 ($\text{NH}_4^+$ reddish-brown precipitate with Nessler's Reagent), Group II ($\text{Cu}^{2+}$ deep royal blue complex $[\text{Cu(NH}_3)_4]^{2+}$ with excess $\text{NH}_4\text{OH}$), Group III ($\text{Fe}^{3+}$ Prussian Blue $\text{Fe}_4[\text{Fe(CN)}_6]_3\downarrow$), and Flame Test platinum wire loop emission (Apple Green $\text{Ba}^{2+}$ vs Emerald Green $\text{Cu}^{2+}$).
 - **Comprehensive Practical Bench**: Reagent droppers, test-tube rack, effervescence bubble animation, precipitate formation, and deductive identification scorecard.
+
+### 40. 🔥 [Combustion, Flame Zones & Air Supply Virtual Lab (`/combustion_flame_simulation`)](combustion_flame_simulation/)
+- **Three Distinct Candle Flame Zones**: Outer Non-Luminous Zone (complete combustion, blue, hottest zone $\sim 1400^\circ\text{C}$), Middle Luminous Zone (incomplete combustion, bright incandescent yellow $\sim 1000^\circ\text{C}$, glowing carbon particles), and Innermost Dark Zone (unburnt wax vapors straight from wick $\sim 600^\circ\text{C}$).
+- **Fire Triangle & Chimney Air Ingress**: Compare Case A (wooden blocks permitting bottom air intake $\to$ steady flame), Case B (chimney flat on table $\to$ flickering sooty flame), and Case C (top covered with glass plate $\to$ immediate flame extinction due to oxygen depletion).
+- **Experimental Zone Probing**: Insert a clean glass slide into the luminous zone to collect a circular black carbon soot ring, and hold a copper wire in the outer blue zone to observe immediate red-hot incandescence.
+
+### 41. 💎 [Purification of Copper Sulfate by Crystallization Virtual Lab (`/crystallization_purification_simulation`)](crystallization_purification_simulation/)
+- **NCERT 5-Stage Practical Protocol**: Dissolution of crude impure blue vitriol with dilute $\text{H}_2\text{SO}_4$ (preventing cupric hydrolysis), hot gravity filtration separating insoluble sand, concentration on wire gauze to crystallization point, slow undisturbed cooling, and harvesting pure triclinic $\text{CuSO}_4 \cdot 5\text{H}_2\text{O}$ crystals.
+- **Stoichiometric Mass Balance & Yield**: Real-time analytical balance tracking initial crude sample ($10.00\text{ g}$), sand residue ($0.85\text{ g}$), pure crystal yield ($7.65\text{ g}$), and percentage recovery yield ($83.6\%$).
+- **Microscopic Triclinic Crystal Lattice**: Crystal facets growing from mother liquor with procedural stirring and crystal harvesting audio.
+
+### 42. 🌈 [Spectrophotometry & Beer-Lambert Law Virtual Lab (`/beer_lambert_simulation`)](beer_lambert_simulation/)
+- **Beer-Lambert Law Metrology**: Rigorous analytical verification of $A = -\log_{10}(T) = \varepsilon \cdot b \cdot c$ with adjustable cuvette optical path length ($b \in [0.5, 2.0]\text{ cm}$) and concentration ($c$).
+- **Transition Metal Solute Library**: Potassium Permanganate ($\text{KMnO}_4$, purple, $\lambda_{\max} = 525\text{ nm}$, $\varepsilon = 2200$), Copper Sulfate ($\text{CuSO}_4$, sky blue, $\lambda_{\max} = 630\text{ nm}$, $\varepsilon = 12$), and Potassium Dichromate ($\text{K}_2\text{Cr}_2\text{O}_7$, orange, $\lambda_{\max} = 450\text{ nm}$, $\varepsilon = 350$).
+- **Optical Spectrophotometer Bench & Live Calibration Curve**: Collimated light lamp ($I_0$), diffraction grating monochromator, quartz cuvette with attenuated exiting beam ($I$), silicon photodiode detector ($0\text{–}100\%\ T$), and live linear calibration plot ($A$ vs $c$).
+
+### 43. ⏱️ [Rate of Reaction & Surface Area Kinetics Virtual Lab (`/rate_of_reaction_surface_area_simulation`)](rate_of_reaction_surface_area_simulation/)
+- **Heterogeneous Reaction Kinetics**: $\text{CaCO}_3(s) + 2\text{HCl}(aq) \to \text{CaCl}_2(aq) + \text{H}_2\text{O}(l) + \text{CO}_2(g)\uparrow$ evaluating collision theory and particle size.
+- **Surface Area Comparative Benchmark**: Large marble chips (low surface area, slow gradual effervescence) vs Fine marble powder ($8.5\times$ relative surface area, rapid initial surge of carbon dioxide evolution).
+- **Acid Concentration Variation**: Compare $0.5\text{ M}$, $1.0\text{ M}$, and $2.0\text{ M } \text{HCl}$ showing direct proportional relationship with reaction velocity.
+- **Dual Measurement Methods & Live Graph**: Conical flask on digital balance with cotton wool plug tracking mass loss $\Delta m(t)$ of escaping $\text{CO}_2$, and dynamic real-time plot of gas volume $V(t)$ with instantaneous rate tangent $\frac{dV}{dt}$.
 ---
 
 ## 💻 Tech Stack
@@ -279,6 +300,22 @@ A collection of interactive, client-side STEM physics simulations built with HTM
 You can run any simulation using any static web server:
 
 ```bash
+# Combustion, Flame Zones & Air Supply Virtual Lab
+cd combustion_flame_simulation
+node server.js   # http://localhost:8103
+
+# Purification of Copper Sulfate by Crystallization Virtual Lab
+cd crystallization_purification_simulation
+node server.js   # http://localhost:8104
+
+# Spectrophotometry & Beer-Lambert Law Virtual Lab
+cd beer_lambert_simulation
+node server.js   # http://localhost:8105
+
+# Rate of Reaction & Surface Area Kinetics Virtual Lab
+cd rate_of_reaction_surface_area_simulation
+node server.js   # http://localhost:8106
+
 # Potentiometer EMF Comparison & Internal Resistance Virtual Lab
 cd potentiometer_simulation
 node server.js   # http://localhost:8096

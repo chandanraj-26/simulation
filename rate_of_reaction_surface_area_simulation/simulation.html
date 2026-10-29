@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rate of Reaction & Surface Area | CBSE Chemistry Virtual Lab</title>
+  <meta name="description" content="Interactive CBSE Class 10 and 11 Chemistry simulation investigating the effect of surface area (marble chips vs powder) and concentration on reaction kinetics.">
+  <link rel="stylesheet" href="./css/styles.css">
+</head>
+<body>
+  <header>
+    <div class="header-title">
+      <h1>Rate of Reaction & Surface Area (CaCO₃ + HCl)</h1>
+      <span>CBSE Chemistry Class 10/11 • Mass-Loss Kinetics & Volume Evolution Bench</span>
+    </div>
+    <div class="header-actions">
+      <button id="playTimeBtn" class="btn btn-primary">▶ Start Reaction Timer</button>
+      <button id="resetBtn" class="btn btn-secondary">Reset Experiment</button>
+    </div>
+  </header>
+
+  <main class="app-container">
+    <!-- Visualizer Canvas -->
+    <section class="canvas-section">
+      <div class="canvas-toolbar">
+        <span id="canvasStatusText">Conical Flask on Balance & Dynamic Kinetics Graph V(t)</span>
+        <span>Compare large marble chips vs fine marble powder at different HCl concentrations</span>
+      </div>
+      <div class="canvas-wrapper">
+        <canvas id="reactionCanvas"></canvas>
+      </div>
+    </section>
+
+    <!-- Sidebar Controls -->
+    <aside class="controls-sidebar">
+      <!-- Controls -->
+      <div class="card">
+        <h2>Reaction Parameters</h2>
+
+        <div class="control-group">
+          <label class="control-label-row" for="particleSelect">
+            <span>CaCO₃ Particle Size (Surface Area)</span>
+          </label>
+          <select id="particleSelect" class="input-select">
+            <option value="chips" selected>Large Marble Chips (Low Surface Area)</option>
+            <option value="powder">Fine Marble Powder (High Surface Area 8.5×)</option>
+          </select>
+        </div>
+
+        <div class="control-group">
+          <label class="control-label-row" for="concSelect">
+            <span>Hydrochloric Acid Concentration</span>
+          </label>
+          <select id="concSelect" class="input-select">
+            <option value="0.5">0.5 M Dilute HCl (Slow Collision Rate)</option>
+            <option value="1.0" selected>1.0 M Standard HCl</option>
+            <option value="2.0">2.0 M Concentrated HCl (Fast Collision Rate)</option>
+          </select>
+        </div>
+
+        <div class="control-group">
+          <div class="control-label-row">
+            <label for="timeSlider">Elapsed Reaction Time (t)</label>
+            <span id="timeVal" class="val-badge">0 s</span>
+          </div>
+          <input type="range" id="timeSlider" min="0" max="120" step="1" value="0">
+        </div>
+      </div>
+
+      <!-- Telemetry -->
+      <div class="card">
+        <h2>Kinetics & Mass Accounting</h2>
+        <div class="telemetry-grid">
+          <div class="telemetry-item">
+            <span class="tel-label">CO₂ Evolved Volume:</span>
+            <span id="telVolume" class="tel-value">0.0 mL</span>
+          </div>
+          <div class="telemetry-item">
+            <span class="tel-label">Balance Reading:</span>
+            <span id="telMass" class="tel-value">150.00 g</span>
+          </div>
+          <div class="telemetry-item">
+            <span class="tel-label">Instantaneous Rate (dV/dt):</span>
+            <span id="telRate" class="tel-value">0.00 mL/s</span>
+          </div>
+          <div class="telemetry-item">
+            <span class="tel-label">Relative Surface Area:</span>
+            <span id="telSurfaceArea" class="tel-value">1.0× (Relative)</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Theory Card -->
+      <div class="card">
+        <h2>Collision Theory & Kinetics</h2>
+        <div class="theory-box">
+          <p>Reaction between solid marble and aqueous acid:</p>
+          <div class="theory-formula">CaCO₃(s) + 2HCl(aq) → CaCl₂ + H₂O + CO₂↑</div>
+          <p>Finer powder exposes dramatically more particles per unit mass, increasing the frequency of successful effective collisions per second.</p>
+        </div>
+      </div>
+    </aside>
+  </main>
+
+  <script type="module" src="./js/main.js"></script>
+</body>
+</html>
