@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Stomatal Transpiration &amp; Guard Cell Turgidity Virtual Lab | Class 10 &amp; 11 Biology</title>
+  <meta name="description" content="Interactive STEM biology virtual lab exploring stomatal opening and closing mechanisms, guard cell K+ ion osmoregulation, turgor pressure, transpiration rates, and epidermal peel analysis.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+  <!-- APP HEADER -->
+  <header class="app-header">
+    <div class="header-container">
+      <div class="brand-wrapper">
+        <div class="brand-icon">🍃</div>
+        <div>
+          <div style="display: flex; align-items: center;">
+            <h1 class="brand-title">StomataLab</h1>
+            <span class="brand-tag">NCERT Class 10 &amp; 11</span>
+          </div>
+          <div class="brand-sub">Stomatal Transpiration, K⁺ Osmoregulation &amp; Guard Cell Turgidity Virtual Lab</div>
+        </div>
+      </div>
+
+      <div class="header-actions">
+        <button id="btnOpenQuiz" class="action-btn" title="Take stomatal physiology challenges">
+          <span>🎯</span> Stomata Quiz
+        </button>
+        <button id="btnOpenTheory" class="action-btn btn-primary" title="View guard cell mechanism theory">
+          <span>📚</span> Theory &amp; Mechanisms
+        </button>
+        <button id="btnAudioToggle" class="action-btn active" title="Toggle audio feedback">
+          🔊 Sound: ON
+        </button>
+        <button id="btnResetAll" class="action-btn" title="Reset all simulation values">
+          <span>↺</span> Reset All
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN WORKSPACE -->
+  <main class="main-layout">
+
+    <!-- LEFT: Canvas Viewport & Telemetry -->
+    <div class="canvas-section">
+
+      <!-- View Tabs -->
+      <div class="view-tabs-bar">
+        <button id="btnViewCellular" class="tab-btn active">
+          <span>🔬</span> High-Power Cellular Zoom (Reniform Guard Cells &amp; Organelles)
+        </button>
+        <button id="btnViewEpidermal" class="tab-btn">
+          <span>🌿</span> Epidermal Peel View (Stomatal Index &amp; Pavement Cells)
+        </button>
+      </div>
+
+      <!-- Canvas Card -->
+      <div class="canvas-viewport-card">
+        <div class="canvas-header-bar">
+          <span>Living Leaf Stomatal Apparatus &mdash; Adjust environmental light, humidity and ABA hormone levels</span>
+        </div>
+        <div class="canvas-container">
+          <canvas id="simCanvas"></canvas>
+        </div>
+      </div>
+
+      <!-- Telemetry Readouts -->
+      <div class="telemetry-grid">
+        <div class="telemetry-card highlight">
+          <div class="telemetry-label">Turgor Pressure (&Psi;<sub>p</sub>)</div>
+          <div id="readoutTurgor" class="telemetry-value">1.48 MPa</div>
+          <div class="telemetry-sub">Endosmotic wall tension</div>
+        </div>
+
+        <div class="telemetry-card">
+          <div class="telemetry-label">Pore Aperture (W)</div>
+          <div id="readoutAperture" class="telemetry-value">9.6 &mu;m</div>
+          <div class="telemetry-sub">Stomatal gap width</div>
+        </div>
+
+        <div class="telemetry-card">
+          <div class="telemetry-label">K⁺ Ion Concentration</div>
+          <div id="readoutKConc" class="telemetry-value">408 mM K⁺</div>
+          <div class="telemetry-sub">Active proton pump uptake</div>
+        </div>
+
+        <div class="telemetry-card">
+          <div class="telemetry-label">Transpiration Rate (E)</div>
+          <div id="readoutTranspiration" class="telemetry-value">2.45 mmol/m²s</div>
+          <div class="telemetry-sub">Vapor loss to atmosphere</div>
+        </div>
+
+        <div class="telemetry-card" style="grid-column: span 2;">
+          <div class="telemetry-label">Stomatal Status</div>
+          <div id="readoutStatus" class="telemetry-value" style="font-size: 15px;">Open &amp; Turgid</div>
+          <div class="telemetry-sub">Inner walls pulled apart by outward bulging</div>
+        </div>
+      </div>
+
+      <!-- Observation Notebook -->
+      <div class="table-card">
+        <div class="card-title">
+          <span>📋 Plant Physiology Observation Ledger</span>
+          <button id="btnLogObservation" class="action-btn" style="padding: 5px 12px; font-size: 12px;">
+            <span>➕</span> Record Observation
+          </button>
+        </div>
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Timestamp</th>
+              <th>Light Environment</th>
+              <th>Turgor Pressure</th>
+              <th>Pore Aperture</th>
+              <th>Guard Cell K⁺</th>
+              <th>Transpiration Rate</th>
+              <th>Physiological State</th>
+            </tr>
+          </thead>
+          <tbody id="tableLogBody">
+            <tr>
+              <td colspan="7" style="text-align: center; color: var(--text-muted); padding: 18px;">
+                No observations recorded yet. Adjust environmental variables and click "Record Observation".
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+
+    <!-- RIGHT: Controls Sidebar -->
+    <aside class="controls-sidebar">
+
+      <!-- Diurnal Cycle -->
+      <div class="control-card">
+        <div class="card-title">
+          <span>☀️ Day / Night Diurnal Cycle</span>
+        </div>
+        <button id="btnToggleDayNight" class="action-block-btn active">
+          ☀️ Daylight: Active
+        </button>
+      </div>
+
+      <!-- Environmental Sliders -->
+      <div class="control-card">
+        <div class="card-title">
+          <span>🌤️ Environmental Factors</span>
+        </div>
+
+        <div class="form-group">
+          <div class="label-row">
+            <span>Light Intensity</span>
+            <span id="valLight" class="val-badge">80%</span>
+          </div>
+          <input id="sliderLight" type="range" class="range-slider" min="0" max="100" step="5" value="80">
+        </div>
+
+        <div class="form-group">
+          <div class="label-row">
+            <span>Relative Humidity</span>
+            <span id="valHumidity" class="val-badge">50%</span>
+          </div>
+          <input id="sliderHumidity" type="range" class="range-slider" min="20" max="90" step="5" value="50">
+        </div>
+
+        <div class="form-group">
+          <div class="label-row">
+            <span>Leaf Temperature</span>
+            <span id="valTemp" class="val-badge">25.0 °C</span>
+          </div>
+          <input id="sliderTemp" type="range" class="range-slider" min="15" max="40" step="1" value="25">
+        </div>
+      </div>
+
+      <!-- Drought Stress ABA Hormone -->
+      <div class="control-card">
+        <div class="card-title">
+          <span>🌵 Drought Stress (Abscisic Acid)</span>
+        </div>
+        <div class="form-group">
+          <select id="selectAba" class="select-control">
+            <option value="none" selected>No ABA &mdash; Well Watered Soil</option>
+            <option value="moderate">Moderate ABA &mdash; Mild Drought Stress</option>
+            <option value="high">High ABA &mdash; Severe Drought (Forced Closure)</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Overlay Toggles -->
+      <div class="control-card">
+        <div class="card-title">
+          <span>💨 Transpiration Streams</span>
+        </div>
+        <label style="display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 600; cursor: pointer;">
+          <input id="chkGasArrows" type="checkbox" checked>
+          <span>Render Gas Flow (H₂O &amp; CO₂)</span>
+        </label>
+      </div>
+
+      <!-- Mechanism Summary -->
+      <div class="control-card" style="background: #F8FAFC;">
+        <div class="card-title">
+          <span>🌿 Osmotic Law</span>
+        </div>
+        <div style="font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--text-main); line-height: 1.6;">
+          Light &rArr; K⁺ Influx &rArr; Endosmosis &rArr; Turgid (Open)<br>
+          Dark/ABA &rArr; K⁺ Efflux &rArr; Exosmosis &rArr; Flaccid (Closed)
+        </div>
+      </div>
+
+    </aside>
+
+  </main>
+
+  <!-- THEORY MODAL -->
+  <div id="modalTheory" class="modal-overlay hidden">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div class="modal-title">📚 Stomatal Transpiration &amp; Guard Cell Osmoregulation</div>
+        <button id="btnCloseTheory" class="modal-close">&times;</button>
+      </div>
+      <div class="modal-body">
+        <h4>1. Guard Cell Anatomy (Reniform Dicot Stomata)</h4>
+        <p>Each stomatal pore is flanked by two specialized, photosynthetic guard cells. Their cell walls have an anisotropic construction:</p>
+        <ul>
+          <li><strong>Inner Wall (facing pore):</strong> Very thick, inelastic, and reinforced with radial cellulose microfibrils.</li>
+          <li><strong>Outer Wall (facing subsidiary cells):</strong> Thin and highly stretchable.</li>
+        </ul>
+
+        <h4>2. Potassium Ion (K⁺) Mechanism (Levitt, 1974)</h4>
+        <div class="formula-box">
+          <strong>Daytime Opening:</strong><br>
+          Light &rArr; Proton pump (H⁺-ATPase) exports H⁺<br>
+          &rArr; Hyperpolarization drives massive K⁺ influx from subsidiary cells<br>
+          &rArr; Water potential (&Psi;<sub>w</sub>) drops &rArr; Water rushes in via endosmosis<br>
+          &rArr; Turgor pressure (&Psi;<sub>p</sub>) surges &rArr; Thin outer walls bulge outward, pulling thick inner walls apart &rArr; <strong>PORE OPENS</strong>.
+        </div>
+        <div class="formula-box">
+          <strong>Nighttime / Drought Closure:</strong><br>
+          Darkness or Abscisic Acid (ABA) &rArr; Calcium signaling triggers K⁺ efflux<br>
+          &rArr; Water potential rises &rArr; Exosmosis of water<br>
+          &rArr; Guard cells become flaccid &rArr; <strong>PORE CLOSES</strong> to conserve water.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- QUIZ MODAL -->
+  <div id="modalQuiz" class="modal-overlay hidden">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div class="modal-title">🎯 Stomatal Physiology Prediction Challenge</div>
+        <button id="btnCloseQuiz" class="modal-close">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p id="quizPrompt" style="font-weight: 600; margin-bottom: 14px;">
+          Problem loading...
+        </p>
+
+        <div class="form-group">
+          <label style="font-size: 12px; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 4px;">
+            Will the Stomatal Pore be Open or Closed?
+          </label>
+          <select id="selectQuizPrediction" class="select-control" style="margin-bottom: 12px;">
+            <option value="open">Open (Turgid Guard Cells, K⁺ Influx)</option>
+            <option value="closed">Closed (Flaccid Guard Cells, K⁺ Efflux)</option>
+          </select>
+
+          <button id="btnSubmitQuiz" class="action-btn btn-primary" style="width: 100%; padding: 10px;">
+            Verify Physiological Prediction
+          </button>
+        </div>
+
+        <div id="quizFeedback" class="quiz-feedback hidden"></div>
+
+        <div style="margin-top: 16px; display: flex; justify-content: flex-end;">
+          <button id="btnNewQuiz" class="action-btn">
+            <span>🎲</span> Next Physiological Scenario
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>

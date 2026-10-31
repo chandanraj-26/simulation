@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mendelian Genetics Cross &amp; Punnett Square Virtual Lab | Class 10 &amp; 12 Biology</title>
+  <meta name="description" content="Interactive STEM biology virtual lab exploring Gregor Mendel's Laws of Inheritance, monohybrid and dihybrid Punnett squares, and Monte Carlo statistical sampling.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+  <!-- APP HEADER -->
+  <header class="app-header">
+    <div class="header-container">
+      <div class="brand-wrapper">
+        <div class="brand-icon">🌱</div>
+        <div>
+          <div style="display: flex; align-items: center;">
+            <h1 class="brand-title">MendelLab</h1>
+            <span class="brand-tag">NCERT Class 10 &amp; 12</span>
+          </div>
+          <div class="brand-sub">Mendelian Genetics, Punnett Squares &amp; Monte Carlo Inheritance Simulator</div>
+        </div>
+      </div>
+
+      <div class="header-actions">
+        <button id="btnOpenQuiz" class="action-btn" title="Take inheritance probability challenges">
+          <span>🎯</span> Genetics Quiz
+        </button>
+        <button id="btnOpenTheory" class="action-btn btn-primary" title="View Mendel's laws and ratios">
+          <span>📚</span> Theory &amp; Laws
+        </button>
+        <button id="btnAudioToggle" class="action-btn active" title="Toggle audio feedback">
+          🔊 Sound: ON
+        </button>
+        <button id="btnResetAll" class="action-btn" title="Reset all simulation values">
+          <span>↺</span> Reset All
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN WORKSPACE -->
+  <main class="main-layout">
+
+    <!-- LEFT: Canvas Viewport & Telemetry -->
+    <div class="canvas-section">
+
+      <!-- Cross Switcher Tabs -->
+      <div class="cross-tabs-bar">
+        <button id="btnModeMono" class="tab-btn active">
+          <span>🌿</span> Monohybrid Cross (Height: T &amp; t, 3:1 Ratio)
+        </button>
+        <button id="btnModeDi" class="tab-btn">
+          <span>🟡</span> Dihybrid Cross (Shape &amp; Color: 9:3:3:1 Ratio)
+        </button>
+      </div>
+
+      <!-- Canvas Card -->
+      <div class="canvas-viewport-card">
+        <div class="canvas-header-bar">
+          <span>Punnett Square Matrix &amp; Empirical Offspring Distribution Histogram</span>
+        </div>
+        <div class="canvas-container">
+          <canvas id="simCanvas"></canvas>
+        </div>
+      </div>
+
+      <!-- Telemetry Readouts -->
+      <div class="telemetry-grid">
+        <div class="telemetry-card highlight">
+          <div class="telemetry-label">Phenotypic Ratio</div>
+          <div id="readoutPhenoRatio" class="telemetry-value">3 Tall : 1 Dwarf</div>
+          <div class="telemetry-sub">Mendelian segregation</div>
+        </div>
+
+        <div class="telemetry-card">
+          <div class="telemetry-label">Genotypic Ratio</div>
+          <div id="readoutGenoRatio" class="telemetry-value">1 TT : 2 Tt : 1 tt</div>
+          <div class="telemetry-sub">Allele combinations</div>
+        </div>
+
+        <div class="telemetry-card">
+          <div class="telemetry-label">Sampled Offspring</div>
+          <div id="readoutTotalSamples" class="telemetry-value">0 Offspring</div>
+          <div class="telemetry-sub">Monte Carlo trials</div>
+        </div>
+
+        <div class="telemetry-card">
+          <div class="telemetry-label">Dominant Phenotype</div>
+          <div id="readoutDominant" class="telemetry-value">0 Tall</div>
+          <div class="telemetry-sub">Exhibiting dominant allele</div>
+        </div>
+
+        <div class="telemetry-card">
+          <div class="telemetry-label">Recessive Phenotype</div>
+          <div id="readoutRecessive" class="telemetry-value">0 Dwarf</div>
+          <div class="telemetry-sub">Homozygous recessive</div>
+        </div>
+      </div>
+
+      <!-- Observation Notebook -->
+      <div class="table-card">
+        <div class="card-title">
+          <span>📋 Genetic Cross Observation Ledger</span>
+          <button id="btnLogObservation" class="action-btn" style="padding: 5px 12px; font-size: 12px;">
+            <span>➕</span> Record Trial
+          </button>
+        </div>
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Timestamp</th>
+              <th>Breeding Experiment</th>
+              <th>Sample Size (N)</th>
+              <th>Phenotypic Outcome</th>
+              <th>Genotypic Combinations</th>
+            </tr>
+          </thead>
+          <tbody id="tableLogBody">
+            <tr>
+              <td colspan="5" style="text-align: center; color: var(--text-muted); padding: 18px;">
+                No cross observations recorded yet. Simulate offspring and click "Record Trial".
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+
+    <!-- RIGHT: Controls Sidebar -->
+    <aside class="controls-sidebar">
+
+      <!-- Monohybrid Parents -->
+      <div id="containerMonoParents" class="control-card">
+        <div class="card-title">
+          <span>🌱 Monohybrid Parental Genotypes</span>
+        </div>
+        <div class="form-group">
+          <label style="font-size: 12px; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 4px;">
+            Parent 1 Genotype (♀ Female):
+          </label>
+          <select id="selectMonoP1" class="select-control">
+            <option value="TT">TT &mdash; Homozygous Dominant (Tall)</option>
+            <option value="Tt" selected>Tt &mdash; Heterozygous (Tall)</option>
+            <option value="tt">tt &mdash; Homozygous Recessive (Dwarf)</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label style="font-size: 12px; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 4px;">
+            Parent 2 Genotype (♂ Male):
+          </label>
+          <select id="selectMonoP2" class="select-control">
+            <option value="TT">TT &mdash; Homozygous Dominant (Tall)</option>
+            <option value="Tt" selected>Tt &mdash; Heterozygous (Tall)</option>
+            <option value="tt">tt &mdash; Homozygous Recessive (Dwarf)</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Dihybrid Parents -->
+      <div id="containerDiParents" class="control-card" style="display: none;">
+        <div class="card-title">
+          <span>🟡 Dihybrid Parental Genotypes</span>
+        </div>
+        <div class="form-group">
+          <label style="font-size: 12px; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 4px;">
+            Parent 1 Genotype:
+          </label>
+          <select id="selectDiP1" class="select-control">
+            <option value="RRYY">RRYY &mdash; Round Yellow</option>
+            <option value="RrYy" selected>RrYy &mdash; Dihybrid Heterozygous</option>
+            <option value="rryy">rryy &mdash; Wrinkled Green</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label style="font-size: 12px; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 4px;">
+            Parent 2 Genotype:
+          </label>
+          <select id="selectDiP2" class="select-control">
+            <option value="RRYY">RRYY &mdash; Round Yellow</option>
+            <option value="RrYy" selected>RrYy &mdash; Dihybrid Heterozygous</option>
+            <option value="rryy">rryy &mdash; Wrinkled Green</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Monte Carlo Sampling Simulator -->
+      <div class="control-card">
+        <div class="card-title">
+          <span>🎲 Monte Carlo Offspring Sampling</span>
+        </div>
+        <div style="font-size: 11px; color: var(--text-muted); margin-bottom: 10px;">
+          Pollinate multiple offspring to see how random fertilization converges to Mendel's exact ratio:
+        </div>
+        <div class="batch-btn-grid">
+          <button id="btnSample10" class="batch-btn">+10 Seeds</button>
+          <button id="btnSample50" class="batch-btn">+50 Seeds</button>
+          <button id="btnSample200" class="batch-btn">+200 Seeds</button>
+          <button id="btnSample1000" class="batch-btn">+1000 Seeds</button>
+        </div>
+        <button id="btnResetSamples" class="batch-btn" style="width: 100%; margin-top: 8px;">
+          ↺ Clear Sample Ledger
+        </button>
+      </div>
+
+      <!-- Law Summary -->
+      <div class="control-card" style="background: #F8FAFC;">
+        <div class="card-title">
+          <span>🧬 Mendel's Laws</span>
+        </div>
+        <div style="font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--text-main); line-height: 1.6;">
+          <strong>Segregation:</strong> 3:1 Phenotype (1:2:1 Genotype)<br>
+          <strong>Assortment:</strong> 9:3:3:1 Phenotype (16 boxes)
+        </div>
+      </div>
+
+    </aside>
+
+  </main>
+
+  <!-- THEORY MODAL -->
+  <div id="modalTheory" class="modal-overlay hidden">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div class="modal-title">📚 Gregor Mendel's Laws of Inheritance</div>
+        <button id="btnCloseTheory" class="modal-close">&times;</button>
+      </div>
+      <div class="modal-body">
+        <h4>1. Law of Dominance</h4>
+        <p>In a heterozygote, one allele conceals the presence of another allele for the same characteristic. The expressed allele is <strong>dominant</strong> ($T$), while the latent allele is <strong>recessive</strong> ($t$).</p>
+
+        <h4>2. Law of Segregation (Monohybrid Cross)</h4>
+        <p>During gamete formation (meiosis), the paired alleles for each gene segregate cleanly from each other so that each gamete carries only one allele:</p>
+        <div class="formula-box">
+          P: Tt &times; Tt &rArr; Gametes: (1/2 T, 1/2 t)<br>
+          F₂ Genotypic Ratio: 1 TT : 2 Tt : 1 tt (1:2:1)<br>
+          F₂ Phenotypic Ratio: 3 Tall : 1 Dwarf (3:1)
+        </div>
+
+        <h4>3. Law of Independent Assortment (Dihybrid Cross)</h4>
+        <p>Alleles of two (or more) different genes get sorted into gametes independently of one another:</p>
+        <div class="formula-box">
+          P: RrYy &times; RrYy (16 Combinations)<br>
+          Phenotypic Ratio: 9 Round Yellow : 3 Round Green : 3 Wrinkled Yellow : 1 Wrinkled Green (9:3:3:1)
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- QUIZ MODAL -->
+  <div id="modalQuiz" class="modal-overlay hidden">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div class="modal-title">🎯 Genetics Probability Challenge</div>
+        <button id="btnCloseQuiz" class="modal-close">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p id="quizPrompt" style="font-weight: 600; margin-bottom: 14px;">
+          Problem loading...
+        </p>
+
+        <div class="form-group">
+          <label style="font-size: 12px; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 4px;">
+            Expected Percentage of Tall Offspring (%):
+          </label>
+          <input id="inputQuizTall" type="number" step="1" placeholder="e.g. 75" style="width: 100%; padding: 8px 12px; font-family: 'JetBrains Mono', monospace; border: 1px solid var(--border); border-radius: var(--radius-sm); margin-bottom: 10px;">
+
+          <label style="font-size: 12px; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 4px;">
+            Expected Percentage of Heterozygous Tt Offspring (%):
+          </label>
+          <input id="inputQuizHetero" type="number" step="1" placeholder="e.g. 50" style="width: 100%; padding: 8px 12px; font-family: 'JetBrains Mono', monospace; border: 1px solid var(--border); border-radius: var(--radius-sm); margin-bottom: 12px;">
+
+          <button id="btnSubmitQuiz" class="action-btn btn-primary" style="width: 100%; padding: 10px;">
+            Verify Probabilities
+          </button>
+        </div>
+
+        <div id="quizFeedback" class="quiz-feedback hidden"></div>
+
+        <div style="margin-top: 16px; display: flex; justify-content: flex-end;">
+          <button id="btnNewQuiz" class="action-btn">
+            <span>🎲</span> Next Genetic Cross
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>

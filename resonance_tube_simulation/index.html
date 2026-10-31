@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Resonance Air Column &amp; Speed of Sound Virtual Lab | Class 11 Physics</title>
+  <meta name="description" content="Interactive STEM physics virtual lab exploring acoustic resonance in closed organ pipes, quarter-wave standing waves, tuning fork harmonics, end correction, and speed of sound calculation.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+  <!-- APP HEADER -->
+  <header class="app-header">
+    <div class="header-container">
+      <div class="brand-wrapper">
+        <div class="brand-icon">🔊</div>
+        <div>
+          <div style="display: flex; align-items: center;">
+            <h1 class="brand-title">ResonanceLab</h1>
+            <span class="brand-tag">NCERT Class 11 Physics</span>
+          </div>
+          <div class="brand-sub">Resonance Air Column, Standing Waves &amp; Speed of Sound Virtual Lab</div>
+        </div>
+      </div>
+
+      <div class="header-actions">
+        <button id="btnOpenQuiz" class="action-btn" title="Take resonance calculation challenges">
+          <span>🎯</span> Acoustics Quiz
+        </button>
+        <button id="btnOpenTheory" class="action-btn btn-primary" title="View acoustic standing wave theory">
+          <span>📚</span> Theory &amp; Formulas
+        </button>
+        <button id="btnAudioToggle" class="action-btn active" title="Toggle audio feedback">
+          🔊 Sound: ON
+        </button>
+        <button id="btnResetAll" class="action-btn" title="Reset all simulation values">
+          <span>↺</span> Reset All
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN WORKSPACE -->
+  <main class="main-layout">
+
+    <!-- LEFT: Canvas Viewport & Telemetry -->
+    <div class="canvas-section">
+
+      <!-- Canvas Card -->
+      <div class="canvas-viewport-card">
+        <div class="canvas-header-bar">
+          <span>100 cm Glass Resonance Tube &mdash; Drag the water reservoir up/down or adjust sidebar to locate resonance peaks</span>
+        </div>
+        <div class="canvas-container">
+          <canvas id="simCanvas"></canvas>
+        </div>
+      </div>
+
+      <!-- Telemetry Readouts -->
+      <div class="telemetry-grid">
+        <div class="telemetry-card">
+          <div class="telemetry-label">Air Column Length (L)</div>
+          <div id="readoutAirLength" class="telemetry-value">16.0 cm</div>
+          <div class="telemetry-sub">Mouth to water meniscus</div>
+        </div>
+
+        <div class="telemetry-card">
+          <div class="telemetry-label">1st Resonance (L₁)</div>
+          <div id="readoutL1" class="telemetry-value">16.0 cm</div>
+          <div class="telemetry-sub">Fundamental &lambda;/4 &minus; e</div>
+        </div>
+
+        <div class="telemetry-card">
+          <div class="telemetry-label">2nd Resonance (L₂)</div>
+          <div id="readoutL2" class="telemetry-value">49.9 cm</div>
+          <div class="telemetry-sub">1st Overtone 3&lambda;/4 &minus; e</div>
+        </div>
+
+        <div class="telemetry-card">
+          <div class="telemetry-label">True Speed of Sound (v)</div>
+          <div id="readoutSpeed" class="telemetry-value">346.5 m/s</div>
+          <div class="telemetry-sub">v(T) = 331.3 + 0.6&times;T</div>
+        </div>
+
+        <div class="telemetry-card highlight" style="grid-column: span 2;">
+          <div class="telemetry-label">Acoustic Status</div>
+          <div id="readoutResStatus" class="telemetry-value" style="font-size: 15px;">
+            🔊 Resonance Peak 1 (Fundamental &lambda;/4)
+          </div>
+          <div class="telemetry-sub">Standing wave constructive interference</div>
+        </div>
+      </div>
+
+      <!-- Observation Notebook -->
+      <div class="table-card">
+        <div class="card-title">
+          <span>📋 Speed of Sound Observation Ledger</span>
+          <button id="btnLogObservation" class="action-btn" style="padding: 5px 12px; font-size: 12px;">
+            <span>➕</span> Record Observation
+          </button>
+        </div>
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Timestamp</th>
+              <th>Fork Frequency</th>
+              <th>Air Temp</th>
+              <th>Resonance L₁</th>
+              <th>Resonance L₂</th>
+              <th>Wavelength &lambda;</th>
+              <th>Speed of Sound (v)</th>
+            </tr>
+          </thead>
+          <tbody id="tableLogBody">
+            <tr>
+              <td colspan="7" style="text-align: center; color: var(--text-muted); padding: 18px;">
+                No observations recorded yet. Adjust air column to resonance and click "Record Observation".
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+
+    <!-- RIGHT: Controls Sidebar -->
+    <aside class="controls-sidebar">
+
+      <!-- Tuning Fork Controls -->
+      <div class="control-card">
+        <div class="card-title">
+          <span>🎵 Acoustic Exciter</span>
+        </div>
+        <div class="form-group">
+          <label style="font-size: 12px; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 4px;">
+            Tuning Fork Frequency:
+          </label>
+          <select id="selectFrequency" class="select-control">
+            <option value="512" selected>512 Hz &mdash; C5 High C (Standard)</option>
+            <option value="440">440 Hz &mdash; A4 Concert Pitch</option>
+            <option value="384">384 Hz &mdash; G4 Note</option>
+            <option value="256">256 Hz &mdash; C4 Middle C</option>
+          </select>
+        </div>
+        <button id="btnStrikeFork" class="action-block-btn">
+          <span>🔨</span> Strike Tuning Fork with Mallet
+        </button>
+      </div>
+
+      <!-- Air Column & Temperature Sliders -->
+      <div class="control-card">
+        <div class="card-title">
+          <span>🎚️ Apparatus Controls</span>
+        </div>
+
+        <div class="form-group">
+          <div class="label-row">
+            <span>Air Column Length (L)</span>
+            <span id="valAirColumn" class="val-badge">16.0 cm</span>
+          </div>
+          <input id="sliderAirColumn" type="range" class="range-slider" min="2" max="95" step="0.2" value="16">
+        </div>
+
+        <div class="form-group">
+          <div class="label-row">
+            <span>Room Temperature (T)</span>
+            <span id="valTemp" class="val-badge">25.0 °C</span>
+          </div>
+          <input id="sliderTemp" type="range" class="range-slider" min="0" max="40" step="0.5" value="25">
+        </div>
+
+        <div style="display: flex; gap: 8px; margin-top: 10px;">
+          <button id="btnSnapL1" class="action-btn" style="flex: 1; font-size: 11px;">
+            Jump to L₁
+          </button>
+          <button id="btnSnapL2" class="action-btn" style="flex: 1; font-size: 11px;">
+            Jump to L₂
+          </button>
+        </div>
+      </div>
+
+      <!-- Waveform Overlay Toggle -->
+      <div class="control-card">
+        <div class="card-title">
+          <span>🌊 Standing Wave Mode</span>
+        </div>
+        <label style="display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 600; cursor: pointer;">
+          <input id="chkWaveform" type="checkbox" checked>
+          <span>Render Acoustic Pressure Waveform</span>
+        </label>
+        <div style="font-size: 11px; color: var(--text-muted); margin-top: 8px;">
+          Shows Node (N) at water boundary and Antinode (A) at open tube mouth.
+        </div>
+      </div>
+
+      <!-- Formula Summary -->
+      <div class="control-card" style="background: #F8FAFC;">
+        <div class="card-title">
+          <span>📐 Resonance Laws</span>
+        </div>
+        <div style="font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--text-main); line-height: 1.6;">
+          &lambda; = 2(L₂ &minus; L₁)<br>
+          v = 2f(L₂ &minus; L₁)<br>
+          e = (L₂ &minus; 3L₁) / 2 = 0.3d
+        </div>
+      </div>
+
+    </aside>
+
+  </main>
+
+  <!-- THEORY MODAL -->
+  <div id="modalTheory" class="modal-overlay hidden">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div class="modal-title">📚 Resonance Tube &amp; Speed of Sound Principles</div>
+        <button id="btnCloseTheory" class="modal-close">&times;</button>
+      </div>
+      <div class="modal-body">
+        <h4>1. Closed-End Organ Pipe Physics</h4>
+        <p>A column of air enclosed over a water surface acts as a closed organ pipe. Sound waves reflected from the rigid water boundary interfere with incoming waves from the vibrating tuning fork to form standing waves.</p>
+        <div class="formula-box">
+          Water boundary &rArr; Displacement Node (N)<br>
+          Open tube mouth &rArr; Displacement Antinode (A)
+        </div>
+
+        <h4>2. Resonance Positions &amp; End Correction (Lord Rayleigh)</h4>
+        <p>Because the antinode extends slightly beyond the physical rim of the tube by an end correction $e \approx 0.3 \times d$ (where $d$ is tube inner diameter):</p>
+        <div class="formula-box">
+          First Resonance (Fundamental): L₁ + e = &lambda; / 4<br>
+          Second Resonance (First Overtone): L₂ + e = 3&lambda; / 4
+        </div>
+
+        <h4>3. Speed of Sound Determination</h4>
+        <p>Subtracting the two equations eliminates the end correction $e$ entirely:</p>
+        <div class="formula-box">
+          L₂ &minus; L₁ = &lambda; / 2 &rArr; &lambda; = 2(L₂ &minus; L₁)<br>
+          <strong>Speed of Sound: v = f &times; &lambda; = 2f(L₂ &minus; L₁)</strong>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- QUIZ MODAL -->
+  <div id="modalQuiz" class="modal-overlay hidden">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div class="modal-title">🎯 Resonance Frequency Challenge</div>
+        <button id="btnCloseQuiz" class="modal-close">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p id="quizPrompt" style="font-weight: 600; margin-bottom: 14px;">
+          Problem loading...
+        </p>
+
+        <div class="form-group">
+          <label style="font-size: 12px; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 4px;">
+            Calculated First Resonance Length L₁ (cm):
+          </label>
+          <input id="inputQuizL1" type="number" step="0.1" placeholder="e.g. 16.0" style="width: 100%; padding: 8px 12px; font-family: 'JetBrains Mono', monospace; border: 1px solid var(--border); border-radius: var(--radius-sm); margin-bottom: 10px;">
+
+          <label style="font-size: 12px; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 4px;">
+            True Speed of Sound v at this Temperature (m/s):
+          </label>
+          <input id="inputQuizSpeed" type="number" step="0.5" placeholder="e.g. 346.5" style="width: 100%; padding: 8px 12px; font-family: 'JetBrains Mono', monospace; border: 1px solid var(--border); border-radius: var(--radius-sm); margin-bottom: 12px;">
+
+          <button id="btnSubmitQuiz" class="action-btn btn-primary" style="width: 100%; padding: 10px;">
+            Verify Acoustics Calculation
+          </button>
+        </div>
+
+        <div id="quizFeedback" class="quiz-feedback hidden"></div>
+
+        <div style="margin-top: 16px; display: flex; justify-content: flex-end;">
+          <button id="btnNewQuiz" class="action-btn">
+            <span>🎲</span> Next Acoustic Problem
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>

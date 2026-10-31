@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vernier Caliper &amp; Screw Gauge Virtual Laboratory | Class 11 Physics</title>
+  <meta name="description" content="Interactive STEM physics simulation for Vernier Caliper and Micrometer Screw Gauge. Master Least Count, Zero Error correction, scale coincidences, and real-time physical measurements.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+  <!-- APP HEADER -->
+  <header class="app-header">
+    <div class="header-container">
+      <div class="brand-wrapper">
+        <div class="brand-icon">📏</div>
+        <div>
+          <div style="display: flex; align-items: center;">
+            <h1 class="brand-title">PrecisionLab</h1>
+            <span class="brand-tag">NCERT Class 11 Practical</span>
+          </div>
+          <div class="brand-sub">Vernier Caliper &amp; Micrometer Screw Gauge Virtual Laboratory</div>
+        </div>
+      </div>
+
+      <div class="header-actions">
+        <button id="btnOpenQuiz" class="action-btn" title="Practice measurement reading challenges">
+          <span>🎯</span> Practice Challenge
+        </button>
+        <button id="btnOpenTheory" class="action-btn btn-primary" title="View mathematical equations and principles">
+          <span>📚</span> Theory &amp; Formulas
+        </button>
+        <button id="btnAudioToggle" class="action-btn active" title="Toggle audio synthesis">
+          🔊 Sound: ON
+        </button>
+        <button id="btnResetAll" class="action-btn" title="Reset all simulation values">
+          <span>↺</span> Reset All
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN WORKSPACE LAYOUT -->
+  <main class="main-layout">
+
+    <!-- LEFT: Canvas Viewport & Live Telemetry Grid -->
+    <div class="canvas-section">
+
+      <!-- Instrument Mode Switcher Tabs -->
+      <div class="instrument-tabs-bar">
+        <button id="btnModeVernier" class="tab-btn active">
+          <span>📐</span> Vernier Caliper (LC: 0.1 mm)
+        </button>
+        <button id="btnModeScrewGauge" class="tab-btn">
+          <span>🔩</span> Micrometer Screw Gauge (LC: 0.01 mm)
+        </button>
+      </div>
+
+      <!-- Canvas Card -->
+      <div class="canvas-viewport-card">
+        <div class="canvas-header-bar">
+          <span>Interactive Metrology Bench &mdash; Drag jaws directly or use sidebar fine controls</span>
+          <button id="btnToggleLoupe" class="action-btn active" style="padding: 4px 10px; font-size: 11px;">
+            🔍 3.5× Loupe: ON
+          </button>
+        </div>
+        <div class="canvas-container">
+          <canvas id="simCanvas"></canvas>
+        </div>
+      </div>
+
+      <!-- Live Telemetry Readout Grid -->
+      <div class="telemetry-grid">
+        <div class="telemetry-card">
+          <div id="readoutMainLabel" class="telemetry-label">Main Scale Reading (MSR)</div>
+          <div id="readoutMainValue" class="telemetry-value">0.0 mm</div>
+          <div class="telemetry-sub">Visible baseline mark</div>
+        </div>
+
+        <div class="telemetry-card">
+          <div id="readoutVernierLabel" class="telemetry-label">Vernier Scale Reading (VSR)</div>
+          <div id="readoutVernierValue" class="telemetry-value">#0 (0.0 mm)</div>
+          <div class="telemetry-sub">Coincident division × LC</div>
+        </div>
+
+        <div class="telemetry-card">
+          <div class="telemetry-label">Least Count (LC)</div>
+          <div id="readoutLC" class="telemetry-value">0.10 mm</div>
+          <div class="telemetry-sub">1 MSD &minus; 1 VSD</div>
+        </div>
+
+        <div class="telemetry-card">
+          <div class="telemetry-label">Zero Error (e)</div>
+          <div id="readoutZeroError" class="telemetry-value">+0.00 mm</div>
+          <div class="telemetry-sub">Correction: &minus;(e)</div>
+        </div>
+
+        <div class="telemetry-card highlight">
+          <div class="telemetry-label">True Measured Dimension</div>
+          <div id="readoutTotal" class="telemetry-value">0.00 mm</div>
+          <div id="readoutAltUnit" class="telemetry-sub">0.000 cm</div>
+        </div>
+      </div>
+
+      <!-- Observation Data Table -->
+      <div class="table-card">
+        <div class="card-title">
+          <span>📋 Observation Notebook &amp; Trial Records</span>
+          <button id="btnLogObservation" class="action-btn" style="padding: 5px 12px; font-size: 12px;">
+            <span>➕</span> Record Observation
+          </button>
+        </div>
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Timestamp</th>
+              <th>Instrument</th>
+              <th>Specimen</th>
+              <th>Main / Pitch Reading</th>
+              <th>Coincident Division</th>
+              <th>Zero Error</th>
+              <th>Corrected Dimension</th>
+            </tr>
+          </thead>
+          <tbody id="tableLogBody">
+            <tr>
+              <td colspan="7" style="text-align: center; color: var(--text-muted); padding: 18px;">
+                No observations recorded yet. Align jaws to a specimen and click "Record Observation".
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+
+    <!-- RIGHT: Parameter & Control Sidebar -->
+    <aside class="controls-sidebar">
+
+      <!-- Specimen Selector -->
+      <div class="control-card">
+        <div class="card-title">
+          <span>📦 Test Specimen</span>
+        </div>
+        <div class="form-group">
+          <select id="selectObject" class="select-control">
+            <option value="sphere">Steel Ball Bearing (Ø ~16.4 mm)</option>
+            <option value="cylinder">Brass Cylinder (Ø ~22.6 mm)</option>
+            <option value="glass_slab">Glass Plate Thickness (~8.7 mm)</option>
+            <option value="wire">Copper Wire (Ø ~1.85 mm)</option>
+            <option value="coin">One Rupee Coin (Ø ~25.0 mm)</option>
+            <option value="free">Free Exploration (No Specimen)</option>
+          </select>
+        </div>
+        <button id="btnClamp" class="btn-block">
+          🔓 Unlocked (Free Movement)
+        </button>
+      </div>
+
+      <!-- Scale Position Controls -->
+      <div class="control-card">
+        <div class="card-title">
+          <span>🎚️ Jaw &amp; Spindle Displacement</span>
+        </div>
+        <div class="form-group">
+          <div class="label-row">
+            <span>Displacement</span>
+            <span id="valPosition" class="val-badge">0.00 mm</span>
+          </div>
+          <input id="sliderPosition" type="range" class="range-slider" min="0" max="80" step="0.1" value="0">
+          
+          <!-- Fine Adjustment Grid -->
+          <div class="fine-adjust-grid">
+            <button id="btnStepMinusBig" class="fine-btn" title="Step back coarse">&minus;1 mm</button>
+            <button id="btnStepMinusSmall" class="fine-btn" title="Step back fine">&minus;0.1</button>
+            <button id="btnStepPlusSmall" class="fine-btn" title="Step forward fine">+0.1</button>
+            <button id="btnStepPlusBig" class="fine-btn" title="Step forward coarse">+1 mm</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Zero Error Adjustment -->
+      <div class="control-card">
+        <div class="card-title">
+          <span>⚖️ Instrument Zero Error</span>
+        </div>
+        <div class="form-group">
+          <div class="label-row">
+            <span>Zero Error (e)</span>
+            <span id="valZeroError" class="val-badge">+0.00 mm</span>
+          </div>
+          <input id="sliderZeroError" type="range" class="range-slider" min="-0.5" max="0.5" step="0.05" value="0">
+        </div>
+        <div style="font-size: 11px; color: var(--text-muted); line-height: 1.4;">
+          <strong>Positive Error (+e):</strong> Zero mark is to the right of main zero; subtract from reading.<br>
+          <strong>Negative Error (&minus;e):</strong> Zero mark is to the left of main zero; add to reading.
+        </div>
+      </div>
+
+      <!-- Quick Formula Card -->
+      <div class="control-card" style="background: #F8FAFC;">
+        <div class="card-title">
+          <span>📐 Measurement Law</span>
+        </div>
+        <div style="font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--text-main); line-height: 1.6;">
+          Total = MSR + (Coincidence &times; LC)<br>
+          <strong>True = Total &minus; Zero Error</strong>
+        </div>
+      </div>
+
+    </aside>
+
+  </main>
+
+  <!-- THEORY MODAL -->
+  <div id="modalTheory" class="modal-overlay hidden">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div class="modal-title">📚 Metrology Principles &amp; Least Count Formulas</div>
+        <button id="btnCloseTheory" class="modal-close">&times;</button>
+      </div>
+      <div class="modal-body">
+        <h4>1. Vernier Caliper Principles</h4>
+        <p>Invented by Pierre Vernier (1631), this instrument achieves precision beyond direct eye resolution by aligning two scales of slightly different division lengths.</p>
+        <div class="formula-box">
+          1 MSD = 1 mm<br>
+          10 Vernier Divisions = 9 MSD = 9 mm &rArr; 1 VSD = 0.9 mm<br>
+          <strong>Least Count (LC) = 1 MSD &minus; 1 VSD = 1.0 &minus; 0.9 = 0.1 mm (0.01 cm)</strong>
+        </div>
+        <p>To read: Identify the last main scale division before the Vernier zero (MSR). Then find which Vernier division mark lines up directly with any main scale mark (VSR).</p>
+
+        <h4>2. Micrometer Screw Gauge Principles</h4>
+        <p>Utilizes the principle of the micrometer screw: converting rotational motion along a precision helical thread into minute axial displacement.</p>
+        <div class="formula-box">
+          Pitch = Linear distance moved per 1 complete rotation = 1.0 mm<br>
+          Circular Scale Divisions = 100<br>
+          <strong>Least Count (LC) = Pitch / Divisions = 1.0 mm / 100 = 0.01 mm (10 &mu;m)</strong>
+        </div>
+
+        <h4>3. Zero Error Correction</h4>
+        <p>When the measuring jaws or anvil and spindle touch with no object present:</p>
+        <ul>
+          <li><strong>Nil Zero Error:</strong> Zero of vernier/circular scale aligns perfectly with main zero/datum line.</li>
+          <li><strong>Positive Zero Error (+e):</strong> Vernier/circular zero is ahead of the reference datum. The instrument overreads, so subtract $e$.</li>
+          <li><strong>Negative Zero Error (&minus;e):</strong> Vernier/circular zero is behind the reference datum. The instrument underreads, so add $|e|$.</li>
+        </ul>
+        <div class="formula-box">
+          <strong>Corrected Reading = Observed Reading &minus; (&plusmn; Zero Error)</strong>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- QUIZ / PRACTICE MODAL -->
+  <div id="modalQuiz" class="modal-overlay hidden">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div class="modal-title">🎯 Metrology Master Challenge</div>
+        <button id="btnCloseQuiz" class="modal-close">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p id="quizPrompt" style="font-weight: 600; margin-bottom: 14px;">
+          Reading challenge loading...
+        </p>
+
+        <div class="form-group">
+          <label style="font-size: 12px; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 6px;">
+            Your Corrected Reading (in millimeters):
+          </label>
+          <div style="display: flex; gap: 8px;">
+            <input id="inputQuizAnswer" type="number" step="0.01" placeholder="e.g. 18.4" style="flex: 1; padding: 10px 14px; font-family: 'JetBrains Mono', monospace; font-size: 15px; border: 1px solid var(--border); border-radius: var(--radius-sm);">
+            <button id="btnSubmitQuiz" class="action-btn btn-primary" style="padding: 10px 20px;">
+              Check Answer
+            </button>
+          </div>
+        </div>
+
+        <div id="quizFeedback" class="quiz-feedback hidden"></div>
+
+        <div style="margin-top: 18px; display: flex; justify-content: flex-end;">
+          <button id="btnNewQuiz" class="action-btn">
+            <span>🎲</span> Next Random Challenge
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>

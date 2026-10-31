@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>pH Scale, Dilution &amp; Universal Indicator Virtual Lab | Class 10 &amp; 11 Chemistry</title>
+  <meta name="description" content="Interactive STEM chemistry virtual lab exploring the pH scale, dilution equilibrium, Kw = 1e-14, hydronium/hydroxide ion concentrations, and universal indicators.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+  <!-- APP HEADER -->
+  <header class="app-header">
+    <div class="header-container">
+      <div class="brand-wrapper">
+        <div class="brand-icon">🧪</div>
+        <div>
+          <div style="display: flex; align-items: center;">
+            <h1 class="brand-title">pHLaboratory</h1>
+            <span class="brand-tag">NCERT Class 10 &amp; 11</span>
+          </div>
+          <div class="brand-sub">pH Scale, Dilution Equilibrium &amp; Universal Indicator Virtual Lab</div>
+        </div>
+      </div>
+
+      <div class="header-actions">
+        <button id="btnOpenQuiz" class="action-btn" title="Take pH determination challenges">
+          <span>🎯</span> Mystery pH Quiz
+        </button>
+        <button id="btnOpenTheory" class="action-btn btn-primary" title="View pH definitions and formulas">
+          <span>📚</span> Theory &amp; Formulas
+        </button>
+        <button id="btnAudioToggle" class="action-btn active" title="Toggle audio feedback">
+          🔊 Sound: ON
+        </button>
+        <button id="btnResetAll" class="action-btn" title="Reset all simulation values">
+          <span>↺</span> Reset All
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN WORKSPACE -->
+  <main class="main-layout">
+
+    <!-- LEFT: Canvas Viewport & Telemetry -->
+    <div class="canvas-section">
+
+      <!-- Canvas Card -->
+      <div class="canvas-viewport-card">
+        <div class="canvas-header-bar">
+          <span>Graduated 1.0 L Beaker &mdash; Drag the pH sensor wand into the liquid to read real-time ion potential</span>
+        </div>
+        <div class="canvas-container">
+          <canvas id="simCanvas"></canvas>
+        </div>
+      </div>
+
+      <!-- Telemetry Readouts -->
+      <div class="telemetry-grid">
+        <div class="telemetry-card highlight">
+          <div class="telemetry-label">Solution pH</div>
+          <div id="readoutPH" class="telemetry-value">2.30</div>
+          <div class="telemetry-sub">&minus;log₁₀[H⁺]</div>
+        </div>
+
+        <div class="telemetry-card">
+          <div class="telemetry-label">Solution pOH</div>
+          <div id="readoutPOH" class="telemetry-value">11.70</div>
+          <div class="telemetry-sub">14.00 &minus; pH</div>
+        </div>
+
+        <div class="telemetry-card">
+          <div class="telemetry-label">[H₃O⁺] Concentration</div>
+          <div id="readoutHConc" class="telemetry-value">5.01e-3 M</div>
+          <div class="telemetry-sub">Hydronium ions</div>
+        </div>
+
+        <div class="telemetry-card">
+          <div class="telemetry-label">[OH⁻] Concentration</div>
+          <div id="readoutOHConc" class="telemetry-value">2.00e-12 M</div>
+          <div class="telemetry-sub">Hydroxide ions</div>
+        </div>
+
+        <div class="telemetry-card">
+          <div class="telemetry-label">Classification</div>
+          <div id="readoutClassification" class="telemetry-value" style="font-size: 14px;">Acidic</div>
+          <div id="readoutVolume" class="telemetry-sub">0.50 L Volume</div>
+        </div>
+      </div>
+
+      <!-- Observation Notebook -->
+      <div class="table-card">
+        <div class="card-title">
+          <span>📋 Titration &amp; Dilution Observation Ledger</span>
+          <button id="btnLogObservation" class="action-btn" style="padding: 5px 12px; font-size: 12px;">
+            <span>➕</span> Record Observation
+          </button>
+        </div>
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Timestamp</th>
+              <th>Solution Sample</th>
+              <th>Total Volume</th>
+              <th>Observed pH</th>
+              <th>Observed pOH</th>
+              <th>[H⁺] Concentration</th>
+              <th>Classification</th>
+            </tr>
+          </thead>
+          <tbody id="tableLogBody">
+            <tr>
+              <td colspan="7" style="text-align: center; color: var(--text-muted); padding: 18px;">
+                No observations recorded yet. Select a solution and click "Record Observation".
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+
+    <!-- RIGHT: Control Sidebar -->
+    <aside class="controls-sidebar">
+
+      <!-- Solution Picker -->
+      <div class="control-card">
+        <div class="card-title">
+          <span>🧴 Solution Library</span>
+        </div>
+        <div class="form-group">
+          <select id="selectSolution" class="select-control">
+            <option value="battery_acid">Battery Acid (0.5 M H₂SO₄, pH 0.7)</option>
+            <option value="gastric_juice">Stomach Acid / Gastric Juice (pH 1.5)</option>
+            <option value="lemon_juice" selected>Fresh Lemon Juice (pH 2.3)</option>
+            <option value="vinegar">Household Vinegar (5% CH₃COOH, pH 2.8)</option>
+            <option value="tomato_juice">Tomato Juice (pH 4.1)</option>
+            <option value="black_coffee">Black Coffee (pH 5.0)</option>
+            <option value="pure_water">Pure Distilled Water (pH 7.0)</option>
+            <option value="human_blood">Human Blood Plasma (pH 7.4)</option>
+            <option value="baking_soda">Baking Soda Solution (NaHCO₃, pH 8.4)</option>
+            <option value="milk_magnesia">Milk of Magnesia (Mg(OH)₂, pH 10.5)</option>
+            <option value="household_ammonia">Ammonia Cleaner (NH₃, pH 11.5)</option>
+            <option value="bleach">Chlorine Bleach (NaOCl, pH 12.5)</option>
+            <option value="drain_cleaner">Drain Cleaner (1.0 M NaOH, pH 13.5)</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Water Faucet & Drain Controls -->
+      <div class="control-card">
+        <div class="card-title">
+          <span>💧 Dilution &amp; Beaker Drain</span>
+        </div>
+        <div class="form-group">
+          <button id="btnPourWater" class="action-block-btn">
+            <span>🚰</span> Press &amp; Hold: Dispense Water (+H₂O)
+          </button>
+        </div>
+        <div class="form-group">
+          <button id="btnDrain" class="action-block-btn danger">
+            <span>⏬</span> Press &amp; Hold: Drain Beaker (&minus;Sol)
+          </button>
+        </div>
+        <div style="font-size: 11px; color: var(--text-muted); line-height: 1.4; margin-top: 6px;">
+          Diluting an acid shifts pH upward toward 7.0; diluting a base shifts pH downward toward 7.0.
+        </div>
+      </div>
+
+      <!-- Microscopic Particles View -->
+      <div class="control-card">
+        <div class="card-title">
+          <span>🔬 Microscopic Ion Dynamics</span>
+        </div>
+        <label style="display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 600; cursor: pointer;">
+          <input id="chkParticles" type="checkbox" checked>
+          <span>Render [H₃O⁺] and [OH⁻] Ions</span>
+        </label>
+        <div style="font-size: 11px; color: var(--text-muted); margin-top: 8px;">
+          <span style="color: #dc2626; font-weight: 700;">● Red:</span> Hydronium (H⁺ / H₃O⁺)<br>
+          <span style="color: #2563eb; font-weight: 700;">● Blue:</span> Hydroxide (OH⁻)
+        </div>
+      </div>
+
+      <!-- Law Summary -->
+      <div class="control-card" style="background: #F8FAFC;">
+        <div class="card-title">
+          <span>📐 Equilibrium Law</span>
+        </div>
+        <div style="font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--text-main); line-height: 1.6;">
+          pH = &minus;log₁₀[H⁺]<br>
+          pH + pOH = 14.00<br>
+          [H⁺][OH⁻] = 1.0 &times; 10⁻¹⁴
+        </div>
+      </div>
+
+    </aside>
+
+  </main>
+
+  <!-- THEORY MODAL -->
+  <div id="modalTheory" class="modal-overlay hidden">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div class="modal-title">📚 The pH Scale, Auto-Ionization &amp; Dilution Principles</div>
+        <button id="btnCloseTheory" class="modal-close">&times;</button>
+      </div>
+      <div class="modal-body">
+        <h4>1. Definition of pH (S.P.L. Sørensen, 1909)</h4>
+        <p>pH stands for <em>"potenz"</em> (power) of hydrogen ions. It is defined as the negative logarithm (base 10) of the molar hydronium ion concentration:</p>
+        <div class="formula-box">
+          pH = &minus;log₁₀[H⁺] = &minus;log₁₀[H₃O⁺]<br>
+          pOH = &minus;log₁₀[OH⁻]
+        </div>
+
+        <h4>2. Auto-Ionization of Water &amp; The Ionic Product (Kw)</h4>
+        <p>Pure water self-ionizes in an equilibrium reaction:</p>
+        <div class="formula-box">
+          2 H₂O(l) &rightleftharpoons; H₃O⁺(aq) + OH⁻(aq)<br>
+          Kw = [H₃O⁺][OH⁻] = 1.0 &times; 10⁻¹⁴ at 25°C<br>
+          &rArr; pH + pOH = 14.00
+        </div>
+
+        <h4>3. The Dilution Principle</h4>
+        <p>When neutral distilled water (pH 7.0) is added to an acid, hydronium concentration decreases, causing pH to rise towards 7.0. It can never exceed 7.0 regardless of dilution extent. Conversely, diluting a base lowers hydroxide concentration, causing pH to fall towards 7.0.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- QUIZ MODAL -->
+  <div id="modalQuiz" class="modal-overlay hidden">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div class="modal-title">🎯 Mystery Solution pH Challenge</div>
+        <button id="btnCloseQuiz" class="modal-close">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p id="quizPrompt" style="font-weight: 600; margin-bottom: 14px;">
+          Problem loading...
+        </p>
+
+        <div class="form-group">
+          <label style="font-size: 12px; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 4px;">
+            Estimated pH Value:
+          </label>
+          <input id="inputQuizPH" type="number" step="0.1" placeholder="e.g. 4.2" style="width: 100%; padding: 8px 12px; font-family: 'JetBrains Mono', monospace; border: 1px solid var(--border); border-radius: var(--radius-sm); margin-bottom: 10px;">
+
+          <label style="font-size: 12px; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 4px;">
+            Solution Nature:
+          </label>
+          <select id="selectQuizClass" class="select-control" style="margin-bottom: 12px;">
+            <option value="acid">Acidic (pH &lt; 7.0)</option>
+            <option value="neutral">Neutral (pH &approx; 7.0)</option>
+            <option value="base">Basic / Alkaline (pH &gt; 7.0)</option>
+          </select>
+
+          <button id="btnSubmitQuiz" class="action-btn btn-primary" style="width: 100%; padding: 10px;">
+            Verify Answer
+          </button>
+        </div>
+
+        <div id="quizFeedback" class="quiz-feedback hidden"></div>
+
+        <div style="margin-top: 16px; display: flex; justify-content: flex-end;">
+          <button id="btnNewQuiz" class="action-btn">
+            <span>🎲</span> Next Mystery Challenge
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>

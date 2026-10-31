@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Density, Mass &amp; Buoyancy (Float or Sink) Virtual Lab | Class 9 Physics</title>
+  <meta name="description" content="Interactive STEM simulation exploring Archimedes' principle, density (mass/volume), buoyant force, overflow displacement, and conditions for flotation.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+  <!-- APP HEADER -->
+  <header class="app-header">
+    <div class="header-container">
+      <div class="brand-wrapper">
+        <div class="brand-icon">⚓</div>
+        <div>
+          <div style="display: flex; align-items: center;">
+            <h1 class="brand-title">BuoyancyLab</h1>
+            <span class="brand-tag">NCERT Class 9 Physics</span>
+          </div>
+          <div class="brand-sub">Density, Mass, Volume &amp; Archimedes' Buoyancy Virtual Laboratory</div>
+        </div>
+      </div>
+
+      <div class="header-actions">
+        <button id="btnOpenQuiz" class="action-btn" title="Take flotation prediction challenges">
+          <span>🎯</span> Flotation Quiz
+        </button>
+        <button id="btnOpenTheory" class="action-btn btn-primary" title="View Archimedes' principle formulas">
+          <span>📚</span> Theory &amp; Formulas
+        </button>
+        <button id="btnAudioToggle" class="action-btn active" title="Toggle audio feedback">
+          🔊 Sound: ON
+        </button>
+        <button id="btnResetAll" class="action-btn" title="Reset all simulation values">
+          <span>↺</span> Reset All
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN WORKSPACE -->
+  <main class="main-layout">
+
+    <!-- LEFT: Canvas Viewport & Telemetry -->
+    <div class="canvas-section">
+
+      <!-- Canvas Card -->
+      <div class="canvas-viewport-card">
+        <div class="canvas-header-bar">
+          <span>Interactive Water Tank &mdash; Grab and drag the solid block underwater or release it to observe buoyant bobbing</span>
+        </div>
+        <div class="canvas-container">
+          <canvas id="simCanvas"></canvas>
+        </div>
+      </div>
+
+      <!-- Telemetry Readouts -->
+      <div class="telemetry-grid">
+        <div class="telemetry-card">
+          <div class="telemetry-label">Object Density (&rho;<sub>obj</sub>)</div>
+          <div id="readoutDensityObj" class="telemetry-value">0.50 kg/L</div>
+          <div class="telemetry-sub">&rho; = m / V</div>
+        </div>
+
+        <div class="telemetry-card">
+          <div class="telemetry-label">Fluid Density (&rho;<sub>fluid</sub>)</div>
+          <div id="readoutDensityFluid" class="telemetry-value">1.00 kg/L</div>
+          <div class="telemetry-sub">Displacement medium</div>
+        </div>
+
+        <div class="telemetry-card">
+          <div class="telemetry-label">Gravity Force (F<sub>g</sub>)</div>
+          <div id="readoutGravityForce" class="telemetry-value">9.80 N</div>
+          <div class="telemetry-sub">F<sub>g</sub> = m &times; g</div>
+        </div>
+
+        <div class="telemetry-card">
+          <div class="telemetry-label">Buoyant Force (F<sub>b</sub>)</div>
+          <div id="readoutBuoyantForce" class="telemetry-value">9.80 N</div>
+          <div class="telemetry-sub">F<sub>b</sub> = &rho;<sub>f</sub> &times; V<sub>sub</sub> &times; g</div>
+        </div>
+
+        <div class="telemetry-card highlight" style="grid-column: span 2;">
+          <div class="telemetry-label">Equilibrium Flotation State</div>
+          <div id="readoutState" class="telemetry-value" style="font-size: 15px;">Floats (Partially Submerged)</div>
+          <div id="readoutSubmerged" class="telemetry-sub">50.0% Submerged (1.00 L Displaced)</div>
+        </div>
+      </div>
+
+      <!-- Observation Notebook -->
+      <div class="table-card">
+        <div class="card-title">
+          <span>📋 Archimedes Principle Observation Ledger</span>
+          <button id="btnLogObservation" class="action-btn" style="padding: 5px 12px; font-size: 12px;">
+            <span>➕</span> Record Observation
+          </button>
+        </div>
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Timestamp</th>
+              <th>Material</th>
+              <th>Liquid Medium</th>
+              <th>Object Density</th>
+              <th>Fluid Density</th>
+              <th>Buoyant Force</th>
+              <th>Flotation Outcome</th>
+            </tr>
+          </thead>
+          <tbody id="tableLogBody">
+            <tr>
+              <td colspan="7" style="text-align: center; color: var(--text-muted); padding: 18px;">
+                No observations recorded yet. Select materials and click "Record Observation".
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+
+    <!-- RIGHT: Controls Sidebar -->
+    <aside class="controls-sidebar">
+
+      <!-- Material Picker -->
+      <div class="control-card">
+        <div class="card-title">
+          <span>📦 Solid Material</span>
+        </div>
+        <div class="form-group">
+          <select id="selectMaterial" class="select-control">
+            <option value="styrofoam">Styrofoam (&rho; = 0.05 kg/L)</option>
+            <option value="wood_pine" selected>Pine Wood (&rho; = 0.50 kg/L)</option>
+            <option value="ice">Ice Glacial (&rho; = 0.92 kg/L)</option>
+            <option value="aluminum">Solid Aluminum (&rho; = 2.70 kg/L)</option>
+            <option value="steel">Carbon Steel (&rho; = 7.85 kg/L)</option>
+            <option value="copper">Pure Copper (&rho; = 8.96 kg/L)</option>
+            <option value="gold">Solid Gold Bar (&rho; = 19.30 kg/L)</option>
+            <option value="custom">Custom (Adjust sliders below)</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Fluid Medium Picker -->
+      <div class="control-card">
+        <div class="card-title">
+          <span>🌊 Fluid Medium</span>
+        </div>
+        <div class="form-group">
+          <select id="selectLiquid" class="select-control">
+            <option value="water" selected>Pure Water (&rho; = 1.00 kg/L)</option>
+            <option value="sea_water">Dense Sea Water (&rho; = 1.03 kg/L)</option>
+            <option value="oil">Olive Oil (&rho; = 0.92 kg/L)</option>
+            <option value="glycerin">Viscous Glycerin (&rho; = 1.26 kg/L)</option>
+            <option value="mercury">Liquid Mercury (&rho; = 13.60 kg/L)</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Parameters Sliders -->
+      <div class="control-card">
+        <div class="card-title">
+          <span>🎚️ Physical Parameters</span>
+        </div>
+
+        <div class="form-group">
+          <div class="label-row">
+            <span>Mass (m)</span>
+            <span id="valMass" class="val-badge">1.00 kg</span>
+          </div>
+          <input id="sliderMass" type="range" class="range-slider" min="0.1" max="10.0" step="0.1" value="1.0">
+        </div>
+
+        <div class="form-group">
+          <div class="label-row">
+            <span>Volume (V)</span>
+            <span id="valVolume" class="val-badge">2.00 L</span>
+          </div>
+          <input id="sliderVolume" type="range" class="range-slider" min="0.5" max="4.0" step="0.1" value="2.0">
+        </div>
+
+        <div class="form-group">
+          <div class="label-row">
+            <span>Gravity (g)</span>
+            <span id="valGravity" class="val-badge">9.8 m/s²</span>
+          </div>
+          <input id="sliderGravity" type="range" class="range-slider" min="1.6" max="24.8" step="0.2" value="9.8">
+        </div>
+      </div>
+
+      <!-- Vector Toggles -->
+      <div class="control-card">
+        <div class="card-title">
+          <span>📐 Force Vectors</span>
+        </div>
+        <label style="display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 600; cursor: pointer;">
+          <input id="chkForceVectors" type="checkbox" checked>
+          <span>Render Gravity &amp; Buoyant Vectors</span>
+        </label>
+        <div style="font-size: 11px; color: var(--text-muted); margin-top: 8px;">
+          <span style="color: #ef4444; font-weight: 700;">&darr; Red Vector:</span> Downward Gravity F<sub>g</sub><br>
+          <span style="color: #10b981; font-weight: 700;">&uarr; Green Vector:</span> Upward Buoyancy F<sub>b</sub>
+        </div>
+      </div>
+
+      <!-- Law Summary -->
+      <div class="control-card" style="background: #F8FAFC;">
+        <div class="card-title">
+          <span>⚖️ Archimedes' Principle</span>
+        </div>
+        <div style="font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--text-main); line-height: 1.6;">
+          F<sub>b</sub> = &rho;<sub>fluid</sub> &times; V<sub>sub</sub> &times; g<br>
+          % Submerged = (&rho;<sub>obj</sub> / &rho;<sub>fluid</sub>) &times; 100%<br>
+          If &rho;<sub>obj</sub> &lt; &rho;<sub>fluid</sub> &rArr; Floats
+        </div>
+      </div>
+
+    </aside>
+
+  </main>
+
+  <!-- THEORY MODAL -->
+  <div id="modalTheory" class="modal-overlay hidden">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div class="modal-title">📚 Archimedes' Principle &amp; Law of Flotation</div>
+        <button id="btnCloseTheory" class="modal-close">&times;</button>
+      </div>
+      <div class="modal-body">
+        <h4>1. Archimedes' Principle (c. 250 BC)</h4>
+        <p>When a body is partially or completely immersed in a fluid at rest, it experiences an upward buoyant force equal to the weight of the fluid displaced by the body:</p>
+        <div class="formula-box">
+          F<sub>b</sub> = m<sub>displaced</sub> &times; g = &rho;<sub>fluid</sub> &times; V<sub>submerged</sub> &times; g
+        </div>
+
+        <h4>2. The Law of Flotation</h4>
+        <p>For a body floating in equilibrium, the upward buoyant force equals the downward weight of the body ($F_b = F_g$):</p>
+        <div class="formula-box">
+          &rho;<sub>fluid</sub> &times; V<sub>sub</sub> &times; g = &rho;<sub>obj</sub> &times; V<sub>total</sub> &times; g<br>
+          &rArr; V<sub>sub</sub> / V<sub>total</sub> = &rho;<sub>obj</sub> / &rho;<sub>fluid</sub>
+        </div>
+        <ul>
+          <li><strong>Case 1 (&rho;<sub>obj</sub> &lt; &rho;<sub>fluid</sub>):</strong> The body floats with fraction $\frac{\rho_{\text{obj}}}{\rho_{\text{fluid}}}$ submerged (e.g. ice in water: $\frac{0.92}{1.00} = 92\%$ submerged).</li>
+          <li><strong>Case 2 (&rho;<sub>obj</sub> = &rho;<sub>fluid</sub>):</strong> Neutral buoyancy; remains suspended at any submerged depth.</li>
+          <li><strong>Case 3 (&rho;<sub>obj</sub> &gt; &rho;<sub>fluid</sub>):</strong> The body sinks to the bottom because downward gravity exceeds maximum buoyant force ($F_g &gt; F_{b,\max}$).</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- QUIZ MODAL -->
+  <div id="modalQuiz" class="modal-overlay hidden">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div class="modal-title">🎯 Flotation Prediction Challenge</div>
+        <button id="btnCloseQuiz" class="modal-close">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p id="quizPrompt" style="font-weight: 600; margin-bottom: 14px;">
+          Problem loading...
+        </p>
+
+        <div class="form-group">
+          <label style="font-size: 12px; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 4px;">
+            Will the block Float or Sink?
+          </label>
+          <select id="selectQuizPrediction" class="select-control" style="margin-bottom: 10px;">
+            <option value="float">Floats (Partially Submerged)</option>
+            <option value="neutral">Neutrally Buoyant (Suspended)</option>
+            <option value="sink">Sinks to the Bottom</option>
+          </select>
+
+          <label style="font-size: 12px; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 4px;">
+            Submerged Volume Percentage (%):
+          </label>
+          <input id="inputQuizSubmerged" type="number" step="1" placeholder="e.g. 50 (or 100 if sinking)" style="width: 100%; padding: 8px 12px; font-family: 'JetBrains Mono', monospace; border: 1px solid var(--border); border-radius: var(--radius-sm); margin-bottom: 12px;">
+
+          <button id="btnSubmitQuiz" class="action-btn btn-primary" style="width: 100%; padding: 10px;">
+            Verify Prediction
+          </button>
+        </div>
+
+        <div id="quizFeedback" class="quiz-feedback hidden"></div>
+
+        <div style="margin-top: 16px; display: flex; justify-content: flex-end;">
+          <button id="btnNewQuiz" class="action-btn">
+            <span>🎲</span> Next Mystery Challenge
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>
