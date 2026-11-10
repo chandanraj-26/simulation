@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Respiration in Germinating Seeds &amp; CO₂ Absorption | NCERT Class 10 Biology</title>
+  <meta name="description" content="Interactive STEM simulation exploring cellular respiration in germinating seeds, KOH carbon dioxide absorption, partial vacuum generation, and water column rise.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+  <!-- APP HEADER -->
+  <header class="app-header">
+    <div class="header-container">
+      <div class="brand-wrapper">
+        <div class="brand-icon">🌱</div>
+        <div>
+          <div style="display: flex; align-items: center;">
+            <h1 class="brand-title">SeedRespirationLab</h1>
+            <span class="brand-tag">NCERT Class 10</span>
+          </div>
+          <div class="brand-sub">Respiration in Germinating Seeds &amp; KOH CO₂ Absorption Virtual Laboratory</div>
+        </div>
+      </div>
+
+      <div class="header-actions">
+        <button id="btnOpenTheory" class="action-btn btn-primary" title="View biological respiration theory">
+          <span>📚</span> Theory &amp; Mechanism
+        </button>
+        <button id="btnAudioToggle" class="action-btn" title="Toggle audio feedback">
+          🔊 Sound: ON
+        </button>
+        <button id="btnResetAll" class="action-btn" title="Reset all simulation values">
+          <span>↺</span> Reset All
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN WORKSPACE -->
+  <main class="main-layout">
+
+    <!-- LEFT: Canvas Viewport & Telemetry -->
+    <div class="canvas-section">
+
+      <div class="canvas-viewport-card">
+        <div class="canvas-header-bar">
+          <span>Biological Apparatus &mdash; Observe partial vacuum creation as KOH absorbs evolved CO₂</span>
+        </div>
+        <div class="canvas-container">
+          <canvas id="simCanvas"></canvas>
+          <div class="canvas-overlay-hint">
+            <div class="hud-pill">💡 Tip: Oxygen consumption combined with KOH CO₂ absorption draws colored water up the tube</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Telemetry Grid -->
+      <div class="telemetry-grid">
+        <div class="telemetry-card">
+          <div class="telemetry-label">Elapsed Time</div>
+          <div id="readoutTime" class="telemetry-value">00h 00m</div>
+          <div class="telemetry-sub">Time-lapse clock</div>
+        </div>
+
+        <div class="telemetry-card">
+          <div class="telemetry-label">Water Rise (Δh)</div>
+          <div id="readoutHeight" class="telemetry-value">0.0 mm</div>
+          <div class="telemetry-sub">Delivery tube level</div>
+        </div>
+
+        <div class="telemetry-card">
+          <div class="telemetry-label">Respiration Rate</div>
+          <div id="readoutRate" class="telemetry-value">11.6 mm/hr</div>
+          <div class="telemetry-sub">Metabolic activity</div>
+        </div>
+
+        <div class="telemetry-card">
+          <div class="telemetry-label">CO₂ Absorbed</div>
+          <div id="readoutCO2" class="telemetry-value">0.0 mg</div>
+          <div class="telemetry-sub">Fixed by KOH pellets</div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- RIGHT: Control Sidebar -->
+    <aside class="control-sidebar">
+
+      <div class="panel-card">
+        <div class="panel-title">
+          <span>Biological Parameters</span>
+        </div>
+
+        <div class="control-group">
+          <div class="control-label">
+            <span>Seed Condition</span>
+          </div>
+          <select id="selectSeeds">
+            <option value="germinating" selected>Soaked Germinating Gram (Living)</option>
+            <option value="boiled">Boiled Seeds + Antiseptic (Control)</option>
+            <option value="dormant">Dry Dormant Seeds</option>
+          </select>
+        </div>
+
+        <div class="control-group">
+          <div class="control-label">
+            <span>Ambient Temperature (T)</span>
+            <span id="valTemp" class="control-val">28°C</span>
+          </div>
+          <input type="range" id="sliderTemp" min="5" max="45" step="1" value="28">
+        </div>
+
+        <div class="toggle-row">
+          <span class="toggle-label">Airtight Rubber Stopper</span>
+          <label class="switch">
+            <input type="checkbox" id="chkAirtight" checked>
+            <span class="slider-switch"></span>
+          </label>
+        </div>
+
+        <div class="control-group" style="margin-top: 10px;">
+          <div class="control-label">
+            <span>Time-Lapse Speed</span>
+          </div>
+          <select id="selectSpeed">
+            <option value="1">1× (Realtime: 1 sec = 1 sec)</option>
+            <option value="10">10× (Fast)</option>
+            <option value="60" selected>60× (1 sec = 1 min)</option>
+            <option value="300">300× (Super Fast: 1 sec = 5 mins)</option>
+          </select>
+        </div>
+
+        <button id="btnResetExp" class="btn-secondary" style="margin-top: 8px;">
+          ↺ Reset Experiment Clock
+        </button>
+      </div>
+
+      <div class="panel-card">
+        <div class="panel-title">
+          <span>Biochemical Principles</span>
+        </div>
+        <div class="formula-card">
+          <strong>Aerobic Respiration:</strong><br>
+          <code>C₆H₁₂O₆ + 6O₂ → 6CO₂ + 6H₂O + Energy</code><br><br>
+          <strong>KOH Chemical Fixation:</strong><br>
+          <code>2KOH + CO₂ → K₂CO₃ + H₂O</code><br><br>
+          <strong>Mechanism of Water Rise:</strong><br>
+          Volume of O₂ absorbed by germinating seeds is matched by CO₂ released, but that CO₂ is instantly absorbed by the KOH pellets. This lowers flask pressure (<em>P</em><sub>flask</sub> &lt; <em>P</em><sub>atm</sub>), pulling water up the tube.
+        </div>
+      </div>
+
+    </aside>
+
+  </main>
+
+  <!-- THEORY MODAL -->
+  <div id="modalTheory" class="modal-backdrop">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h2 class="modal-title">Seed Respiration &mdash; NCERT Class 10 Practical</h2>
+        <button id="btnCloseTheory" class="btn-close">&times;</button>
+      </div>
+      <div style="font-size: 14px; line-height: 1.7; color: var(--text-main);">
+        <p><strong>1. Aim of Experiment:</strong><br>
+        To experimentally demonstrate that carbon dioxide (CO₂) is released during the aerobic respiration of actively germinating gram/pea seeds.</p>
+
+        <div class="formula-box">
+          <strong>Aerobic Cellular Respiration:</strong><br>
+          C<sub>6</sub>H<sub>12</sub>O<sub>6</sub> + 6O<sub>2</sub> &rarr; 6CO<sub>2</sub> + 6H<sub>2</sub>O + 38 ATP (Energy)
+        </div>
+        <br>
+        <p><strong>2. Role of Potassium Hydroxide (KOH):</strong><br>
+        A suspended test tube inside the conical flask contains fresh KOH pellets. KOH absorbs and chemically fixes gaseous carbon dioxide:</p>
+
+        <div class="formula-box">
+          <strong>CO₂ Fixation Reaction:</strong><br>
+          2KOH(aq) + CO<sub>2</sub>(g) &rarr; K<sub>2</sub>CO<sub>3</sub>(aq) + H<sub>2</sub>O(l)
+        </div>
+
+        <p style="margin-top: 8px;">Because the evolved CO₂ is trapped into potassium carbonate, the gas volume inside the airtight flask decreases by the volume of O₂ consumed. This creates a partial vacuum (<em>P</em><sub>flask</sub> &lt; <em>P</em><sub>atm</sub>), and atmospheric pressure forces colored water up the delivery tube.</p>
+        <br>
+        <p><strong>3. Control Experiment:</strong><br>
+        When boiled seeds soaked in carbolic acid (antiseptic) are used as a control, respiratory enzymes are thermally denatured and cellular respiration ceases. No O₂ is consumed, no CO₂ is evolved, and the water level in the bent delivery tube remains completely unchanged.</p>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/app.js"></script>
+</body>
+</html>
+

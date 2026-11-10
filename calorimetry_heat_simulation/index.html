@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reaction Calorimeter Virtual Lab | NCERT Class 10 &amp; 11 Chemistry</title>
+  <meta name="description" content="Interactive STEM simulation exploring exothermic and endothermic chemical reactions, enthalpy changes, heat capacity, and temperature curves.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+  <!-- APP HEADER -->
+  <header class="app-header">
+    <div class="header-container">
+      <div class="brand-wrapper">
+        <div class="brand-icon">🌡️</div>
+        <div>
+          <div style="display: flex; align-items: center;">
+            <h1 class="brand-title">CalorimeterLab</h1>
+            <span class="brand-tag">NCERT Class 10 &amp; 11</span>
+          </div>
+          <div class="brand-sub">Exothermic vs. Endothermic Reactions &amp; Thermochemistry Virtual Laboratory</div>
+        </div>
+      </div>
+
+      <div class="header-actions">
+        <button id="btnOpenTheory" class="action-btn btn-primary" title="View thermochemistry principles">
+          <span>📚</span> Theory &amp; Formulas
+        </button>
+        <button id="btnAudioToggle" class="action-btn" title="Toggle audio feedback">
+          🔊 Sound: ON
+        </button>
+        <button id="btnResetAll" class="action-btn" title="Reset all simulation values">
+          <span>↺</span> Reset All
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN WORKSPACE -->
+  <main class="main-layout">
+
+    <!-- LEFT: Canvas Viewport & Telemetry -->
+    <div class="canvas-section">
+
+      <div class="canvas-viewport-card">
+        <div class="canvas-header-bar">
+          <span>Calorimeter Bench &mdash; Select a chemical reaction and trigger dissolution to observe heat exchange</span>
+        </div>
+        <div class="canvas-container">
+          <canvas id="simCanvas"></canvas>
+          <div class="canvas-overlay-hint">
+            <div class="hud-pill">💡 Tip: Watch real-time temperature evolution on the digital probe and strip chart</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Telemetry Grid -->
+      <div class="telemetry-grid">
+        <div class="telemetry-card">
+          <div class="telemetry-label">Current Temp (T)</div>
+          <div id="readoutTemp" class="telemetry-value">22.0°C</div>
+          <div class="telemetry-sub">Ambient: 22.0°C</div>
+        </div>
+
+        <div class="telemetry-card">
+          <div class="telemetry-label">Temp Change (ΔT)</div>
+          <div id="readoutDeltaT" class="telemetry-value">+0.0°C</div>
+          <div class="telemetry-sub">T_final - T_initial</div>
+        </div>
+
+        <div class="telemetry-card">
+          <div class="telemetry-label">Heat Transferred (q)</div>
+          <div id="readoutQ" class="telemetry-value">0 J</div>
+          <div class="telemetry-sub">q = m · c · ΔT</div>
+        </div>
+
+        <div class="telemetry-card">
+          <div class="telemetry-label">Enthalpy (ΔH)</div>
+          <div id="readoutEnthalpy" class="telemetry-value">-65.2 kJ/mol</div>
+          <div id="readoutType" class="telemetry-sub" style="font-weight: 700;">EXOTHERMIC</div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- RIGHT: Control Sidebar -->
+    <aside class="control-sidebar">
+
+      <div class="panel-card">
+        <div class="panel-title">
+          <span>Chemical System</span>
+        </div>
+
+        <div class="control-group">
+          <div class="control-label">
+            <span>Reaction Pair</span>
+          </div>
+          <select id="selectReaction">
+            <option value="quicklime" selected>Quicklime + Water (Exothermic)</option>
+            <option value="neutralization">HCl + NaOH (Exothermic)</option>
+            <option value="ammonium">Ammonium Chloride (Endothermic)</option>
+            <option value="citric">Citric Acid + Baking Soda (Endothermic)</option>
+          </select>
+        </div>
+
+        <div class="control-group">
+          <div class="control-label">
+            <span>Reagent Mass (m)</span>
+            <span id="valMass" class="control-val">10.0 g</span>
+          </div>
+          <input type="range" id="sliderMass" min="2" max="25" step="0.5" value="10">
+        </div>
+
+        <div class="control-group">
+          <div class="control-label">
+            <span>Water Volume (V)</span>
+            <span id="valWater" class="control-val">100 mL</span>
+          </div>
+          <input type="range" id="sliderWater" min="50" max="250" step="10" value="100">
+        </div>
+
+        <div class="toggle-row">
+          <span class="toggle-label">Magnetic Stirrer Active</span>
+          <label class="switch">
+            <input type="checkbox" id="chkStirrer" checked>
+            <span class="slider-switch"></span>
+          </label>
+        </div>
+
+        <button id="btnStartReaction" class="btn-action-primary">
+          ▶ Add Reagent &amp; React
+        </button>
+
+        <button id="btnResetCalorimeter" class="btn-secondary" style="margin-top: 8px;">
+          ↺ Reset Calorimeter
+        </button>
+      </div>
+
+      <div class="panel-card">
+        <div class="panel-title">
+          <span>Thermochemical Laws</span>
+        </div>
+        <div class="formula-card">
+          <strong>Heat Equation:</strong><br>
+          <code>q = m · c · ΔT</code><br>
+          (where c = 4.184 J/g·°C for water)<br><br>
+          <strong>Molar Enthalpy Change:</strong><br>
+          <code>ΔH = -q / n</code><br><br>
+          <strong>Classification:</strong><br>
+          • <strong>Exothermic (ΔH &lt; 0):</strong> Heat released, solution warms up.<br>
+          • <strong>Endothermic (ΔH &gt; 0):</strong> Heat absorbed, solution cools down.
+        </div>
+      </div>
+
+    </aside>
+
+  </main>
+
+  <!-- THEORY MODAL -->
+  <div id="modalTheory" class="modal-backdrop">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h2 class="modal-title">Calorimetry &amp; Thermochemistry &mdash; NCERT Theory</h2>
+        <button id="btnCloseTheory" class="btn-close">&times;</button>
+      </div>
+      <div style="font-size: 14px; line-height: 1.7; color: var(--text-main);">
+        <p><strong>1. First Law of Thermodynamics in Calorimetry:</strong><br>
+        In an isolated calorimeter, assuming negligible heat loss to the environment, conservation of energy dictates:</p>
+
+        <div class="formula-box">
+          <em>q</em><sub>reaction</sub> + <em>q</em><sub>solution</sub> = 0 &nbsp;&rArr;&nbsp; <strong><em>q</em><sub>reaction</sub> = &minus;<em>m</em> &middot; <em>c</em> &middot; &Delta;<em>T</em></strong><br>
+          Where <em>m</em> = solution mass (g), <em>c</em> = 4.184 J/(g&middot;&deg;C), &Delta;<em>T</em> = <em>T</em><sub>final</sub> &minus; <em>T</em><sub>initial</sub>
+        </div>
+        <br>
+        <p><strong>2. Exothermic Dissolution:</strong><br>
+        Lattice dissociation energy is smaller than hydration enthalpy. Net thermal energy is released into aqueous solution:</p>
+
+        <div class="formula-box">
+          <strong><em>T</em><sub>f</sub> &gt; <em>T</em><sub>i</sub> &nbsp;&nbsp;|&nbsp;&nbsp; &Delta;<em>H</em><sub>sol</sub> &lt; 0 (Heat Released)</strong><br>
+          Example: CaCl₂ + H₂O &rarr; Ca²⁺(aq) + 2Cl⁻(aq) + Heat (&Delta;H = &minus;81.3 kJ/mol)
+        </div>
+        <br>
+        <p><strong>3. Endothermic Dissolution:</strong><br>
+        Lattice energy exceeds hydration enthalpy. Thermal kinetic energy is absorbed from the solvent molecules, causing the solution temperature to drop:</p>
+
+        <div class="formula-box">
+          <strong><em>T</em><sub>f</sub> &lt; <em>T</em><sub>i</sub> &nbsp;&nbsp;|&nbsp;&nbsp; &Delta;<em>H</em><sub>sol</sub> &gt; 0 (Heat Absorbed)</strong><br>
+          Example: NH₄NO₃ + H₂O + Heat &rarr; NH₄⁺(aq) + NO₃⁻(aq) (&Delta;H = +25.7 kJ/mol)
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/app.js"></script>
+</body>
+</html>
+

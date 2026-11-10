@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Faraday's &amp; Lenz's Law of Electromagnetic Induction Virtual Lab | NCERT Class 10 &amp; 12 Physics</title>
+  <meta name="description" content="Interactive STEM simulation exploring Faraday's law of electromagnetic induction, magnetic flux rate of change, Lenz's law opposing coil polarity, and galvanometer deflection.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+  <!-- APP HEADER -->
+  <header class="app-header">
+    <div class="header-container">
+      <div class="brand-wrapper">
+        <div class="brand-icon">⚡</div>
+        <div>
+          <div style="display: flex; align-items: center;">
+            <h1 class="brand-title">FaradayLenzLab</h1>
+            <span class="brand-tag">NCERT Class 10 &amp; 12</span>
+          </div>
+          <div class="brand-sub">Electromagnetic Induction, Magnetic Flux &amp; Lenz's Law Virtual Laboratory</div>
+        </div>
+      </div>
+
+      <div class="header-actions">
+        <button id="btnOpenTheory" class="action-btn btn-primary" title="View induction laws and mathematical formulas">
+          <span>📚</span> Theory &amp; Formulas
+        </button>
+        <button id="btnAudioToggle" class="action-btn" title="Toggle audio feedback">
+          🔊 Sound: ON
+        </button>
+        <button id="btnResetAll" class="action-btn" title="Reset all simulation settings">
+          <span>↺</span> Reset All
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN WORKSPACE -->
+  <main class="main-layout">
+
+    <!-- LEFT: Canvas Viewport & Telemetry -->
+    <div class="canvas-section">
+
+      <div class="canvas-viewport-card">
+        <div class="canvas-header-bar">
+          <span>Electromagnetic Induction Bench &mdash; Drag magnet through coil or switch to AC Shaker</span>
+          <span id="motionStatusBadge" style="font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--primary);">Manual Drag Mode</span>
+        </div>
+        <div class="canvas-container">
+          <canvas id="simCanvas"></canvas>
+          <div class="canvas-overlay-hint">
+            <div class="hud-pill">💡 Tip: Move magnet faster to generate higher induced voltage (𝓔 = -N·dΦ/dt)</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Telemetry Grid -->
+      <div class="telemetry-grid">
+        <div class="telemetry-card">
+          <div class="telemetry-label">Magnet Velocity (v)</div>
+          <div id="readoutVel" class="telemetry-value">0.00 m/s</div>
+          <div class="telemetry-sub">Relative motion to coil</div>
+        </div>
+
+        <div class="telemetry-card">
+          <div class="telemetry-label">Magnetic Flux (Φ_B)</div>
+          <div id="readoutFlux" class="telemetry-value">0.00 µWb</div>
+          <div class="telemetry-sub">Φ = B · A · cos(θ)</div>
+        </div>
+
+        <div class="telemetry-card">
+          <div class="telemetry-label">Induced EMF (𝓔)</div>
+          <div id="readoutEMF" class="telemetry-value">0.0 mV</div>
+          <div class="telemetry-sub">𝓔 = -N · (dΦ / dt)</div>
+        </div>
+
+        <div class="telemetry-card">
+          <div class="telemetry-label">Induced Current &amp; Polarity</div>
+          <div id="readoutCurrent" class="telemetry-value">0.0 µA</div>
+          <div id="readoutLenzStatus" class="telemetry-sub">Coil Face: Inactive</div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- RIGHT: Control Sidebar -->
+    <aside class="control-sidebar">
+
+      <!-- Coil & Core Configuration -->
+      <div class="panel-card">
+        <div class="panel-title">
+          <span>Solenoid Coil &amp; Core</span>
+        </div>
+
+        <div class="control-group">
+          <div class="control-label">
+            <span>Coil Turns (N)</span>
+            <span id="valTurns" class="control-val">400 turns</span>
+          </div>
+          <input type="range" id="sliderTurns" min="100" max="1000" step="50" value="400">
+        </div>
+
+        <div class="control-group">
+          <div class="control-label">
+            <span>Core Material (Permeability)</span>
+          </div>
+          <select id="selectCore">
+            <option value="1" selected>Air Core (μ_r = 1.0)</option>
+            <option value="45">Soft Iron Core (μ_r ≈ 45 - High Flux Amplification)</option>
+          </select>
+        </div>
+
+        <div class="control-group">
+          <div class="control-label">
+            <span>Circuit Load Device</span>
+          </div>
+          <select id="selectLoad">
+            <option value="galvo" selected>Center-Zero Galvanometer (-50 to +50 µA)</option>
+            <option value="bulb">Filament Bulb &amp; Bipolar LEDs (Red/Green)</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Magnet & Dynamics -->
+      <div class="panel-card">
+        <div class="panel-title">
+          <span>Magnet &amp; Kinematics</span>
+        </div>
+
+        <div class="control-group">
+          <div class="control-label">
+            <span>Motion Mode</span>
+          </div>
+          <select id="selectMotionMode">
+            <option value="manual" selected>Manual Drag &amp; Drop</option>
+            <option value="shaker">Harmonic AC Shaker (Oscillator)</option>
+            <option value="drop">Gravity Free-Fall Drop Through Coil</option>
+          </select>
+        </div>
+
+        <div id="shakerControls" class="control-group" style="display: none;">
+          <div class="control-label">
+            <span>Shaker Frequency (f)</span>
+            <span id="valFreq" class="control-val">1.2 Hz</span>
+          </div>
+          <input type="range" id="sliderFreq" min="0.3" max="3.0" step="0.1" value="1.2">
+        </div>
+
+        <div class="control-group">
+          <div class="control-label">
+            <span>Magnet Pole Strength (M)</span>
+            <span id="valStrength" class="control-val">1.0×</span>
+          </div>
+          <input type="range" id="sliderStrength" min="0.5" max="2.5" step="0.1" value="1.0">
+        </div>
+
+        <button id="btnFlipMagnet" class="btn-secondary" style="margin-top: 6px;">
+          ⇄ Flip Magnet Polarity (N ↔ S)
+        </button>
+
+        <button id="btnDropMagnet" class="btn-action-primary" style="margin-top: 10px; display: none;">
+          ⬇ Drop Magnet (Free-Fall)
+        </button>
+      </div>
+
+      <!-- Visual Overlays -->
+      <div class="panel-card">
+        <div class="panel-title">
+          <span>Visual Diagnostics</span>
+        </div>
+
+        <div class="toggle-row">
+          <span class="toggle-label">Magnetic Field Lines</span>
+          <label class="switch">
+            <input type="checkbox" id="chkFieldLines" checked>
+            <span class="slider-switch"></span>
+          </label>
+        </div>
+
+        <div class="toggle-row">
+          <span class="toggle-label">Lenz Opposing Pole &amp; Force Vector</span>
+          <label class="switch">
+            <input type="checkbox" id="chkLenz" checked>
+            <span class="slider-switch"></span>
+          </label>
+        </div>
+
+        <div class="toggle-row">
+          <span class="toggle-label">Induced Current Electron Flow</span>
+          <label class="switch">
+            <input type="checkbox" id="chkCurrentFlow" checked>
+            <span class="slider-switch"></span>
+          </label>
+        </div>
+      </div>
+
+      <!-- Key Equations -->
+      <div class="panel-card">
+        <div class="panel-title">
+          <span>Fundamental Equations</span>
+        </div>
+        <div class="formula-card">
+          <strong>Faraday's Law of Induction:</strong><br>
+          <code>𝓔 = -N · (dΦ_B / dt)</code><br><br>
+          <strong>Magnetic Flux:</strong><br>
+          <code>Φ_B = ∫ B · dA = B · A · cos(θ)</code><br><br>
+          <strong>Lenz's Law Principle:</strong><br>
+          The induced current generates a magnetic field opposing the change in magnetic flux that created it.
+        </div>
+      </div>
+
+    </aside>
+
+  </main>
+
+  <!-- THEORY MODAL -->
+  <div id="modalTheory" class="modal-backdrop">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h2 class="modal-title">Electromagnetic Induction &mdash; NCERT Theory</h2>
+        <button id="btnCloseTheory" class="btn-close">&times;</button>
+      </div>
+      <div style="font-size: 14px; line-height: 1.7; color: var(--text-main);">
+        <p><strong>1. Historical Context:</strong><br>
+        In 1831, English scientist Michael Faraday discovered that electric currents can be produced in a closed circuit without a physical battery, solely by the relative motion of a magnetic field. Almost simultaneously, Heinrich Lenz formulated the directional rule governing the polarity of these induced currents.</p>
+        <br>
+        <p><strong>2. Faraday's Law of Induction:</strong><br>
+        The magnitude of the electromotive force (EMF, <em>𝓔</em>) induced in a coil of wire is directly proportional to the time rate of change of magnetic flux (<em>Φ</em><sub>B</sub>) through the coil:</p>
+
+        <div class="formula-box">
+          <strong>Faraday's Induction Equation:</strong><br>
+          <em>𝓔</em> = &minus;<em>N</em> &middot; (<em>dΦ</em><sub>B</sub> / <em>dt</em>)<br><br>
+          Where:<br>
+          • <em>N</em> = Number of turns in the solenoid coil<br>
+          • <em>Φ</em><sub>B</sub> = Magnetic flux = <em>B</em> &middot; <em>A</em> &middot; cos(<em>θ</em>) (measured in Webers, Wb)<br>
+          • <em>t</em> = Time in seconds (rate of change <em>dΦ</em>/<em>dt</em> in Wb/s or Volts)
+        </div>
+        <br>
+        <p><strong>3. Lenz's Law &amp; Conservation of Energy:</strong><br>
+        The negative sign in Faraday's equation represents <strong>Lenz's Law</strong>: <em>The polarity of the induced electromotive force is always such that it produces an electric current whose magnetic field opposes the change in magnetic flux that caused it.</em></p>
+
+        <ul style="margin-left: 20px; margin-top: 6px;">
+          <li><strong>Approaching North Pole:</strong> As a North pole approaches the coil, the facing end of the coil develops a <strong>North pole</strong> to repel the incoming magnet. Mechanical work must be done against this repulsive force to push the magnet in.</li>
+          <li><strong>Receding North Pole:</strong> As the North pole is withdrawn, the facing end becomes a <strong>South pole</strong> to attract the magnet back, resisting its withdrawal.</li>
+          <li><strong>Energy Conservation:</strong> The mechanical work done by the experimenter against these opposing magnetic forces is precisely converted into electrical energy in the coil and dissipated as heat ($I^2R$).</li>
+        </ul>
+        <br>
+        <p><strong>4. Effect of Soft Iron Core:</strong><br>
+        Inserting a ferromagnetic soft iron core inside the coil multiplies the magnetic field concentration by the relative permeability constant: <em>Φ</em><sub>iron</sub> = <em>μ</em><sub>r</sub> &middot; <em>Φ</em><sub>air</sub>, generating dramatically higher induced voltages.</p>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/app.js"></script>
+</body>
+</html>
+

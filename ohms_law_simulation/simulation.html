@@ -357,18 +357,18 @@
             Discovered by German physicist <strong>Georg Simon Ohm (1827)</strong>, Ohm's Law states that at constant temperature and physical dimensions, the electric current passing through a conductor is directly proportional to the potential difference across its terminals:
           </p>
           <div class="formula-card">
-            <div class="formula-math">V = I · R &emsp;&iff;&emsp; I = \frac{V}{R} &emsp;&iff;&emsp; R = \frac{V}{I}</div>
+            <div class="formula-math">V = I &middot; R &emsp;&hArr;&emsp; I = V / R &emsp;&hArr;&emsp; R = V / I</div>
             <div class="formula-desc">
-              Where <strong>V</strong> is potential difference (Volts, V), <strong>I</strong> is current (Amperes, A), and <strong>R</strong> is electrical resistance (Ohms, Ω).
+              Where <strong>V</strong> is potential difference (Volts, V), <strong>I</strong> is current (Amperes, A), and <strong>R</strong> is electrical resistance (Ohms, &Omega;).
             </div>
           </div>
           <p class="formula-desc">
-            In vector differential form, Ohm's law relates the current density <strong>J</strong> to the electric field <strong>E</strong> via electrical conductivity <strong>σ</strong>:
+            In vector differential form, Ohm's law relates current density <strong>J</strong> to electric field <strong>E</strong> via electrical conductivity <strong>&sigma;</strong>:
           </p>
           <div class="formula-card">
-            <div class="formula-math">\mathbf{J} = \sigma \mathbf{E} = \frac{1}{\rho}\mathbf{E}</div>
+            <div class="formula-math"><strong>J</strong> = &sigma; <strong>E</strong> = (1 / &rho;) <strong>E</strong></div>
             <div class="formula-desc">
-              Where <strong>J = I / A</strong> (A/m²), <strong>E = V / L</strong> (V/m), and <strong>ρ</strong> is the material resistivity (Ω·m).
+              Where <strong>J = I / A</strong> (A/m&sup2;), <strong>E = V / L</strong> (V/m), and <strong>&rho;</strong> is the material resistivity (&Omega;&middot;m).
             </div>
           </div>
         </div>
@@ -377,13 +377,13 @@
         <div class="theory-section">
           <h3 class="theory-section-title">2. Drude Microscopic Model of Conduction</h3>
           <p class="formula-desc">
-            Paul Drude (1900) proposed that metals contain a free electron gas moving through a stationary lattice of positive metallic ions. Free electrons undergo rapid thermal motion ($v_{\text{thermal}} \approx 10^5\text{–}10^6\text{ m/s}$) in random directions with zero net drift without an applied field.
+            Paul Drude (1900) proposed that metals contain a free electron gas moving through a stationary lattice of positive metallic ions. Free electrons undergo rapid thermal motion (<em>v</em><sub>thermal</sub> &approx; 10⁵–10⁶ m/s) in random directions with zero net drift without an applied field.
           </p>
           <div class="formula-card">
-            <div class="formula-math">v_d = \frac{e \tau}{m_e} E = \frac{I}{n A e}</div>
+            <div class="formula-math">v<sub>d</sub> = (e &middot; &tau; / m<sub>e</sub>) &middot; E = I / (n &middot; A &middot; e)</div>
             <div class="formula-desc">
-              When voltage is applied, the electric field accelerates electrons. Successive collisions with vibrating lattice ions decelerate them, establishing an average steady <strong>drift velocity v_d</strong> (typically $10^{-4}$ to $10^{-5}$ m/s).
-              Here $n \approx 8.5 \times 10^{28}\text{ m}^{-3}$ (free electron density for Cu), $A$ is wire cross-section ($1\text{ mm}^2$), and $e = 1.602 \times 10^{-19}\text{ C}$.
+              When voltage is applied, the electric field accelerates electrons. Successive collisions with vibrating lattice ions decelerate them, establishing an average steady <strong>drift velocity v<sub>d</sub></strong> (typically 10⁻⁴ to 10⁻⁵ m/s).
+              Here <em>n</em> &approx; 8.5 &times; 10²⁸ m⁻³ (free electron density for Cu), <em>A</em> is wire cross-section (1 mm&sup2;), and <em>e</em> = 1.602 &times; 10⁻¹⁹ C.
             </div>
           </div>
         </div>
@@ -395,13 +395,13 @@
             As drifting electrons scatter off lattice ions, kinetic energy is transferred to the lattice vibrations (phonons), heating the resistor:
           </p>
           <div class="formula-card">
-            <div class="formula-math">P = I^2 R = V I = \frac{V^2}{R}</div>
+            <div class="formula-math">P = I&sup2; &middot; R = V &middot; I = V&sup2; / R</div>
             <div class="formula-desc">
-              Dissipated thermal power $P$ causes temperature rise governed by Newton's law of cooling: $\frac{dT}{dt} = \frac{P - h(T - T_0)}{C_{\text{th}}}$.
+              Dissipated thermal power <em>P</em> causes temperature rise governed by Newton's law of cooling: <em>dT</em>/<em>dt</em> = (<em>P</em> &minus; <em>h</em>(<em>T</em> &minus; <em>T</em><sub>0</sub>)) / <em>C</em><sub>th</sub>.
             </div>
           </div>
           <div class="formula-card">
-            <div class="formula-math">R(T) = R_0 \left[1 + \alpha (T - T_0)\right]</div>
+            <div class="formula-math">R(T) = R<sub>0</sub> [ 1 + &alpha; (T &minus; T<sub>0</sub>) ]</div>
             <div class="formula-desc">
               As temperature $T$ rises, lattice ions vibrate with larger amplitude, increasing electron scattering cross-section and elevating resistance. This causes non-linear curvature in the V-I characteristic at high power, illustrating why Ohm's law strictly holds only at <em>constant temperature</em>.
             </div>

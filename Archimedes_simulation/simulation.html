@@ -1,15 +1,20 @@
 <!doctype html>
 <html lang="en">
+
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>ArchimedesLab — Interactive Archimedes' Principle &amp; Buoyancy Simulator</title>
-  <meta name="description" content="Interactive STEM physics simulation exploring Archimedes' principle, buoyant force, hydrostatic pressure distribution, apparent weight loss, and the classic Eureka displacement can experiment.">
+  <meta name="description"
+    content="Interactive STEM physics simulation exploring Archimedes' principle, buoyant force, hydrostatic pressure distribution, apparent weight loss, and the classic Eureka displacement can experiment.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700&display=swap"
+    rel="stylesheet">
   <link rel="stylesheet" href="css/styles.css">
 </head>
+
 <body>
 
   <!-- ================================================================= -->
@@ -30,7 +35,8 @@
 
       <!-- Primary Mode Switcher -->
       <div class="mode-selector-group">
-        <button id="btnModeEureka" class="mode-type-btn active" title="Classic Displacement Vessel &amp; Spring Balance">
+        <button id="btnModeEureka" class="mode-type-btn active"
+          title="Classic Displacement Vessel &amp; Spring Balance">
           <span>🧪</span> Eureka Overflow Lab
         </button>
         <button id="btnModePressure" class="mode-type-btn" title="Hydrostatic Depth Vectors &amp; Free Body Diagram">
@@ -43,9 +49,6 @@
 
       <!-- Action Buttons -->
       <div class="header-actions">
-        <button id="btnOpenQuests" class="action-btn" style="border-color:#f59e0b; color:#d97706; font-weight:700;" title="Interactive Student Quests">
-          <span>⭐</span> Lab Quests
-        </button>
         <button id="btnOpenChallenge" class="action-btn" title="Solve the Golden Crown Mystery">
           <span>👑</span> Crown Mystery
         </button>
@@ -77,10 +80,9 @@
           <div class="canvas-presets-wrapper">
             <button class="preset-chip active" data-preset="heavy-sink">Heavy Sinking (Iron in Water)</button>
             <button class="preset-chip" data-preset="classic-float">Classic Flotation (Wood in Water)</button>
-            <button class="preset-chip" data-preset="rubber-duck">🦆 Rubber Ducky (Floats!)</button>
             <button class="preset-chip" data-preset="tip-iceberg">Tip of Iceberg (90% Submerged)</button>
             <button class="preset-chip" data-preset="mercury-iron">Mercury Float (Iron on Hg)</button>
-            <button class="preset-chip" data-preset="neutral-buoy">Neutral Buoyancy (Diver in Water)</button>
+            <button class="preset-chip" data-preset="neutral-buoy">Neutral Buoyancy (ρ_obj = ρ_fluid)</button>
             <button class="preset-chip" data-preset="crown-mystery">King's Crown Mystery (Eureka!)</button>
             <button class="preset-chip" data-preset="cargo-boat">Cargo Boat (Load &amp; Waterline)</button>
           </div>
@@ -253,22 +255,18 @@
       <!-- Card: Immersed Object & Material -->
       <div class="control-card">
         <h3 class="card-heading">
-          <span>🧱 Immersed Object &amp; Character</span>
+          <span>🧱 Immersed Object</span>
         </h3>
 
         <!-- Object Shape Selector -->
         <div class="slider-item">
-          <span style="font-size:12px; font-weight:600; color:var(--text-muted);">Geometric Shape &amp; Character</span>
-          <div class="segmented-control" style="grid-template-columns: repeat(3, 1fr);">
-            <button class="segmented-btn shape-btn" data-shape="duck">🦆 Duck</button>
-            <button class="segmented-btn shape-btn" data-shape="diver">🤿 Diver</button>
+          <span style="font-size:12px; font-weight:600; color:var(--text-muted);">Geometric Shape</span>
+          <div class="segmented-control">
+            <button class="segmented-btn shape-btn" data-shape="cube">Cube</button>
+            <button class="segmented-btn shape-btn active" data-shape="cylinder">Cylinder</button>
+            <button class="segmented-btn shape-btn" data-shape="sphere">Sphere</button>
             <button class="segmented-btn shape-btn" data-shape="crown">👑 Crown</button>
             <button class="segmented-btn shape-btn" data-shape="boat">🚢 Boat</button>
-            <button class="segmented-btn shape-btn" data-shape="iceberg">🧊 Iceberg</button>
-            <button class="segmented-btn shape-btn" data-shape="anvil">🪙 Anvil</button>
-            <button class="segmented-btn shape-btn active" data-shape="cylinder">Cylinder</button>
-            <button class="segmented-btn shape-btn" data-shape="cube">Cube</button>
-            <button class="segmented-btn shape-btn" data-shape="sphere">Sphere</button>
           </div>
         </div>
 
@@ -292,10 +290,6 @@
               <span>Lead</span>
               <span class="mat-chip-density">11340 kg/m³</span>
             </div>
-            <div class="mat-chip" data-mat="duck">
-              <span>Rubber Ducky</span>
-              <span class="mat-chip-density">180 kg/m³</span>
-            </div>
             <div class="mat-chip" data-mat="wood_pine">
               <span>Pine Wood</span>
               <span class="mat-chip-density">500 kg/m³</span>
@@ -303,6 +297,10 @@
             <div class="mat-chip" data-mat="ice">
               <span>Glacial Ice</span>
               <span class="mat-chip-density">917 kg/m³</span>
+            </div>
+            <div class="mat-chip" data-mat="cork">
+              <span>Cork</span>
+              <span class="mat-chip-density">240 kg/m³</span>
             </div>
             <div class="mat-chip" data-mat="crown_pure">
               <span>Royal Crown</span>
@@ -366,7 +364,8 @@
           </div>
 
           <div class="slider-item">
-            <span style="font-size:12px; font-weight:600; color:var(--text-muted);">Planetary Gravitational Field (g)</span>
+            <span style="font-size:12px; font-weight:600; color:var(--text-muted);">Planetary Gravitational Field
+              (g)</span>
             <select id="selectGravity" class="fluid-select">
               <option value="earth" selected>Earth (9.81 m/s²)</option>
               <option value="moon">Moon (1.62 m/s²)</option>
@@ -422,28 +421,6 @@
   </main>
 
   <!-- ================================================================= -->
-  <!-- STUDENT LAB QUESTS MODAL                                          -->
-  <!-- ================================================================= -->
-  <div id="modalQuests" class="modal-backdrop">
-    <div class="modal-container">
-      <div class="modal-header">
-        <h2 class="modal-title">
-          <span>⭐</span> Interactive Student Lab Quests
-        </h2>
-        <button id="btnCloseQuests" class="modal-close-btn" title="Close dialog">&times;</button>
-      </div>
-      <div class="modal-body">
-        <p style="margin-top:0; font-size:13px; color:#475569;">
-          Complete all 5 laboratory missions to earn your Master Physicist Badge! Follow the hints and perform experiments to discover Archimedes' principle firsthand.
-        </p>
-        <div id="questsListContainer">
-          <!-- Populated dynamically by ui.js -->
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ================================================================= -->
   <!-- THEORY & DERIVATIONS MODAL                                        -->
   <!-- ================================================================= -->
   <div id="modalTheory" class="modal-backdrop">
@@ -460,14 +437,16 @@
           Formulated by Archimedes of Syracuse in the 3rd century BCE:
         </p>
         <div class="formula-highlight-box">
-          "Any body wholly or partially submerged in a fluid experiences an upward buoyant force equal to the weight of the fluid displaced by the body."
+          "Any body wholly or partially submerged in a fluid experiences an upward buoyant force equal to the weight of
+          the fluid displaced by the body."
           <br><br>
           F_B = m_fluid · g = ρ_fluid · V_submerged · g
         </div>
 
         <h3>2. Hydrostatic Origin of Buoyancy</h3>
         <p>
-          Buoyant force is not a mysterious upward suction; it is the <strong>net resultant vector of hydrostatic pressure forces</strong> acting over the entire surface area of the immersed body.
+          Buoyant force is not a mysterious upward suction; it is the <strong>net resultant vector of hydrostatic
+            pressure forces</strong> acting over the entire surface area of the immersed body.
         </p>
         <p>
           Since fluid pressure increases linearly with depth according to:
@@ -476,7 +455,8 @@
           P(h) = P₀ + ρ_fluid · g · h
         </div>
         <p>
-          The bottom surface of the object is at a greater depth ($h_2$) than the top surface ($h_1$). Consequently, the upward pressure against the bottom exceeds the downward pressure on the top:
+          The bottom surface of the object is at a greater depth (<em>h</em><sub>2</sub>) than the top surface (<em>h</em><sub>1</sub>). Consequently, the
+          upward pressure against the bottom exceeds the downward pressure on the top:
         </p>
         <div class="formula-highlight-box">
           ΔP = P_bottom - P_top = ρ_fluid · g · (h₂ - h₁) = ρ_fluid · g · H
@@ -484,12 +464,14 @@
           F_buoyant = ΔP · Area = ρ_fluid · g · (H · Area) = ρ_fluid · g · V_submerged
         </div>
         <p>
-          Lateral pressure forces acting on opposite sides cancel each other out completely due to symmetry, leaving only a net vertical upward force!
+          Lateral pressure forces acting on opposite sides cancel each other out completely due to symmetry, leaving
+          only a net vertical upward force!
         </p>
 
         <h3>3. Apparent Weight Loss</h3>
         <p>
-          When an object is weighed while immersed in a fluid using a spring balance, the scale reads the string tension $T$:
+          When an object is weighed while immersed in a fluid using a spring balance, the scale reads the string tension
+          <em>T</em>:
         </p>
         <div class="formula-highlight-box">
           T = W_apparent = W_true - F_B
@@ -497,7 +479,9 @@
           Loss in Weight = W_true - W_apparent = F_B = W_displaced fluid
         </div>
         <p>
-          In the classic <strong>Eureka Can experiment</strong>, water displaced through the overflow spout is collected in a graduated cylinder. Its measured weight identically matches the apparent loss in weight measured by the spring balance.
+          In the classic <strong>Eureka Can experiment</strong>, water displaced through the overflow spout is collected
+          in a graduated cylinder. Its measured weight identically matches the apparent loss in weight measured by the
+          spring balance.
         </p>
 
         <h3>4. The Law of Flotation</h3>
@@ -505,14 +489,16 @@
           A freely floating body sinks until the weight of the fluid it displaces equals its own total weight:
         </p>
         <div class="formula-highlight-box">
-          W_object = F_B &implies; (ρ_object · V_total · g) = (ρ_fluid · V_submerged · g)
+          W_object = F_B &rArr; (ρ_object · V_total · g) = (ρ_fluid · V_submerged · g)
           <br><br>
           Fraction Submerged = V_submerged / V_total = ρ_object / ρ_fluid
         </div>
         <p>
-          - <strong>Floating</strong>: $\rho_{\text{object}} &lt; \rho_{\text{fluid}}$ (e.g. ice in water, 91.7% submerged)<br>
-          - <strong>Neutral Buoyancy</strong>: $\rho_{\text{object}} = \rho_{\text{fluid}}$ (suspends without sinking or rising)<br>
-          - <strong>Sinking</strong>: $\rho_{\text{object}} &gt; \rho_{\text{fluid}}$ (sinks to the container floor)
+          - <strong>Floating</strong>: &rho;<sub>object</sub> &lt; &rho;<sub>fluid</sub> (e.g. ice in water, 91.7%
+          submerged)<br>
+          - <strong>Neutral Buoyancy</strong>: &rho;<sub>object</sub> = &rho;<sub>fluid</sub> (suspends without sinking or
+          rising)<br>
+          - <strong>Sinking</strong>: &rho;<sub>object</sub> &gt; &rho;<sub>fluid</sub> (sinks to the container floor)
         </p>
       </div>
     </div>
@@ -533,10 +519,14 @@
         <h3>Archimedes' Famous "Eureka!" Discovery</h3>
         <p>
           King Hiero II of Syracuse gave a goldsmith a specific weight of pure gold to make a sacred votive crown.
-          Suspecting that the goldsmith had kept some gold and substituted an equal mass of cheaper silver, Hiero challenged Archimedes to determine if the crown was pure gold—<strong>without damaging the crown!</strong>
+          Suspecting that the goldsmith had kept some gold and substituted an equal mass of cheaper silver, Hiero
+          challenged Archimedes to determine if the crown was pure gold—<strong>without damaging the crown!</strong>
         </p>
         <p>
-          While stepping into a full public bath, Archimedes noticed the water spilling over the edge. In a flash of genius, he realized that a crown adulterated with silver would have a larger volume (because silver is less dense than gold, $\rho_{\text{Ag}} \approx 10500\text{ kg/m}^3$ vs $\rho_{\text{Au}} = 19300\text{ kg/m}^3$) and would therefore displace more water!
+          While stepping into a full public bath, Archimedes noticed the water spilling over the edge. In a flash of
+          genius, he realized that a crown adulterated with silver would have a larger volume (because silver is less
+          dense than gold, &rho;<sub>Ag</sub> &approx; 10500 kg/m&sup3; vs &rho;<sub>Au</sub> = 19300 kg/m&sup3;)
+          and would therefore displace more water!
         </p>
 
         <div class="crown-test-grid">
@@ -548,7 +538,8 @@
               Displaced Water: <strong>Minimal</strong><br>
               Weight Loss: <strong>Minimal</strong>
             </p>
-            <button id="btnTestPureGold" class="action-btn btn-primary" style="margin-top:10px; width:100%; justify-content:center;">
+            <button id="btnTestPureGold" class="action-btn btn-primary"
+              style="margin-top:10px; width:100%; justify-content:center;">
               Test Pure Gold Crown
             </button>
           </div>
@@ -561,28 +552,29 @@
               Displaced Water: <strong>Significantly Greater!</strong><br>
               Weight Loss: <strong>Much Higher!</strong>
             </p>
-            <button id="btnTestFakeCrown" class="action-btn" style="margin-top:10px; width:100%; justify-content:center; border-color:#ef4444; color:#ef4444;">
+            <button id="btnTestFakeCrown" class="action-btn"
+              style="margin-top:10px; width:100%; justify-content:center; border-color:#ef4444; color:#ef4444;">
               Test Goldsmith's Suspect Crown
             </button>
           </div>
         </div>
 
         <p style="font-size:12px; color:#64748b;">
-          💡 <strong>Experiment Tip:</strong> In Eureka Overflow mode, observe the reading on the catch beaker scale when you immerse each crown. The alloy crown displaces noticeably more water, exposing the fraud!
+          💡 <strong>Experiment Tip:</strong> In Eureka Overflow mode, observe the reading on the catch beaker scale
+          when you immerse each crown. The alloy crown displaces noticeably more water, exposing the fraud!
         </p>
       </div>
     </div>
   </div>
 
-  <!-- Celebratory Quest Toast Notification -->
-  <div id="questToastNotif" class="quest-toast-notif"></div>
-
   <!-- Footer -->
   <footer class="app-footer">
-    ArchimedesLab — Interactive STEM Physics Simulation Suite &bull; Built with HTML5 Canvas 2D, Modern Vanilla CSS &amp; ES6 JavaScript.
+    ArchimedesLab — Interactive STEM Physics Simulation Suite &bull; Built with HTML5 Canvas 2D, Modern Vanilla CSS
+    &amp; ES6 JavaScript.
   </footer>
 
   <!-- Main JavaScript Orchestrator -->
   <script type="module" src="js/main.js"></script>
 </body>
+
 </html>

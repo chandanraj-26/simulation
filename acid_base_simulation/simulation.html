@@ -17,7 +17,9 @@
 
 <body>
 
-  <!-- MAIN APPLICATION HEADER -->
+  <!-- ================================================================= -->
+  <!-- MAIN APPLICATION HEADER                                           -->
+  <!-- ================================================================= -->
   <header class="app-header">
     <div class="header-container">
       <div class="brand-wrapper">
@@ -65,7 +67,9 @@
     </div>
   </header>
 
-  <!-- MAIN LAYOUT -->
+  <!-- ================================================================= -->
+  <!-- MAIN LAYOUT (CANVAS + TELEMETRY + CONTROLS SIDEBAR)               -->
+  <!-- ================================================================= -->
   <main class="main-layout">
 
     <!-- LEFT: Canvas Viewport & Live Chemical Telemetry -->
@@ -144,7 +148,7 @@
     <!-- RIGHT: Control Sidebar -->
     <aside class="control-sidebar">
 
-      <!-- SECTION 1: Spot & Tubes Controls -->
+      <!-- SECTION 1: Spot & Tubes Controls (Active in Spot Mode) -->
       <div id="secSpotControls" class="sidebar-card">
         <div class="sidebar-card-title">
           <span>🧪 REAGENTS &amp; pH SLIDER</span>
@@ -213,7 +217,7 @@
         </button>
       </div>
 
-      <!-- SECTION 2: Titration Lab Controls -->
+      <!-- SECTION 2: Titration Lab Controls (Active in Titration Mode) -->
       <div id="secTitrationControls" class="sidebar-card hidden">
         <div class="sidebar-card-title">
           <span>⚗️ TITRATION APPARATUS</span>
@@ -265,7 +269,7 @@
         </button>
       </div>
 
-      <!-- SECTION 3: Molecular Controls -->
+      <!-- SECTION 3: Molecular Controls (Active in Molecular Mode) -->
       <div id="secMolecularControls" class="sidebar-card hidden">
         <div class="sidebar-card-title">
           <span>⚛️ EQUILIBRIUM DYNAMICS</span>
@@ -287,7 +291,9 @@
 
   </main>
 
-  <!-- MODAL 1: QUESTS -->
+  <!-- ================================================================= -->
+  <!-- MODAL 1: STUDENT LABORATORY QUESTS & CHALLENGES                   -->
+  <!-- ================================================================= -->
   <div id="modalQuests" class="modal-wrapper">
     <div class="modal-backdrop"></div>
     <div class="modal-container">
@@ -299,12 +305,16 @@
         <p style="margin-top:0;">
           Put your STEM chemistry skills to the test! Complete all 5 guided laboratory missions to master indicators, litmus testing, and precision analytical titrations.
         </p>
-        <div id="questsListContainer"></div>
+        <div id="questsListContainer">
+          <!-- Populated dynamically by UI controller -->
+        </div>
       </div>
     </div>
   </div>
 
-  <!-- MODAL 2: THEORY -->
+  <!-- ================================================================= -->
+  <!-- MODAL 2: THEORY, EQUILIBRIUM & INDICATOR GUIDE                     -->
+  <!-- ================================================================= -->
   <div id="modalTheory" class="modal-wrapper">
     <div class="modal-backdrop"></div>
     <div class="modal-container">
@@ -315,19 +325,21 @@
       <div class="modal-body" style="font-size:13px;">
         <h4 style="color:#0284c7; margin-top:0;">1. What is an Acid-Base Indicator?</h4>
         <p>
-          An acid-base indicator is a weak organic acid ($HIn$) or weak organic base whose conjugate acid and base forms possess distinctly different colors due to structural rearrangement of their chromophore $\pi$-electron system:
+          An acid-base indicator is a weak organic acid (<em>HIn</em>) or weak organic base whose conjugate acid and base forms possess distinctly different colors due to structural rearrangement of their chromophore &pi;-electron system:
         </p>
         <div style="background:#f8fafc; border-left:4px solid #0284c7; padding:10px 14px; font-family:var(--font-mono); margin:10px 0;">
           HIn (Acid Form Color) ⇌ H⁺(aq) + In⁻ (Conjugate Base Color)
         </div>
 
         <h4 style="color:#0284c7; margin-top:16px;">2. Henderson-Hasselbalch Equation for Indicators</h4>
-        <p>The equilibrium dissociation constant is given by:</p>
+        <p>
+          The equilibrium dissociation constant is given by:
+        </p>
         <div style="background:#f8fafc; border-left:4px solid #0284c7; padding:10px 14px; font-family:var(--font-mono); margin:10px 0;">
-          K_In = [H⁺][In⁻] / [HIn]  ⟹  pH = pK_In + log([In⁻] / [HIn])
+          K_In = [H⁺][In⁻] / [HIn]  &rArr;  pH = pK_In + log([In⁻] / [HIn])
         </div>
         <p>
-          The human eye perceives the acid color when $[HIn] \ge 10 \times [In^-]$ ($pH \le pK_{In} - 1$), and the base color when $[In^-] \ge 10 \times [HIn]$ ($pH \ge pK_{In} + 1$). The effective color transition interval is:
+          The human eye typically perceives the pure acid color when [HIn] &ge; 10 &times; [In⁻] (pH &le; pK<sub>In</sub> &minus; 1), and the pure base color when [In⁻] &ge; 10 &times; [HIn] (pH &ge; pK<sub>In</sub> + 1). The effective color transition interval is therefore:
         </p>
         <div style="background:#f8fafc; border-left:4px solid #0284c7; padding:10px 14px; font-family:var(--font-mono); margin:10px 0;">
           ΔpH = pK_In ± 1.0 (Span of ~2.0 pH units)
@@ -396,11 +408,23 @@
             </tr>
           </tbody>
         </table>
+
+        <h4 style="color:#0284c7; margin-top:16px;">4. Choosing the Right Indicator for Titrations</h4>
+        <p>
+          The indicator must exhibit its color transition interval within the steep vertical region of the titration curve:
+        </p>
+        <ul>
+          <li><strong>Strong Acid + Strong Base:</strong> Equivalence pH = 7.00. The steep vertical inflection spans pH 4 to 10. Both Phenolphthalein and Bromothymol Blue give negligible titration error.</li>
+          <li><strong>Weak Acid + Strong Base (e.g. Acetic Acid + NaOH):</strong> Equivalence pH ≈ 8.72 (basic due to acetate salt hydrolysis). <strong>Phenolphthalein</strong> is ideal. Methyl Orange changes prematurely in the buffer zone.</li>
+          <li><strong>Strong Acid + Weak Base (e.g. HCl + NH₃):</strong> Equivalence pH ≈ 5.28 (acidic due to ammonium salt hydrolysis). <strong>Methyl Orange</strong> is ideal.</li>
+        </ul>
       </div>
     </div>
   </div>
 
-  <!-- MODAL 3: LAB REPORT -->
+  <!-- ================================================================= -->
+  <!-- MODAL 3: LAB REPORT & OBSERVATION NOTEBOOK                        -->
+  <!-- ================================================================= -->
   <div id="modalLabReport" class="modal-wrapper">
     <div class="modal-backdrop"></div>
     <div class="modal-container">
@@ -423,7 +447,9 @@
               <th>Experimental Notes</th>
             </tr>
           </thead>
-          <tbody id="reportTableBody"></tbody>
+          <tbody id="reportTableBody">
+            <!-- Dynamically populated -->
+          </tbody>
         </table>
         <div style="margin-top:20px; display:flex; justify-content:flex-end; gap:10px;">
           <button id="btnExportCSV" class="action-btn btn-primary">

@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Buffon's Needle &amp; Monte Carlo Pi Virtual Lab | Applied Mathematics</title>
+  <meta name="description" content="Interactive STEM simulation exploring Buffon's Needle geometric probability, Monte Carlo approximation of Pi, and stochastic convergence.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+  <!-- APP HEADER -->
+  <header class="app-header">
+    <div class="header-container">
+      <div class="brand-wrapper">
+        <div class="brand-icon">🎯</div>
+        <div>
+          <div style="display: flex; align-items: center;">
+            <h1 class="brand-title">BuffonNeedleLab</h1>
+            <span class="brand-tag">STEM Mathematics</span>
+          </div>
+          <div class="brand-sub">Buffon's Needle Geometric Probability &amp; Monte Carlo π Generator</div>
+        </div>
+      </div>
+
+      <div class="header-actions">
+        <button id="btnOpenTheory" class="action-btn btn-primary" title="View probability derivation">
+          <span>📚</span> Theory &amp; Formulas
+        </button>
+        <button id="btnAudioToggle" class="action-btn" title="Toggle audio feedback">
+          🔊 Sound: ON
+        </button>
+        <button id="btnResetAll" class="action-btn" title="Reset all simulation values">
+          <span>↺</span> Reset All
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN WORKSPACE -->
+  <main class="main-layout">
+
+    <!-- LEFT: Canvas Viewport & Telemetry -->
+    <div class="canvas-section">
+
+      <div class="canvas-viewport-card">
+        <div class="canvas-header-bar">
+          <span>Simulation Arena &mdash; Drop needles randomly to calculate the mathematical constant π</span>
+        </div>
+        <div class="canvas-container">
+          <canvas id="simCanvas"></canvas>
+          <div class="canvas-overlay-hint">
+            <div class="hud-pill">💡 Tip: Needles crossing lines glow gold, while non-crossing needles stay blue</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Telemetry Grid -->
+      <div class="telemetry-grid">
+        <div class="telemetry-card">
+          <div class="telemetry-label">Total Dropped (N)</div>
+          <div id="readoutTotal" class="telemetry-value">0</div>
+          <div class="telemetry-sub">Total trials</div>
+        </div>
+
+        <div class="telemetry-card">
+          <div class="telemetry-label">Line Crossings (C)</div>
+          <div id="readoutCrossings" class="telemetry-value">0</div>
+          <div class="telemetry-sub">Golden needles</div>
+        </div>
+
+        <div class="telemetry-card">
+          <div class="telemetry-label">Estimated π</div>
+          <div id="readoutPi" class="telemetry-value" style="color: var(--primary);">---</div>
+          <div class="telemetry-sub">Actual: 3.14159...</div>
+        </div>
+
+        <div class="telemetry-card">
+          <div class="telemetry-label">Absolute Error</div>
+          <div id="readoutError" class="telemetry-value">0.0000</div>
+          <div class="telemetry-sub">|π_est - π|</div>
+        </div>
+      </div>
+
+      <!-- Secondary Telemetry Grid -->
+      <div class="telemetry-grid">
+        <div class="telemetry-card">
+          <div class="telemetry-label">Crossing Prob (P)</div>
+          <div id="readoutProb" class="telemetry-value">0.0000</div>
+          <div class="telemetry-sub">P = C / N</div>
+        </div>
+
+        <div class="telemetry-card">
+          <div class="telemetry-label">Accuracy</div>
+          <div id="readoutAccuracy" class="telemetry-value">0.0%</div>
+          <div class="telemetry-sub">Convergence metric</div>
+        </div>
+
+        <div class="telemetry-card">
+          <div class="telemetry-label">Stochastic Rate</div>
+          <div class="telemetry-value">1 / √N</div>
+          <div class="telemetry-sub">Error decay law</div>
+        </div>
+
+        <div class="telemetry-card">
+          <div class="telemetry-label">Historical Origin</div>
+          <div class="telemetry-value" style="font-size: 14px; color: var(--primary);">Georges Buffon</div>
+          <div class="telemetry-sub">Published 1777</div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- RIGHT: Control Sidebar -->
+    <aside class="control-sidebar">
+
+      <div class="panel-card">
+        <div class="panel-title">
+          <span>Geometric Parameters</span>
+        </div>
+
+        <div class="control-group">
+          <div class="control-label">
+            <span>Plank Spacing (D)</span>
+            <span id="valSpacing" class="control-val">80 px</span>
+          </div>
+          <input type="range" id="sliderSpacing" min="50" max="100" step="5" value="80">
+        </div>
+
+        <div class="control-group">
+          <div class="control-label">
+            <span>Needle Length (L)</span>
+            <span id="valLength" class="control-val">60 px</span>
+          </div>
+          <input type="range" id="sliderLength" min="20" max="80" step="5" value="60">
+        </div>
+      </div>
+
+      <div class="panel-card">
+        <div class="panel-title">
+          <span>Batch Drop Actions</span>
+        </div>
+
+        <div class="drop-btn-grid">
+          <button id="btnDrop1" class="btn-secondary">Drop +1</button>
+          <button id="btnDrop10" class="btn-secondary">Drop +10</button>
+          <button id="btnDrop100" class="btn-secondary">Drop +100</button>
+          <button id="btnDrop1000" class="btn-secondary">Drop +1,000</button>
+        </div>
+
+        <button id="btnStream" class="btn-action-primary">
+          ▶ Continuous Stream
+        </button>
+
+        <button id="btnClear" class="btn-secondary" style="margin-top: 8px;">
+          ↺ Clear Floorboard
+        </button>
+
+        <button id="btnExportCSV" class="btn-secondary" style="margin-top: 8px;">
+          📊 Export Trials (CSV)
+        </button>
+      </div>
+
+      <div class="panel-card">
+        <div class="panel-title">
+          <span>Mathematical Derivation</span>
+        </div>
+        <div class="formula-card">
+          <strong>Probability Formula:</strong><br>
+          <code>P = (2 · L) / (π · D)</code><br><br>
+          <strong>Monte Carlo Estimation:</strong><br>
+          <code>π ≈ (2 · L · N) / (D · C)</code><br><br>
+          Where:<br>
+          • <code>L</code> = Length of needle (<em>L</em> &le; <em>D</em>)<br>
+          • <code>D</code> = Spacing between lines<br>
+          • <code>N</code> = Total needles dropped<br>
+          • <code>C</code> = Number of line crossings
+        </div>
+      </div>
+
+    </aside>
+
+  </main>
+
+  <!-- THEORY MODAL -->
+  <div id="modalTheory" class="modal-backdrop">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h2 class="modal-title">Buffon's Needle &mdash; Mathematical Theory</h2>
+        <button id="btnCloseTheory" class="btn-close">&times;</button>
+      </div>
+      <div style="font-size: 14px; line-height: 1.7; color: var(--text-main);">
+        <p><strong>1. Historical Context:</strong><br>
+        In 1777, French naturalist Georges-Louis Leclerc, Comte de Buffon, posed the famous geometric probability question: <em>"If a needle of length <strong>L</strong> is dropped randomly onto a floor ruled with parallel lines spaced at distance <strong>D</strong>, what is the probability that the needle crosses a line?"</em></p>
+        <br>
+        <p><strong>2. Integral Derivation (for <em>L</em> &le; <em>D</em>):</strong><br>
+        Let <em>x</em> be the perpendicular distance from the needle's midpoint to the nearest gridline (0 &le; <em>x</em> &le; <em>D</em>/2), and let <em>&theta;</em> be the acute angle formed by the needle with the parallel lines (0 &le; <em>&theta;</em> &le; &pi;/2).</p>
+        
+        <p style="margin-top: 8px;">A needle crosses a line if and only if its half-length projected perpendicular to the lines exceeds <em>x</em>:</p>
+        
+        <div class="formula-box">
+          <strong>Line-Crossing Condition:</strong><br>
+          <em>x</em> &le; (<em>L</em> / 2) &middot; sin(<em>&theta;</em>)
+        </div>
+
+        <p>Integrating over the uniform joint probability distribution of <em>x</em> and <em>&theta;</em>:</p>
+
+        <div class="formula-box">
+          <strong>Probability Integral:</strong><br>
+          <em>P</em> = [ 1 / ((<em>D</em>/2) &middot; (&pi;/2)) ] &int;<sub>0</sub><sup>&pi;/2</sup> (<em>L</em> / 2) &middot; sin(<em>&theta;</em>) <em>d&theta;</em><br>
+          <em>P</em> = (4 / &pi;<em>D</em>) &middot; (<em>L</em> / 2) [&minus;cos(<em>&theta;</em>)]<sub>0</sub><sup>&pi;/2</sup><br>
+          <em>P</em> = <strong>(2 &middot; <em>L</em>) / (&pi; &middot; <em>D</em>)</strong>
+        </div>
+        <br>
+        <p><strong>3. Monte Carlo &pi; Estimation:</strong><br>
+        By equating the theoretical probability <em>P</em> with the observed experimental hit ratio <em>C</em> / <em>N</em> (crossings / total drops):</p>
+
+        <div class="formula-box">
+          <em>C</em> / <em>N</em> &approx; (2 &middot; <em>L</em>) / (&pi; &middot; <em>D</em>) &nbsp;&rArr;&nbsp; <strong>&pi; &approx; (2 &middot; <em>L</em> &middot; <em>N</em>) / (<em>D</em> &middot; <em>C</em>)</strong>
+        </div>
+
+        <p style="margin-top: 8px;">By the <strong>Law of Large Numbers</strong>, as total drops <em>N</em> &rarr; &infin;, the experimental fraction converges to the exact theoretical probability, and the calculated ratio converges to <strong>&pi; = 3.14159265...</strong></p>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/app.js"></script>
+</body>
+</html>
+

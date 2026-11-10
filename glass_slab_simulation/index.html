@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Refraction Through a Glass Slab &amp; Lateral Displacement | NCERT Class 10 Physics</title>
+  <meta name="description" content="Interactive STEM simulation exploring light refraction through a rectangular glass slab, Snell's law, angle of incidence, angle of emergence, and lateral shift.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+  <!-- APP HEADER -->
+  <header class="app-header">
+    <div class="header-container">
+      <div class="brand-wrapper">
+        <div class="brand-icon">🔲</div>
+        <div>
+          <div style="display: flex; align-items: center;">
+            <h1 class="brand-title">GlassSlabOpticsLab</h1>
+            <span class="brand-tag">NCERT Class 10 &amp; 12</span>
+          </div>
+          <div class="brand-sub">Refraction Through Rectangular Glass Slab &amp; Lateral Displacement Virtual Laboratory</div>
+        </div>
+      </div>
+
+      <div class="header-actions">
+        <button id="btnOpenTheory" class="action-btn btn-primary" title="View mathematical refraction formulas">
+          <span>📚</span> Theory &amp; Formulas
+        </button>
+        <button id="btnAudioToggle" class="action-btn" title="Toggle audio feedback">
+          🔊 Sound: ON
+        </button>
+        <button id="btnResetAll" class="action-btn" title="Reset all simulation values">
+          <span>↺</span> Reset All
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN WORKSPACE -->
+  <main class="main-layout">
+
+    <!-- LEFT: Optical Bench & Telemetry -->
+    <div class="canvas-section">
+
+      <!-- Canvas Viewport -->
+      <div class="canvas-viewport-card">
+        <div class="canvas-header-bar">
+          <span>Interactive Optical Bench &mdash; Drag the incident laser pointer or use the angle slider</span>
+        </div>
+        <div class="canvas-container">
+          <canvas id="simCanvas"></canvas>
+          <div class="canvas-overlay-hint">
+            <div class="hud-pill">💡 Tip: Drag laser emitter circle directly to adjust incident angle</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Telemetry Grid -->
+      <div class="telemetry-grid">
+        <div class="telemetry-card">
+          <div class="telemetry-label">Angle of Incidence (∠i)</div>
+          <div id="readoutI" class="telemetry-value">45.0°</div>
+          <div class="telemetry-sub">Entry normal relative</div>
+        </div>
+
+        <div class="telemetry-card">
+          <div class="telemetry-label">Angle of Refraction (∠r)</div>
+          <div id="readoutR" class="telemetry-value">27.7°</div>
+          <div class="telemetry-sub">Snell: sin(i)/sin(r) = n</div>
+        </div>
+
+        <div class="telemetry-card">
+          <div class="telemetry-label">Angle of Emergence (∠e)</div>
+          <div id="readoutE" class="telemetry-value">45.0°</div>
+          <div class="telemetry-sub">∠e = ∠i (Parallel Faces)</div>
+        </div>
+
+        <div class="telemetry-card">
+          <div class="telemetry-label">Lateral Shift (d)</div>
+          <div id="readoutD" class="telemetry-value">20.14 mm</div>
+          <div class="telemetry-sub">Perpendicular ray offset</div>
+        </div>
+      </div>
+
+      <!-- Secondary Telemetry Grid -->
+      <div class="telemetry-grid">
+        <div class="telemetry-card">
+          <div class="telemetry-label">Refractive Index (n)</div>
+          <div id="readoutIndex" class="telemetry-value">1.52</div>
+          <div class="telemetry-sub">Medium optical density</div>
+        </div>
+
+        <div class="telemetry-card">
+          <div class="telemetry-label">Speed of Light in Medium (v)</div>
+          <div id="readoutSpeed" class="telemetry-value">1.97 × 10⁸ m/s</div>
+          <div class="telemetry-sub">v = c / n</div>
+        </div>
+
+        <div class="telemetry-card">
+          <div class="telemetry-label">Ray Deviation (δ)</div>
+          <div class="telemetry-value">0.0°</div>
+          <div class="telemetry-sub">No angular deflection</div>
+        </div>
+
+        <div class="telemetry-card">
+          <div class="telemetry-label">Curriculum Law</div>
+          <div class="telemetry-value" style="font-size: 14px; color: var(--primary);">Snell &amp; Fermat</div>
+          <div class="telemetry-sub">NCERT Class 10 Activity 10.10</div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- RIGHT: Control Sidebar -->
+    <aside class="control-sidebar">
+
+      <div class="panel-card">
+        <div class="panel-title">
+          <span>Optical Parameters</span>
+        </div>
+
+        <div class="control-group">
+          <div class="control-label">
+            <span>Angle of Incidence (∠i)</span>
+            <span id="valAngle" class="control-val">45.0°</span>
+          </div>
+          <input type="range" id="sliderAngle" min="0" max="80" step="0.5" value="45">
+        </div>
+
+        <div class="control-group">
+          <div class="control-label">
+            <span>Slab Thickness (t)</span>
+            <span id="valThickness" class="control-val">60 mm</span>
+          </div>
+          <input type="range" id="sliderThickness" min="30" max="100" step="1" value="60">
+        </div>
+
+        <div class="control-group">
+          <div class="control-label">
+            <span>Slab Material (Medium)</span>
+          </div>
+          <select id="selectMedium">
+            <option value="1.52" selected>Crown Glass (n = 1.52)</option>
+            <option value="1.66">Flint Glass (n = 1.66)</option>
+            <option value="1.33">Water Container (n = 1.33)</option>
+            <option value="1.46">Fused Quartz (n = 1.46)</option>
+            <option value="2.42">Diamond Slab (n = 2.42)</option>
+          </select>
+        </div>
+
+        <div class="control-group">
+          <div class="control-label">
+            <span>Apparatus Mode</span>
+          </div>
+          <select id="selectMode">
+            <option value="laser" selected>Red Laser Emitter (650 nm)</option>
+            <option value="pins">Classical 4-Pin Method (P₁-P₄)</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="panel-card">
+        <div class="panel-title">
+          <span>Visual Overlays</span>
+        </div>
+
+        <div class="toggle-row">
+          <span class="toggle-label">Show Undeviated Ray Path</span>
+          <label class="switch">
+            <input type="checkbox" id="chkUndeviated" checked>
+            <span class="slider-switch"></span>
+          </label>
+        </div>
+
+        <div class="toggle-row">
+          <span class="toggle-label">Show Surface Normals (N₁, N₂)</span>
+          <label class="switch">
+            <input type="checkbox" id="chkNormals" checked>
+            <span class="slider-switch"></span>
+          </label>
+        </div>
+
+        <div class="toggle-row">
+          <span class="toggle-label">Show Protractor Scale</span>
+          <label class="switch">
+            <input type="checkbox" id="chkProtractor">
+            <span class="slider-switch"></span>
+          </label>
+        </div>
+      </div>
+
+      <div class="panel-card">
+        <div class="panel-title">
+          <span>Key Equations</span>
+        </div>
+        <div class="formula-card">
+          <strong>Snell's Law:</strong><br>
+          <code>n₁ · sin(i) = n₂ · sin(r)</code><br><br>
+          <strong>Lateral Displacement:</strong><br>
+          <code>d = t · sin(i - r) / cos(r)</code><br><br>
+          <strong>Condition for Parallelism:</strong><br>
+          <code>∠i = ∠e</code> (Net angular deviation = 0°)
+        </div>
+      </div>
+
+    </aside>
+
+  </main>
+
+  <!-- THEORY MODAL -->
+  <div id="modalTheory" class="modal-backdrop">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h2 class="modal-title">Refraction Through Glass Slab &mdash; NCERT Theory</h2>
+        <button id="btnCloseTheory" class="btn-close">&times;</button>
+      </div>
+      <div style="font-size: 14px; line-height: 1.7; color: var(--text-main);">
+        <p><strong>1. First Refraction (Air &rarr; Glass):</strong><br>
+        When a light ray enters from an optically rarer medium (air, <em>n</em><sub>1</sub> &approx; 1.0) into a denser medium (glass, <em>n</em><sub>2</sub> &gt; 1.0), it slows down and bends <strong>towards the normal</strong> (<em>r</em> &lt; <em>i</em>) obeying Snell's Law:</p>
+
+        <div class="formula-box">
+          <strong>Snell's Law:</strong><br>
+          <em>n</em><sub>1</sub> &middot; sin(<em>i</em>) = <em>n</em><sub>2</sub> &middot; sin(<em>r</em>)
+        </div>
+        <br>
+        <p><strong>2. Second Refraction (Glass &rarr; Air):</strong><br>
+        At the lower boundary, light exits the glass back into air. It speeds up and bends <strong>away from the normal</strong> (<em>e</em> &gt; <em>r</em>). Because opposite slab faces are strictly parallel, the angle of incidence on the lower surface equals the angle of refraction at the upper surface (<em>r</em><sub>1</sub> = <em>r</em><sub>2</sub> = <em>r</em>), which proves that the emergent ray is parallel to the incident ray:</p>
+
+        <div class="formula-box">
+          <strong>Emergence Angle:</strong><br>
+          <em>e</em> = <em>i</em> &nbsp;&nbsp;(Emergent ray &parallel; Incident ray)
+        </div>
+        <br>
+        <p><strong>3. Lateral Displacement (<em>d</em>):</strong><br>
+        The perpendicular separation between the original path of the incident ray and the emergent ray is called <strong>Lateral Displacement</strong> (<em>d</em>):</p>
+
+        <div class="formula-box">
+          <strong>Lateral Shift Equation:</strong><br>
+          <em>d</em> = [ <em>t</em> &middot; sin(<em>i</em> &minus; <em>r</em>) ] / cos(<em>r</em>)
+        </div>
+
+        <p style="margin-top: 8px;">Lateral displacement increases with:</p>
+        <ul style="margin-left: 20px; margin-top: 6px;">
+          <li>Thickness of the glass slab (<em>t</em>)</li>
+          <li>Refractive index of the medium (<em>n</em>)</li>
+          <li>Angle of incidence (<em>i</em>)</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/app.js"></script>
+</body>
+</html>
+

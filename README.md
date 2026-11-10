@@ -1,6 +1,6 @@
-# Interactive Physics Simulations Suite
+# Interactive STEM Simulations & Virtual Labs Suite
 
-A collection of interactive, client-side STEM physics simulations built with HTML5 Canvas, modern Vanilla CSS, and JavaScript.
+A collection of 43 interactive, client-side STEM virtual laboratories and simulations across Physics, Chemistry, and Biology built with HTML5 Canvas, modern Vanilla CSS, and JavaScript.
 
 ---
 
@@ -182,6 +182,103 @@ A collection of interactive, client-side STEM physics simulations built with HTM
 - **Loop Fail Dynamics & Ballistic Projectile Flight**: Automatic detachment and transition into 2D projectile motion ($a_x = 0, a_y = -g$) with rotational tumbling and impact FX when $N \le 0$.
 - **Circular vs. Clothoid (Teardrop) Loops**: Comparative analysis of spine-compressing circular G-forces against smooth modern Euler spiral clothoids.
 
+### 28. 🔲 [Refraction Through a Glass Slab & Lateral Displacement (`/glass_slab_simulation`)](glass_slab_simulation/)
+- **Rigorous Snell's Law & Lateral Displacement Engine**: Calculates $r = \arcsin(\sin(i)/n)$ and lateral shift $d = \frac{t \sin(i - r)}{\cos(r)}$.
+- **Interactive Laser & Pin Method**: Drag incident laser source or switch to classical 4-pin practical alignment ($P_1, P_2, P_3, P_4$).
+- **Visual Overlays**: Normal lines ($N_1, N_2$), angle arcs, undeviated ray extension, and protractor angle guide.
+- **Material Presets**: Crown Glass ($1.52$), Flint Glass ($1.66$), Water ($1.33$), Fused Quartz ($1.46$), and Diamond ($2.42$).
+
+### 29. 🧲 [Magnetic Field Lines & Draggable Compass (`/magnetic_field_simulation`)](magnetic_field_simulation/)
+- **Accurate Dipole Magnetostatics Engine**: Resolves field vector components $B_x, B_y$ and total intensity $|B|$ for bar magnets.
+- **Draggable Pocket Compass with Inertia**: Needle displays realistic damped harmonic oscillations aligning with the local field vector.
+- **Multiple Visualizations**: Continuous field lines, sprinkled iron filings, and vector arrow grids.
+- **Earth's Field & Neutral Points**: Toggle horizontal Earth magnetic field ($B_H$) to demonstrate neutral points ($B_{\text{net}} = 0$).
+
+### 30. 🧪 [Liquid Density Tower & Buoyancy Layers (`/density_tower_simulation`)](density_tower_simulation/)
+- **5-Layer Stratified Fluid Column**: Real-time modeling of Honey ($1.42\text{ g/cm}^3$), Dish Soap ($1.06\text{ g/cm}^3$), Water ($1.00\text{ g/cm}^3$), Vegetable Oil ($0.92\text{ g/cm}^3$), and Rubbing Alcohol ($0.79\text{ g/cm}^3$).
+- **Interactive Drag-and-Drop Objects**: Drag steel bolts, cherry tomatoes, lego bricks, ice cubes, candle wax, cork stoppers, or custom synthesize an object.
+- **Damped Harmonic Settling**: Stokes drag and Archimedean buoyancy accurately simulate equilibrium floatation at liquid interfaces.
+- **Thermal Expansion Variations**: Adjust temperature to demonstrate temperature-dependent fluid density changes.
+
+### 31. 🛷 [Inclined Plane, Friction & Angle of Repose (`/inclined_plane_simulation`)](inclined_plane_simulation/)
+- **Newtonian Kinematics & Friction Engine**: Computes exact normal force $N = mg \cos\theta$, static friction $f_s \le \mu_s N$, kinetic friction $f_k = \mu_k N$, and sliding acceleration $a = g(\sin\theta - \mu_k \cos\theta)$.
+- **Angle of Repose Detection**: $\theta_c = \arctan(\mu_s)$ with immediate automatic transition from static to kinetic regime.
+- **Dynamic Free Body Diagram (FBD)**: Live visual force vector overlays on the block for $\vec{N}$, $\vec{W} = mg$, and $\vec{f}$.
+- **Dual Optical Photogates**: Measures transit time $\Delta t$ and terminal velocity $v$.
+
+### 32. 🌡️ [Exothermic vs. Endothermic Reaction Calorimeter (`/calorimetry_heat_simulation`)](calorimetry_heat_simulation/)
+- **Thermodynamic Enthalpy Engine**: Calculates heat transferred $q = mc\Delta T$ and molar enthalpy $\Delta H = -q/n$.
+- **4 Classical Reactions**: Quicklime hydration ($\text{CaO} + \text{H}_2\text{O}$), Acid-Base Neutralization ($\text{HCl} + \text{NaOH}$), Ammonium Chloride Dissolution ($\text{NH}_4\text{Cl}$), and Citric Acid + Baking Soda.
+- **Live Strip Chart**: Temperature vs. Time $T(t)$ curve with horizontal ambient reference line.
+- **Physical Apparatus**: Insulated vacuum jacket, digital thermometer immersion probe, rotating magnetic stir bar.
+
+### 33. 🌱 [Respiration in Germinating Seeds & CO₂ Absorption (`/seed_respiration_simulation`)](seed_respiration_simulation/)
+- **Accurate NCERT Practical Setup**: Conical flask with germinating gram/pea seeds, suspended $\text{KOH}$ tube, rubber stopper, delivery tube, and colored water beaker.
+- **Biochemical Respiration Engine**: Models aerobic respiration $\text{C}_6\text{H}_{12}\text{O}_6 + 6\text{O}_2 \to 6\text{CO}_2 + 6\text{H}_2\text{O}$ and $\text{KOH}$ fixation.
+- **Partial Vacuum & Water Rise**: Measures $\Delta h(t)$ water column height creep in real time.
+- **Enzyme Kinetics & Controls**: Test living germinating seeds, boiled seeds (control with antiseptic), and dormant dry seeds across temperatures ($5^\circ\text{C}–45^\circ\text{C}$).
+
+### 34. 🎯 [Buffon's Needle & Monte Carlo Pi Generator (`/buffon_needle_simulation`)](buffon_needle_simulation/)
+- **Stochastic Monte Carlo Engine**: Estimates $\pi \approx \frac{2L \cdot N}{D \cdot C}$ with live convergence tracking.
+- **Continuous & Batch Dropping**: Drop +1, +10, +100, +1,000, or stream needles continuously.
+- **Interactive Geometric Controls**: Vary needle length ($L$) and plank line spacing ($D$) while enforcing $L \le D$.
+- **Live Convergence Chart & CSV Export**: Real-time plot comparing estimated $\pi(N)$ against theoretical $\pi = 3.14159\dots$ with one-click data export.
+
+### 35. ⚡ [Faraday's & Lenz's Law of Electromagnetic Induction (`/electromagnetic_induction_simulation`)](electromagnetic_induction_simulation/)
+- **Faraday's Law of Induction**: Real-time analytical rate of change of magnetic flux $\mathcal{E} = -N \frac{d\Phi_B}{dt}$ generating induced electromotive force and microampere currents.
+- **Lenz's Law Polarity & Counter-Forces**: Dynamic facing coil polarity badges ('N' or 'S') and retarding vector arrows ($\vec{F}_{\text{Lenz}}$) demonstrating the opposition to incoming and receding magnets.
+- **Physical Apparatus Suite**: Cylindrical copper solenoid coil (100–1000 turns), toggleable Soft Iron Core ($\mu_r \approx 45\times$ amplification), 3D AlNiCo bar magnet with field streamlines, and flexible catenary connecting leads.
+- **Dual Load Output & Live Oscilloscope**: Center-zero analog galvanometer ($\pm 50\ \mu\text{A}$) with damped needle oscillation vs. Incandescent Bulb & Bipolar Dual LEDs, coupled with a real-time dual-trace oscilloscope comparing $\Phi_B(t)$ and $\mathcal{E}(t)$.
+- **3 Motion Kinematics**: Freehand manual dragging, Harmonic AC Shaker ($0.5\text{–}3.0\text{ Hz}$), and Gravity Free-Fall Drop Through showing the classic dual-peak asymmetric induction waveform.
+
+### 36. 📏 [Vernier Caliper & Micrometer Screw Gauge (`/vernier_caliper_simulation`)](vernier_caliper_simulation/)
+- **Dual Precision Metrology Instruments**: Vernier Caliper ($1\text{ MSD} = 1.0\text{ mm}$, $10\text{ VSD} = 9\text{ MSD}$, Least Count $= 0.1\text{ mm}$) and Micrometer Screw Gauge (Pitch $= 1.0\text{ mm}$, 100 circular divisions, Least Count $= 0.01\text{ mm}$).
+- **High-DPI Interactive Canvas & 3.5× Loupe**: Draggable sliding jaws/thimble with smooth sub-pixel tracking and a floating magnifying loupe highlighting scale coincidences.
+- **Zero Error & Analytical Correction**: Full support for positive and negative zero error calibration ($\text{Corrected} = \text{Observed} - \text{Zero Error}$).
+- **Specimen Library & Audio Clicks**: Measure steel ball bearing, brass cylinder, glass plate, copper wire, and coin with procedural ratchet and jaw-clamping sounds.
+
+### 37. 🪞 [Spherical Mirrors & Ray Optics (`/mirror_simulation`)](mirror_simulation/)
+- **Concave & Convex Spherical Mirrors**: Real-time focal curvature toggle ($f < 0$ vs. $f > 0$) with realistic silvered reflective backing and front mirror rim.
+- **Cartesian Sign Convention & Optics Engine**: Rigorous sign conventions resolving object distance ($u$), image distance ($v$), focal length ($f$), and linear magnification ($m = -v/u = h_i/h_o$).
+- **Three Principal Ray Trajectories**: Real-time ray tracing through focus $F$, parallel to principal axis, and through center of curvature $C$.
+- **Draggable Flame & Screen Image**: Interactive upright candle with draggable height and position, displaying inverted real images on projection screens or erect virtual images behind the mirror.
+
+### 38. 🧪 [pH Scale, Dilution & Universal Indicator (`/ph_scale_simulation`)](ph_scale_simulation/)
+- **Thermodynamic Auto-Ionization & Sörensen Scale**: Full $K_w = [H_3O^+][OH^-] = 1.0 \times 10^{-14}$ equilibrium engine across $0.0\text{ to }14.0\text{ pH}$.
+- **13 Prototypical Everyday & Lab Solutions**: Battery acid, gastric juice, lemon juice, vinegar, coffee, pure water, blood, baking soda, milk of magnesia, ammonia, bleach, and $1.0\text{ M } \text{NaOH}$.
+- **Interactive Dilution Faucet & Drain Valve**: Real-time concentration dilution asymptotic towards neutral $\text{pH } 7.0$ when adding water, with dynamic ion population rendering ($H_3O^+$ vs. $OH^-$).
+- **Universal Indicator & Digital pH Wand**: Continuous spectrum color engine (red $\to$ green $\to$ purple) and draggable digital electrode wand with synthesized fluid sounds.
+
+### 39. ⚖️ [Density, Mass & Buoyancy (`/buoyancy_simulation`)](buoyancy_simulation/)
+- **Archimedes' Flotation & Buoyant Force**: Real-time equilibrium solver balancing downward gravity ($F_g = mg$) against upward buoyant force ($F_b = \rho_f V_{\text{sub}} g$).
+- **8 Distinct Materials & 5 Fluids**: Test Styrofoam, Ice (92% submerged iceberg phenomenon), Wood, Aluminum, Steel, Copper, and Gold across Water, Dense Seawater, Olive Oil, Glycerin, and Liquid Mercury.
+- **Overflow Catch Cylinder**: Dynamic fluid overflow confirming $V_{\text{displaced}} = V_{\text{submerged}}$ and displaced liquid weight.
+- **Damped Harmonic Bobbing**: 60 FPS Stokes fluid drag and buoyant bobbing dynamics with live vector force overlays.
+
+### 40. 🧬 [Mendelian Genetics Cross & Punnett Square (`/mendelian_genetics_simulation`)](mendelian_genetics_simulation/)
+- **Monohybrid & Dihybrid Crosses**: Explore Mendel's Law of Segregation ($3:1$ phenotype, $1:2:1$ genotype) and Law of Independent Assortment ($9:3:3:1$ dihybrid matrix).
+- **Monte Carlo Random Offspring Sampling**: Generate batches of 10, 50, 200, or 1000 offspring in real time, demonstrating convergence to theoretical ratios via the Law of Large Numbers.
+- **Botanical Illustrations & Gamete Meiosis**: Authentic pea vine (*Pisum sativum*) phenotypes, round/wrinkled green/yellow seeds, and animated gamete segregation.
+- **Statistical Chi-Square ($\chi^2$) Analysis**: Live goodness-of-fit testing and procedural audio for gamete coin flips and fertilization events.
+
+### 41. 🔊 [Resonance Air Column & Speed of Sound (`/resonance_tube_simulation`)](resonance_tube_simulation/)
+- **Closed Organ Pipe Acoustic Resonance**: Models quarter-wave standing acoustic waves ($L_1 = \lambda/4 - e$, $L_2 = 3\lambda/4 - e$) with Rayleigh end-correction ($e \approx 0.6r$).
+- **Movable Water Reservoir**: Smooth dynamic water column level control via draggable reservoir flask with realistic meniscus physics.
+- **Procedural Web Audio Tuning Forks**: Synthesized pure acoustic tones ($256\text{ Hz}$, $384\text{ Hz}$, $440\text{ Hz}$, $512\text{ Hz}$) with strike hammer transients, exponential decay, and resonant cavity amplification.
+- **Thermodynamic Speed of Sound**: Temperature regulation ($0^\circ\text{C}\text{ to }40^\circ\text{C}$) calculating $v(T) = 331.3\sqrt{1 + T/273.15}\text{ m/s}$ with displacement wave node/antinode overlays.
+
+### 42. 🌿 [Stomatal Transpiration & Guard Cell Turgidity (`/stomata_simulation`)](stomata_simulation/)
+- **Guard Cell Osmoregulation & Turgor Pressure**: Cellular mechanism driven by $H^+$-ATPase proton pumping, $K^+$ ion influx/efflux, and asymmetric elastic cell wall expansion opening apertures up to $12\ \mu\text{m}$.
+- **Dual Visual Perspectives**: High-power cellular view with chloroplasts, nucleus, and ion channels vs. 100× epidermal peel microscope view with Stomatal Index calculation.
+- **Environmental Factors & ABA Hormone**: Modulate light intensity, relative humidity, leaf temperature, and Abscisic Acid (ABA) drought stress response.
+- **Transpiration Plumes & Procedural Audio**: Ascending water vapor transpiration plumes, $\text{CO}_2$ influx arrows, and dynamic day/night ambient chimes.
+
+### 43. ⚡ [Ohm's Law & V-I Characteristic Virtual Laboratory (`/ohms_law_simulation`)](ohms_law_simulation/)
+- **Ohm's Law & Drude Electron Drift**: Resolves $V = IR$ alongside microscopic Drude electron gas drift velocity ($v_d = I / (nAe)$) and electric field acceleration $\mathbf{E} = V/L$.
+- **Complete Bench Circuit Apparatus**: Variable DC power supply, knife switch with electric contact arc, calibrated series ammeter, and parallel voltmeter.
+- **Joule Heating & Thermal Resistance Drift**: Resistor thermal glow and non-linear resistance drift $R(T) = R_0[1 + \alpha(T - T_0)]$ at elevated currents.
+- **Live V-I Characteristic Plot**: Real-time Cartesian coordinate plotting with operating point radar and 25-point experimental data logger.
+
 ---
 
 ## 💻 Tech Stack
@@ -194,6 +291,70 @@ A collection of interactive, client-side STEM physics simulations built with HTM
 You can run any simulation using any static web server:
 
 ```bash
+# Refraction Through a Glass Slab & Lateral Displacement
+cd glass_slab_simulation
+node server.js   # http://localhost:8115
+
+# Magnetic Field Lines & Draggable Compass
+cd magnetic_field_simulation
+node server.js   # http://localhost:8116
+
+# Liquid Density Tower & Buoyancy Layers
+cd density_tower_simulation
+node server.js   # http://localhost:8117
+
+# Inclined Plane, Friction & Angle of Repose
+cd inclined_plane_simulation
+node server.js   # http://localhost:8118
+
+# Exothermic vs. Endothermic Reaction Calorimeter
+cd calorimetry_heat_simulation
+node server.js   # http://localhost:8119
+
+# Respiration in Germinating Seeds & CO₂ Absorption
+cd seed_respiration_simulation
+node server.js   # http://localhost:8120
+
+# Buffon's Needle & Monte Carlo Pi Generator
+cd buffon_needle_simulation
+node server.js   # http://localhost:8121
+
+# Faraday's & Lenz's Law of Electromagnetic Induction
+cd electromagnetic_induction_simulation
+node server.js   # http://localhost:8122
+
+# Vernier Caliper & Micrometer Screw Gauge Virtual Laboratory
+cd vernier_caliper_simulation
+node server.js   # http://localhost:8108
+
+# Spherical Mirrors & Ray Optics Virtual Laboratory
+cd mirror_simulation
+node server.js   # http://localhost:8109
+
+# pH Scale, Dilution & Universal Indicator Virtual Lab
+cd ph_scale_simulation
+node server.js   # http://localhost:8110
+
+# Density, Mass & Buoyancy (Float or Sink) Virtual Lab
+cd buoyancy_simulation
+node server.js   # http://localhost:8111
+
+# Mendelian Genetics Cross & Punnett Square Virtual Lab
+cd mendelian_genetics_simulation
+node server.js   # http://localhost:8112
+
+# Resonance Air Column & Speed of Sound Virtual Lab
+cd resonance_tube_simulation
+node server.js   # http://localhost:8113
+
+# Stomatal Transpiration & Guard Cell Turgidity Virtual Lab
+cd stomata_simulation
+node server.js   # http://localhost:8107
+
+# Ohm's Law & V-I Characteristic Virtual Laboratory
+cd ohms_law_simulation
+python -m http.server 8114
+
 # Roller Coaster Kinematics & Loop Fail Dynamics
 cd roller_coaster_simulation
 python -m http.server 3000

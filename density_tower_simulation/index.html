@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Liquid Density Tower &amp; Buoyancy Virtual Lab | NCERT Class 8 &amp; 9 Science</title>
+  <meta name="description" content="Interactive STEM simulation exploring liquid density stratification, immiscible fluid layers, Archimedes buoyancy, and object equilibrium floatation.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+  <!-- APP HEADER -->
+  <header class="app-header">
+    <div class="header-container">
+      <div class="brand-wrapper">
+        <div class="brand-icon">🧪</div>
+        <div>
+          <div style="display: flex; align-items: center;">
+            <h1 class="brand-title">DensityTowerLab</h1>
+            <span class="brand-tag">NCERT Class 8 &amp; 9</span>
+          </div>
+          <div class="brand-sub">Liquid Density Stratification &amp; Buoyant Floatation Virtual Laboratory</div>
+        </div>
+      </div>
+
+      <div class="header-actions">
+        <button id="btnOpenTheory" class="action-btn btn-primary" title="View density and buoyancy principles">
+          <span>📚</span> Theory &amp; Principles
+        </button>
+        <button id="btnAudioToggle" class="action-btn" title="Toggle audio feedback">
+          🔊 Sound: ON
+        </button>
+        <button id="btnResetAll" class="action-btn" title="Reset all simulation values">
+          <span>↺</span> Reset All
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN WORKSPACE -->
+  <main class="main-layout">
+
+    <!-- LEFT: Canvas Viewport & Telemetry -->
+    <div class="canvas-section">
+
+      <div class="canvas-viewport-card">
+        <div class="canvas-header-bar">
+          <span>Laboratory Bench &mdash; Drag sample objects from the right tray into the graduated cylinder</span>
+        </div>
+        <div class="canvas-container">
+          <canvas id="simCanvas"></canvas>
+          <div class="canvas-overlay-hint">
+            <div class="hud-pill">💡 Tip: Drop objects into the cylinder to see which liquid interface they float on</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Telemetry Grid -->
+      <div class="telemetry-grid">
+        <div class="telemetry-card">
+          <div class="telemetry-label">Active Specimen</div>
+          <div id="readoutObjName" class="telemetry-value">Steel Bolt</div>
+          <div class="telemetry-sub">Selected test object</div>
+        </div>
+
+        <div class="telemetry-card">
+          <div class="telemetry-label">Object Density (ρ)</div>
+          <div id="readoutObjDensity" class="telemetry-value">7.85 g/cm³</div>
+          <div class="telemetry-sub">ρ = mass / volume</div>
+        </div>
+
+        <div class="telemetry-card">
+          <div class="telemetry-label">Current Layer</div>
+          <div id="readoutLayerName" class="telemetry-value">Honey (1.42)</div>
+          <div class="telemetry-sub">Ambient liquid density</div>
+        </div>
+
+        <div class="telemetry-card">
+          <div class="telemetry-label">Equilibrium Status</div>
+          <div id="readoutStatus" class="telemetry-value">Sunk to Bottom</div>
+          <div class="telemetry-sub">F_buoyant vs Gravity</div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- RIGHT: Control Sidebar -->
+    <aside class="control-sidebar">
+
+      <div class="panel-card">
+        <div class="panel-title">
+          <span>Environment Controls</span>
+        </div>
+
+        <div class="control-group">
+          <div class="control-label">
+            <span>Fluid Temperature (T)</span>
+            <span id="valTemp" class="control-val">25°C</span>
+          </div>
+          <input type="range" id="sliderTemp" min="0" max="60" step="1" value="25">
+        </div>
+
+        <button id="btnResetObjects" class="btn-secondary" style="margin-top: 8px;">
+          🧺 Retrieve All to Tray
+        </button>
+      </div>
+
+      <div class="panel-card">
+        <div class="panel-title">
+          <span>Custom Object Synthesizer</span>
+        </div>
+
+        <div class="control-group">
+          <div class="control-label">
+            <span>Mass (m)</span>
+            <span id="valCustomMass" class="control-val">15.0 g</span>
+          </div>
+          <input type="range" id="sliderCustomMass" min="2" max="40" step="0.5" value="15">
+        </div>
+
+        <div class="control-group">
+          <div class="control-label">
+            <span>Volume (V)</span>
+            <span id="valCustomVol" class="control-val">15.3 cm³</span>
+          </div>
+          <input type="range" id="sliderCustomVol" min="5" max="30" step="0.5" value="15.3">
+        </div>
+
+        <div class="control-group" style="margin-top: 6px;">
+          <div class="control-label">
+            <span>Calculated Density</span>
+            <span id="valCustomDensity" class="control-val">0.98 g/cm³</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel-card">
+        <div class="panel-title">
+          <span>Density Column Table</span>
+        </div>
+        <div class="formula-card">
+          <strong>Immiscible Fluid Layers (Top to Bottom):</strong><br>
+          1. Rubbing Alcohol: <code>0.79 g/cm³</code><br>
+          2. Vegetable Oil: <code>0.92 g/cm³</code><br>
+          3. Water (Colored): <code>1.00 g/cm³</code><br>
+          4. Dish Soap: <code>1.06 g/cm³</code><br>
+          5. Pure Honey: <code>1.42 g/cm³</code><br><br>
+          <strong>Archimedes Floatation Law:</strong><br>
+          An object sinks through all fluids less dense than itself and floats at the interface where:
+          <code>ρ_lower &gt; ρ_object &gt; ρ_upper</code>
+        </div>
+      </div>
+
+    </aside>
+
+  </main>
+
+  <!-- THEORY MODAL -->
+  <div id="modalTheory" class="modal-backdrop">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h2 class="modal-title">Density &amp; Floatation &mdash; NCERT Theory</h2>
+        <button id="btnCloseTheory" class="btn-close">&times;</button>
+      </div>
+      <div style="font-size: 14px; line-height: 1.7; color: var(--text-main);">
+        <p><strong>1. Density Definition:</strong><br>
+        Density (<em>&rho;</em>) is defined as mass per unit volume of a substance. Liquids with lower densities float atop liquids with higher densities, provided they are immiscible:</p>
+
+        <div class="formula-box">
+          <strong>Density Formula:</strong><br>
+          <em>&rho;</em> = <em>m</em> / <em>V</em> &nbsp;&nbsp;(SI unit: kg/m&sup3; or g/cm&sup3;)
+        </div>
+        <br>
+        <p><strong>2. Immiscibility &amp; Density Stratification:</strong><br>
+        Vegetable oil is non-polar and hydrophobic, preventing it from mixing with polar water or dense honey. The five distinct liquid layers stably stratify in ascending order of density from top to bottom:
+        <em>Rubbing Alcohol (0.79) &lt; Oil (0.92) &lt; Water (1.00) &lt; Dish Soap (1.06) &lt; Honey (1.42 g/cm&sup3;)</em>.
+        </p>
+        <br>
+        <p><strong>3. Buoyancy &amp; Equilibrium Floatation:</strong><br>
+        When a solid specimen is dropped into the tower, gravity exerts downward weight while displaced liquid exerts upward buoyant force:</p>
+
+        <div class="formula-box">
+          <strong>Downward Weight:</strong> <em>W</em> = <em>&rho;</em><sub>obj</sub> &middot; <em>V</em> &middot; <em>g</em><br>
+          <strong>Upward Buoyant Force:</strong> <em>F</em><sub>B</sub> = <em>&rho;</em><sub>liquid</sub> &middot; <em>V</em><sub>submerged</sub> &middot; <em>g</em><br>
+          <strong>Equilibrium Floatation:</strong> <em>W</em> = <em>F</em><sub>B</sub> &nbsp;&rArr;&nbsp; Specimen rests at boundary where <em>&rho;</em><sub>liquid, top</sub> &lt; <em>&rho;</em><sub>obj</sub> &le; <em>&rho;</em><sub>liquid, bottom</sub>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/app.js"></script>
+</body>
+</html>
+

@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Magnetic Field Lines &amp; Compass Virtual Laboratory | NCERT Class 10 &amp; 12</title>
+  <meta name="description" content="Interactive STEM simulation exploring magnetic field lines of a bar magnet, draggable magnetic compass needle, iron filings patterns, and neutral points.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+  <!-- APP HEADER -->
+  <header class="app-header">
+    <div class="header-container">
+      <div class="brand-wrapper">
+        <div class="brand-icon">🧲</div>
+        <div>
+          <div style="display: flex; align-items: center;">
+            <h1 class="brand-title">MagneticFieldLab</h1>
+            <span class="brand-tag">NCERT Class 10 &amp; 12</span>
+          </div>
+          <div class="brand-sub">Bar Magnet Field Lines, Draggable Compass &amp; Neutral Points Virtual Laboratory</div>
+        </div>
+      </div>
+
+      <div class="header-actions">
+        <button id="btnOpenTheory" class="action-btn btn-primary" title="View magnetism principles &amp; formulas">
+          <span>📚</span> Theory &amp; Formulas
+        </button>
+        <button id="btnAudioToggle" class="action-btn" title="Toggle audio feedback">
+          🔊 Sound: ON
+        </button>
+        <button id="btnResetAll" class="action-btn" title="Reset all simulation values">
+          <span>↺</span> Reset All
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN WORKSPACE -->
+  <main class="main-layout">
+
+    <!-- LEFT: Canvas Viewport & Telemetry -->
+    <div class="canvas-section">
+
+      <div class="canvas-viewport-card">
+        <div class="canvas-header-bar">
+          <span>Magnetic Stage &mdash; Drag the circular pocket compass anywhere around the magnet</span>
+        </div>
+        <div class="canvas-container">
+          <canvas id="simCanvas"></canvas>
+          <div class="canvas-overlay-hint">
+            <div class="hud-pill">💡 Tip: Drag the compass around the bar magnet to trace magnetic field lines</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Telemetry Grid -->
+      <div class="telemetry-grid">
+        <div class="telemetry-card">
+          <div class="telemetry-label">Magnetic Field (|B|)</div>
+          <div id="readoutBTotal" class="telemetry-value">42.5 µT</div>
+          <div class="telemetry-sub">At compass center</div>
+        </div>
+
+        <div class="telemetry-card">
+          <div class="telemetry-label">Field Direction (θ)</div>
+          <div id="readoutAngle" class="telemetry-value">90°</div>
+          <div class="telemetry-sub">Needle alignment</div>
+        </div>
+
+        <div class="telemetry-card">
+          <div class="telemetry-label">Bx (Horizontal)</div>
+          <div id="readoutBx" class="telemetry-value">0.0 µT</div>
+          <div class="telemetry-sub">Axial vector component</div>
+        </div>
+
+        <div class="telemetry-card">
+          <div class="telemetry-label">By (Vertical)</div>
+          <div id="readoutBy" class="telemetry-value">42.5 µT</div>
+          <div class="telemetry-sub">Equatorial component</div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- RIGHT: Control Sidebar -->
+    <aside class="control-sidebar">
+
+      <div class="panel-card">
+        <div class="panel-title">
+          <span>Magnet Parameters</span>
+        </div>
+
+        <div class="control-group">
+          <div class="control-label">
+            <span>Pole Strength (M)</span>
+            <span id="valStrength" class="control-val">1.0×</span>
+          </div>
+          <input type="range" id="sliderStrength" min="0.2" max="2.5" step="0.1" value="1.0">
+        </div>
+
+        <div class="btn-group">
+          <button id="btnFlip" class="btn-secondary" title="Invert magnetic polarity">
+            🔄 Flip Poles (N ↔ S)
+          </button>
+          <button id="btnCenterCompass" class="btn-secondary" title="Reset compass to center">
+            🧭 Reset Compass
+          </button>
+        </div>
+      </div>
+
+      <div class="panel-card">
+        <div class="panel-title">
+          <span>Field Visualizations</span>
+        </div>
+
+        <div class="control-group">
+          <div class="control-label">
+            <span>Visual Mode</span>
+          </div>
+          <select id="selectView">
+            <option value="lines" selected>Continuous Field Lines</option>
+            <option value="filings">Sprinkled Iron Filings</option>
+            <option value="vectors">Vector Arrow Grid</option>
+            <option value="none">Clean Stage (Compass Only)</option>
+          </select>
+        </div>
+
+        <div class="toggle-row">
+          <span class="toggle-label">Include Earth's Field (BH)</span>
+          <label class="switch">
+            <input type="checkbox" id="chkEarth">
+            <span class="slider-switch"></span>
+          </label>
+        </div>
+      </div>
+
+      <div class="panel-card">
+        <div class="panel-title">
+          <span>Magnetic Properties</span>
+        </div>
+        <div class="formula-card">
+          <strong>Field Lines Rule:</strong><br>
+          • Emerge from North pole, enter South pole outside magnet.<br>
+          • Form continuous closed loops.<br>
+          • Never intersect each other.<br><br>
+          <strong>Dipole Field Formula:</strong><br>
+          <code>B_axial = (μ₀ / 4π) · (2M / r³)</code><br>
+          <code>B_equatorial = (μ₀ / 4π) · (M / r³)</code>
+        </div>
+      </div>
+
+    </aside>
+
+  </main>
+
+  <!-- THEORY MODAL -->
+  <div id="modalTheory" class="modal-backdrop">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h2 class="modal-title">Magnetic Field Lines &mdash; NCERT Theory</h2>
+        <button id="btnCloseTheory" class="btn-close">&times;</button>
+      </div>
+      <div style="font-size: 14px; line-height: 1.7; color: var(--text-main);">
+        <p><strong>1. Nature of Magnetic Field Lines:</strong><br>
+        Magnetic field lines are continuous closed loops. By international convention, outside the magnet they emerge from the North (N) pole and enter the South (S) pole, continuing internally from South back to North.</p>
+        <br>
+        <p><strong>2. Dipole Field Strength &amp; Variation:</strong><br>
+        The magnetic induction around a bar magnet of magnetic dipole moment <em>M</em> follows the inverse-cube law at distances <em>r</em> &gg; <em>l</em>:</p>
+
+        <div class="formula-box">
+          <strong>Axial Field (End-on position):</strong><br>
+          <em>B</em><sub>axial</sub> = (&mu;₀ / 4&pi;) &middot; (2<em>M</em> / <em>r</em>&sup3;)<br><br>
+          <strong>Equatorial Field (Broadside-on position):</strong><br>
+          <em>B</em><sub>equatorial</sub> = (&mu;₀ / 4&pi;) &middot; (<em>M</em> / <em>r</em>&sup3;)<br><br>
+          <em>B</em><sub>axial</sub> = 2 &middot; <em>B</em><sub>equatorial</sub>
+        </div>
+        <br>
+        <p><strong>3. Non-Intersection Law:</strong><br>
+        Two magnetic field lines can never cross each other. If they did, a compass placed at the intersection would have to point in two different directions at the same instant, which is physically impossible.</p>
+        <br>
+        <p><strong>4. Neutral Points (<em>B</em><sub>net</sub> = 0):</strong><br>
+        When placed in the Earth's magnetic field (horizontal component <em>B</em><sub>H</sub>), specific locations emerge where the magnet's field is equal in magnitude and opposite in direction to <em>B</em><sub>H</sub>:</p>
+
+        <div class="formula-box">
+          <strong>Neutral Point Condition:</strong><br>
+          <strong>B</strong><sub>magnet</sub> + <strong>B</strong><sub>H</sub> = 0 &nbsp;&rArr;&nbsp; <strong><em>B</em><sub>net</sub> = 0</strong><br>
+          At neutral points, a magnetic compass experiences zero net torque and rests in arbitrary orientations.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/app.js"></script>
+</body>
+</html>
+

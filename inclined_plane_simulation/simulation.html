@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Inclined Plane, Friction &amp; Angle of Repose | NCERT Class 11 Physics</title>
+  <meta name="description" content="Interactive STEM simulation exploring inclined plane dynamics, static and kinetic friction, angle of repose, free body diagram resolution, and photogate timing.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+  <!-- APP HEADER -->
+  <header class="app-header">
+    <div class="header-container">
+      <div class="brand-wrapper">
+        <div class="brand-icon">🛷</div>
+        <div>
+          <div style="display: flex; align-items: center;">
+            <h1 class="brand-title">InclineMechanicsLab</h1>
+            <span class="brand-tag">NCERT Class 11</span>
+          </div>
+          <div class="brand-sub">Inclined Plane, Friction, Angle of Repose &amp; Photogates Virtual Laboratory</div>
+        </div>
+      </div>
+
+      <div class="header-actions">
+        <button id="btnOpenTheory" class="action-btn btn-primary" title="View inclined plane formulas">
+          <span>📚</span> Theory &amp; Formulas
+        </button>
+        <button id="btnAudioToggle" class="action-btn" title="Toggle audio feedback">
+          🔊 Sound: ON
+        </button>
+        <button id="btnResetAll" class="action-btn" title="Reset all simulation values">
+          <span>↺</span> Reset All
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN WORKSPACE -->
+  <main class="main-layout">
+
+    <!-- LEFT: Canvas Viewport & Telemetry -->
+    <div class="canvas-section">
+
+      <div class="canvas-viewport-card">
+        <div class="canvas-header-bar">
+          <span>Mechanics Bench &mdash; Adjust the ramp angle to discover the critical Angle of Repose</span>
+        </div>
+        <div class="canvas-container">
+          <canvas id="simCanvas"></canvas>
+          <div class="canvas-overlay-hint">
+            <div class="hud-pill">💡 Tip: When θ ≥ θ_c, static friction breaks and the block accelerates down</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Telemetry Grid -->
+      <div class="telemetry-grid">
+        <div class="telemetry-card">
+          <div class="telemetry-label">Angle of Repose (θ_c)</div>
+          <div id="readoutThetaC" class="telemetry-value">22.8°</div>
+          <div class="telemetry-sub">θ_c = arctan(μ_s)</div>
+        </div>
+
+        <div class="telemetry-card">
+          <div class="telemetry-label">Normal Force (N)</div>
+          <div id="readoutN" class="telemetry-value">9.2 N</div>
+          <div class="telemetry-sub">N = mg · cos(θ)</div>
+        </div>
+
+        <div class="telemetry-card">
+          <div class="telemetry-label">Friction Force (f)</div>
+          <div id="readoutFriction" class="telemetry-value">3.4 N</div>
+          <div class="telemetry-sub">Static vs Kinetic (f_k)</div>
+        </div>
+
+        <div class="telemetry-card">
+          <div class="telemetry-label">Acceleration (a)</div>
+          <div id="readoutAcc" class="telemetry-value">0.00 m/s²</div>
+          <div class="telemetry-sub">a = g(sin θ - μ_k cos θ)</div>
+        </div>
+      </div>
+
+      <!-- Secondary Telemetry Grid -->
+      <div class="telemetry-grid">
+        <div class="telemetry-card">
+          <div class="telemetry-label">Gate 1 → 2 Time (Δt)</div>
+          <div id="readoutTime" class="telemetry-value">0.000 s</div>
+          <div class="telemetry-sub">Photogate transit timer</div>
+        </div>
+
+        <div class="telemetry-card">
+          <div class="telemetry-label">Instantaneous Velocity (v)</div>
+          <div id="readoutVel" class="telemetry-value">0.00 m/s</div>
+          <div class="telemetry-sub">v = at</div>
+        </div>
+
+        <div class="telemetry-card">
+          <div class="telemetry-label">Work Done by Friction</div>
+          <div class="telemetry-value">W = -f_k · s</div>
+          <div class="telemetry-sub">Dissipated as thermal heat</div>
+        </div>
+
+        <div class="telemetry-card">
+          <div class="telemetry-label">Curriculum Law</div>
+          <div class="telemetry-value" style="font-size: 14px; color: var(--primary);">Newton &amp; Amontons</div>
+          <div class="telemetry-sub">NCERT Class 11 Chapter 5</div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- RIGHT: Control Sidebar -->
+    <aside class="control-sidebar">
+
+      <div class="panel-card">
+        <div class="panel-title">
+          <span>Incline &amp; Surface Parameters</span>
+        </div>
+
+        <div class="control-group">
+          <div class="control-label">
+            <span>Incline Angle (θ)</span>
+            <span id="valAngle" class="control-val">20.0°</span>
+          </div>
+          <input type="range" id="sliderAngle" min="0" max="65" step="0.5" value="20">
+        </div>
+
+        <div class="control-group">
+          <div class="control-label">
+            <span>Block Mass (m)</span>
+            <span id="valMass" class="control-val">1.0 kg</span>
+          </div>
+          <input type="range" id="sliderMass" min="0.2" max="5.0" step="0.1" value="1.0">
+        </div>
+
+        <div class="control-group">
+          <div class="control-label">
+            <span>Surface Contact Pair</span>
+          </div>
+          <select id="selectMaterial">
+            <option value="wood" selected>Wood on Wood (μ_s = 0.42, μ_k = 0.32)</option>
+            <option value="steel">Steel on Steel (μ_s = 0.58, μ_k = 0.40)</option>
+            <option value="glass">Glass on Glass (μ_s = 0.90, μ_k = 0.40)</option>
+            <option value="rubber">Rubber on Concrete (μ_s = 1.00, μ_k = 0.80)</option>
+            <option value="teflon">Teflon on Teflon (μ_s = 0.05, μ_k = 0.04)</option>
+          </select>
+        </div>
+
+        <div class="btn-group">
+          <button id="btnRelease" class="btn-secondary" title="Tap block to initiate motion">
+            ▶ Tap / Release
+          </button>
+          <button id="btnResetBlock" class="btn-secondary" title="Return block to ramp start">
+            ↺ Reset Block
+          </button>
+        </div>
+      </div>
+
+      <div class="panel-card">
+        <div class="panel-title">
+          <span>Key Equations</span>
+        </div>
+        <div class="formula-card">
+          <strong>Angle of Repose:</strong><br>
+          <code>θ_c = arctan(μ_s)</code><br><br>
+          <strong>Normal Force:</strong><br>
+          <code>N = m · g · cos(θ)</code><br><br>
+          <strong>Static vs Kinetic Friction:</strong><br>
+          <code>f_s ≤ μ_s · N</code> (before motion)<br>
+          <code>f_k = μ_k · N</code> (during motion)<br><br>
+          <strong>Net Downhill Acceleration:</strong><br>
+          <code>a = g · (sin θ - μ_k · cos θ)</code>
+        </div>
+      </div>
+
+    </aside>
+
+  </main>
+
+  <!-- THEORY MODAL -->
+  <div id="modalTheory" class="modal-backdrop">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h2 class="modal-title">Inclined Plane &amp; Friction &mdash; NCERT Theory</h2>
+        <button id="btnCloseTheory" class="btn-close">&times;</button>
+      </div>
+      <div style="font-size: 14px; line-height: 1.7; color: var(--text-main);">
+        <p><strong>1. Resolution of Forces on an Incline:</strong><br>
+        Gravitational force <em>W</em> = <em>mg</em> resolves into two orthogonal components:</p>
+
+        <ul style="margin-left: 20px; margin-top: 6px;">
+          <li>Perpendicular component: <em>W</em><sub>&perp;</sub> = <em>mg</em> &middot; cos(<em>&theta;</em>), balanced by normal reaction <em>N</em>.</li>
+          <li>Parallel component: <em>W</em><sub>&parallel;</sub> = <em>mg</em> &middot; sin(<em>&theta;</em>), pulling the block downhill.</li>
+        </ul>
+        <br>
+        <p><strong>2. Angle of Repose (<em>&theta;</em><sub>c</sub>):</strong><br>
+        The minimum angle of inclination with the horizontal at which a resting body just begins to slide under gravity is the <strong>Angle of Repose</strong>. At this impending motion threshold, static friction reaches its maximum:</p>
+
+        <div class="formula-box">
+          <strong>Threshold of Motion:</strong><br>
+          <em>mg</em> &middot; sin(<em>&theta;</em><sub>c</sub>) = &mu;<sub>s</sub> &middot; <em>mg</em> &middot; cos(<em>&theta;</em><sub>c</sub>) &nbsp;&rArr;&nbsp; <strong>tan(<em>&theta;</em><sub>c</sub>) = &mu;<sub>s</sub></strong>
+        </div>
+        <br>
+        <p><strong>3. Kinetic Acceleration:</strong><br>
+        When <em>&theta;</em> &gt; <em>&theta;</em><sub>c</sub>, the block slides downhill. Kinetic friction <em>f</em><sub>k</sub> = &mu;<sub>k</sub> &middot; <em>N</em> resists motion. The downhill net accelerating force produces constant acceleration:</p>
+
+        <div class="formula-box">
+          <strong>Kinetic Acceleration:</strong><br>
+          <em>F</em><sub>net</sub> = <em>m</em> &middot; <em>a</em> = <em>mg</em> &middot; sin(<em>&theta;</em>) &minus; &mu;<sub>k</sub> &middot; <em>mg</em> &middot; cos(<em>&theta;</em>)<br>
+          <strong><em>a</em> = <em>g</em> &middot; [ sin(<em>&theta;</em>) &minus; &mu;<sub>k</sub> &middot; cos(<em>&theta;</em>) ]</strong>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/app.js"></script>
+</body>
+</html>
+
