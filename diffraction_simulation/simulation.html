@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Single-Slit Fraunhofer Diffraction | NCERT Class 12 Physics</title>
+  <meta name="description" content="Interactive STEM physics virtual lab exploring Single-Slit Fraunhofer Diffraction, sinc-squared intensity profile, central fringe width, secondary maxima, and angular divergence.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+  <!-- APP HEADER -->
+  <header class="app-header">
+    <div class="header-container">
+      <div class="brand-wrapper">
+        <div class="brand-icon">🌈</div>
+        <div>
+          <div style="display: flex; align-items: center;">
+            <h1 class="brand-title">DiffractionLab</h1>
+            <span class="brand-tag">NCERT Class 12 Wave Optics</span>
+          </div>
+          <div class="brand-sub">Single-Slit Fraunhofer Diffraction &amp; Optical Sinc² Profiler Virtual Laboratory</div>
+        </div>
+      </div>
+
+      <div class="header-actions">
+        <button id="btnOpenTheory" class="action-btn btn-primary" title="View theoretical equations and sinc derivations">
+          <span>📚</span> Theory &amp; Formulas
+        </button>
+        <button id="btnAudioToggle" class="action-btn" title="Toggle audio feedback">
+          🔊 Sound: ON
+        </button>
+        <button id="btnResetAll" class="action-btn" title="Reset all simulation values">
+          <span>↺</span> Reset All
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN WORKSPACE -->
+  <main class="main-layout">
+
+    <!-- LEFT: Apparatus & Telemetry -->
+    <div class="canvas-section">
+
+      <!-- Canvas Viewport -->
+      <div class="canvas-viewport-card">
+        <div class="canvas-header-bar">
+          <span>Interactive Optical Bench &mdash; Drag the photometer sensor on the screen to sample relative intensity</span>
+        </div>
+        <div class="canvas-container">
+          <canvas id="simCanvas"></canvas>
+          <div class="canvas-overlay-hint">
+            <div class="hud-pill">💡 Tip: Central maximum width is double the secondary fringe widths: W₀ = 2&lambda;D / a</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Telemetry Cards Grid -->
+      <div class="telemetry-grid">
+        <div class="telemetry-card">
+          <div class="telemetry-card-title">Central Max Width (W₀)</div>
+          <div id="teleCentralWidth" class="telemetry-card-val">19.50 mm</div>
+          <div class="telemetry-card-sub">W₀ = 2&lambda;D / a</div>
+        </div>
+
+        <div class="telemetry-card">
+          <div class="telemetry-card-title">Angular Half-Width (&theta;₀)</div>
+          <div id="teleAngularHalfWidth" class="telemetry-card-val">6.50 mrad</div>
+          <div class="telemetry-card-sub">&theta;₀ = &lambda; / a</div>
+        </div>
+
+        <div class="telemetry-card">
+          <div class="telemetry-card-title">Sensor Position (y)</div>
+          <div id="teleProbePos" class="telemetry-card-val">+0.00 mm</div>
+          <div class="telemetry-card-sub">From optical central axis</div>
+        </div>
+
+        <div class="telemetry-card">
+          <div class="telemetry-card-title">Relative Intensity (I/I₀)</div>
+          <div id="teleIntensity" class="telemetry-card-val">100.0% (I/I₀)</div>
+          <div class="telemetry-card-sub">sinc²(&beta;) photometer reading</div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- RIGHT: Control Sidebar -->
+    <aside class="control-sidebar">
+
+      <!-- Laser Source Controls -->
+      <div class="control-panel">
+        <div class="panel-title">
+          <span>Coherent Laser Diode</span>
+        </div>
+
+        <div class="control-group">
+          <div class="control-label">
+            <span>Wavelength (&lambda;)</span>
+            <span id="valWavelength" class="control-val-badge">650 nm</span>
+          </div>
+          <input type="range" id="sliderWavelength" min="400" max="700" step="5" value="650">
+
+          <!-- Preset Pills -->
+          <div class="preset-pills">
+            <button class="pill-btn" data-wavelength="405">
+              <span class="color-dot" style="background:#8B5CF6;"></span> 405nm Violet
+            </button>
+            <button class="pill-btn" data-wavelength="470">
+              <span class="color-dot" style="background:#3B82F6;"></span> 470nm Blue
+            </button>
+            <button class="pill-btn" data-wavelength="532">
+              <span class="color-dot" style="background:#10B981;"></span> 532nm Green
+            </button>
+            <button class="pill-btn" data-wavelength="589">
+              <span class="color-dot" style="background:#F59E0B;"></span> 589nm Sodium
+            </button>
+            <button class="pill-btn active" data-wavelength="650">
+              <span class="color-dot" style="background:#EF4444;"></span> 650nm Red
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Slit Geometry Controls -->
+      <div class="control-panel">
+        <div class="panel-title">
+          <span>Slit &amp; Bench Geometry</span>
+        </div>
+
+        <!-- Slit Width (a) Slider -->
+        <div class="control-group">
+          <div class="control-label">
+            <span>Slit Width (a)</span>
+            <span id="valSlitWidth" class="control-val-badge">0.10 mm</span>
+          </div>
+          <input type="range" id="sliderSlitWidth" min="0.04" max="0.30" step="0.01" value="0.10">
+          <div style="font-size: 11px; color: var(--text-muted); margin-top: 4px;">Narrower slit spreads diffraction pattern wider</div>
+        </div>
+
+        <!-- Screen Distance (D) Slider -->
+        <div class="control-group">
+          <div class="control-label">
+            <span>Screen Distance (D)</span>
+            <span id="valScreenDistance" class="control-val-badge">1.50 m</span>
+          </div>
+          <input type="range" id="sliderScreenDistance" min="0.80" max="2.50" step="0.05" value="1.50">
+        </div>
+      </div>
+
+    </aside>
+
+  </main>
+
+  <!-- THEORY MODAL -->
+  <div id="modalTheory" class="modal-backdrop">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h2>Single-Slit Fraunhofer Diffraction &mdash; Theoretical Principles</h2>
+        <button id="btnCloseTheory" class="modal-close-btn">&times;</button>
+      </div>
+      <div class="modal-body">
+        <h3>1. Wavefront Division &amp; Sinc² Intensity</h3>
+        <p>When a monochromatic plane wavefront of wavelength &lambda; strikes a rectangular slit of width <em>a</em>, every point on the slit acts as a secondary emitter of coherent cylindrical wavelets. Integrating these wavelets across the slit width gives the Fraunhofer intensity distribution:</p>
+        <div class="formula-box">I(&theta;) = I₀ &middot; [sin(&beta;) / &beta;]², &nbsp; where &beta; = (&pi; &middot; a &middot; sin&theta;) / &lambda; &approx; (&pi; &middot; a &middot; y) / (&lambda; &middot; D)</div>
+
+        <h3>2. Condition for Minima (Dark Bands)</h3>
+        <p>Destructive interference occurs when the slit can be divided into an even number of equal halves that cancel pairwise, i.e., when $\beta = \pm m \pi$ ($m \neq 0$):</p>
+        <div class="formula-box">a &middot; sin&theta; = &plusmn;m &middot; &lambda; &rArr; y_m = &plusmn; (m &middot; &lambda; &middot; D) / a, &nbsp; where m = 1, 2, 3, ...</div>
+
+        <h3>3. Central Maximum Width (W₀)</h3>
+        <p>The central maximum extends between the first minima on either side ($m = -1$ to $m = +1$):</p>
+        <ul>
+          <li><strong>Angular Half-Width:</strong> $\theta_0 = \lambda / a$ (in radians).</li>
+          <li><strong>Linear Full Width on Screen:</strong>
+            <div class="formula-box">W₀ = 2 &middot; y₁ = (2 &middot; &lambda; &middot; D) / a</div>
+          </li>
+        </ul>
+        <p>Notice that the central diffraction maximum is <strong>twice as wide</strong> as any of the secondary maxima ($W_{secondary} = \lambda D / a$).</p>
+
+        <h3>4. Secondary Maxima &amp; Intensity Falloff</h3>
+        <p>Secondary maxima occur approximately halfway between minima, at $\beta \approx \pm 1.43\pi, \pm 2.46\pi, \dots$ Their peak intensities diminish rapidly:</p>
+        <ul>
+          <li>Central Maximum ($m = 0$): $I = I_0$ (100%)</li>
+          <li>First Secondary Maximum: $I_1 \approx I_0 / (1.43\pi)^2 \approx 4.7\%$</li>
+          <li>Second Secondary Maximum: $I_2 \approx I_0 / (2.46\pi)^2 \approx 1.7\%$</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/app.js"></script>
+</body>
+</html>

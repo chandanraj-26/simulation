@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Paper & Thin-Layer Chromatography Virtual Laboratory | STEM Simulation</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+  <style>
+    .color-dot {
+      display: inline-block;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      margin-right: 6px;
+      vertical-align: middle;
+    }
+    .mono-text {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+    }
+    .font-bold {
+      font-weight: 700;
+    }
+    .rf-table-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+      overflow-x: auto;
+    }
+    .rf-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+      text-align: left;
+    }
+    .rf-table th {
+      padding: 8px 12px;
+      background: #F8FAFC;
+      border-bottom: 2px solid var(--border);
+      color: var(--text-muted);
+      font-weight: 700;
+      text-transform: uppercase;
+      font-size: 11px;
+      letter-spacing: 0.04em;
+    }
+    .rf-table td {
+      padding: 10px 12px;
+      border-bottom: 1px solid #F1F5F9;
+      color: var(--text-main);
+    }
+    .rf-table tr:last-child td {
+      border-bottom: none;
+    }
+    .btn-ninhydrin {
+      width: 100%;
+      padding: 10px;
+      background: #8B5CF6;
+      color: #FFFFFF;
+      border: none;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: all 0.15s ease;
+      margin-top: 10px;
+    }
+    .btn-ninhydrin:hover {
+      background: #7C3AED;
+    }
+    .checkbox-control {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-main);
+      cursor: pointer;
+      user-select: none;
+      margin-bottom: 8px;
+    }
+    .checkbox-control input[type="checkbox"] {
+      width: 16px;
+      height: 16px;
+      accent-color: var(--primary);
+      cursor: pointer;
+    }
+    .slider-container {
+      margin-top: 8px;
+    }
+    .slider-container input[type="range"] {
+      width: 100%;
+      accent-color: var(--primary);
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <header class="app-header">
+    <div class="header-container">
+      <div class="brand-wrapper">
+        <div class="brand-icon">🌿</div>
+        <div>
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <span class="brand-title">Chromatography Virtual Laboratory</span>
+            <span class="brand-tag">BIOPHYSICS & CHEMISTRY</span>
+          </div>
+          <div class="brand-sub">Paper & Thin-Layer Separation of Plant Pigments, Inks & Amino Acids</div>
+        </div>
+      </div>
+      <div class="header-actions">
+        <button id="helpBtn" class="action-btn" title="View Theory & Instructions">
+          <span>📖</span> Theory & Guide
+        </button>
+        <button id="resetBtn" class="action-btn" title="Reset Simulation">
+          <span>🔄</span> Reset
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Responsive Layout -->
+  <main class="main-layout">
+    <!-- Canvas & Visuals Section -->
+    <section class="canvas-section">
+      <div class="canvas-viewport-card">
+        <div class="canvas-header-bar">
+          <span>Glass Chromatography Chamber & Solvent Front Ascent</span>
+          <span style="font-weight: 500; font-size: 12px; color: var(--text-muted);">
+            💡 Drag acrylic ruler to measure band positions
+          </span>
+        </div>
+        <div class="canvas-container">
+          <canvas id="simCanvas"></canvas>
+        </div>
+      </div>
+
+      <!-- Telemetry Cards -->
+      <div class="telemetry-grid">
+        <div class="telemetry-card">
+          <div class="telemetry-card-title">Solvent Front (d_solvent)</div>
+          <div id="solventFrontVal" class="telemetry-card-val">0.00 cm</div>
+          <div class="telemetry-card-sub">Capillary rise above baseline</div>
+        </div>
+        <div class="telemetry-card">
+          <div class="telemetry-card-title">Migration Time</div>
+          <div id="elapsedTimeVal" class="telemetry-card-val">0.0s</div>
+          <div class="telemetry-card-sub">Elapsed development duration</div>
+        </div>
+        <div class="telemetry-card">
+          <div class="telemetry-card-title">Capillary Flow Rate</div>
+          <div id="flowRateVal" class="telemetry-card-val">0.00 mm/s</div>
+          <div class="telemetry-card-sub">Washburn velocity dh/dt</div>
+        </div>
+        <div class="telemetry-card">
+          <div class="telemetry-card-title">Retardation Factor (Rf)</div>
+          <div class="telemetry-card-val" style="color: var(--primary);">Rf = d_solute / d_solvent</div>
+          <div class="telemetry-card-sub">Relative mobility index</div>
+        </div>
+      </div>
+
+      <!-- Solute Pigment Separation Table -->
+      <div class="rf-table-card">
+        <div class="panel-title" style="margin-bottom: 8px;">
+          <span>Resolved Solute Components & Retention Telemetry</span>
+          <span style="font-size: 11px; font-weight: 600; color: var(--text-muted); text-transform: none;">Whatman No. 1 Filter Paper</span>
+        </div>
+        <table class="rf-table">
+          <thead>
+            <tr>
+              <th>Solute / Pigment</th>
+              <th>Distance Migrated</th>
+              <th>Solvent Distance</th>
+              <th>Rf Value</th>
+            </tr>
+          </thead>
+          <tbody id="rfTableBody">
+            <!-- Dynamically populated by app.js -->
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Sidebar Controls -->
+    <aside class="control-sidebar">
+      <!-- Experiment Setup Panel -->
+      <div class="control-panel">
+        <div class="panel-title">
+          <span>Experiment Setup</span>
+          <span class="control-val-badge">System</span>
+        </div>
+
+        <div class="control-group">
+          <label class="control-label" for="sampleSelect">
+            <span>Sample Mixture</span>
+          </label>
+          <select id="sampleSelect">
+            <option value="spinach">Spinach Chloroplast Extract</option>
+            <option value="ink">Black Marker Ink (Water-Soluble)</option>
+            <option value="amino">Amino Acid Mixture</option>
+          </select>
+        </div>
+
+        <div class="control-group">
+          <label class="control-label" for="solventSelect">
+            <span>Mobile Phase (Solvent)</span>
+          </label>
+          <select id="solventSelect">
+            <option value="pet_acetone">Petroleum Ether : Acetone (9:1)</option>
+            <option value="ethanol_water">Ethanol : Water (7:3)</option>
+            <option value="baw">n-Butanol : Acetic Acid : Water (4:1:5)</option>
+          </select>
+        </div>
+
+        <button id="runBtn" class="btn-run-chromatography">
+          Start Chromatography
+        </button>
+
+        <button id="ninhydrinBtn" class="btn-ninhydrin">
+          Spray Ninhydrin Reagent
+        </button>
+      </div>
+
+      <!-- Migration & Display Controls -->
+      <div class="control-panel">
+        <div class="panel-title">
+          <span>Display & Tooling</span>
+          <span class="control-val-badge">Tools</span>
+        </div>
+
+        <div class="control-group">
+          <label class="checkbox-control">
+            <input type="checkbox" id="rulerToggle" checked>
+            <span>Show Metric Acrylic Ruler (Draggable)</span>
+          </label>
+          <label class="checkbox-control">
+            <input type="checkbox" id="labelsToggle" checked>
+            <span>Show Solute Band Labels & Pointers</span>
+          </label>
+        </div>
+
+        <div class="control-group slider-container">
+          <div class="control-label">
+            <span>Capillary Migration Speed</span>
+            <span id="speedVal" class="control-val-badge">1.0x</span>
+          </div>
+          <input type="range" id="speedSlider" min="0.5" max="4.0" step="0.5" value="1.0">
+        </div>
+      </div>
+
+      <!-- Biochemical Principles Quick Reference -->
+      <div class="control-panel">
+        <div class="panel-title">
+          <span>Separation Mechanism</span>
+          <span>🧪</span>
+        </div>
+        <div style="font-size: 12px; color: var(--text-muted); line-height: 1.6;">
+          <p style="margin-bottom: 8px;">
+            <strong>Stationary Phase:</strong> Cellulose fibers with bound moisture forming a polar matrix.
+          </p>
+          <p style="margin-bottom: 8px;">
+            <strong>Mobile Phase:</strong> Ascends via capillary action against gravity (Washburn kinetics).
+          </p>
+          <p>
+            <strong>Polarity Principle:</strong> Non-polar solutes partition into the mobile phase and travel faster (higher <em>Rf</em>), whereas polar solutes form hydrogen bonds with cellulose and migrate slower.
+          </p>
+        </div>
+      </div>
+    </aside>
+  </main>
+
+  <!-- Theory & Help Modal -->
+  <div id="helpModal" class="modal-backdrop">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h2>Chromatography Theory & Lab Protocol</h2>
+        <button id="modalCloseBtn" class="modal-close-btn">&times;</button>
+      </div>
+      <div class="modal-body">
+        <h3>1. Principle of Chromatography</h3>
+        <p>
+          Chromatography (from Greek <em>chroma</em> "color" and <em>graphein</em> "to write") is an analytical separation technique based on differential partitioning of solutes between a stationary phase and a mobile phase.
+        </p>
+
+        <div class="formula-box">
+          Retardation Factor: Rf = Distance traveled by solute / Distance traveled by solvent front
+        </div>
+
+        <h3>2. Plant Pigments in Spinach Extract</h3>
+        <ul>
+          <li><strong>β-Carotene (Rf ≈ 0.94):</strong> Pure hydrocarbon carotenoid; non-polar, weakly adsorbed to paper, moves near the solvent front.</li>
+          <li><strong>Xanthophyll (Rf ≈ 0.72):</strong> Oxygenated carotenoid containing polar hydroxyl (-OH) groups; travels slower than β-carotene.</li>
+          <li><strong>Chlorophyll a (Rf ≈ 0.58):</strong> Blue-green pigment with a porphyrin ring and phytol tail.</li>
+          <li><strong>Chlorophyll b (Rf ≈ 0.42):</strong> Yellow-green pigment with an aldehyde (-CHO) substituent in place of the methyl group in chlorophyll a, making it noticeably more polar and retained longer.</li>
+        </ul>
+
+        <h3>3. Capillary Ascent & Washburn Dynamics</h3>
+        <p>
+          The ascent of solvent through paper micro-capillaries obeys the Lucas-Washburn equation:
+        </p>
+        <div class="formula-box">
+          h(t) = &radic;[ ( &gamma; &middot; r &middot; cos &theta; / (2 &middot; &eta;) ) &middot; t ]
+        </div>
+        <p>
+          Where &gamma; is surface tension, &eta; is solvent dynamic viscosity, r is average pore radius, and &theta; is the wetting contact angle. As the liquid front climbs, flow rate decreases due to viscous drag.
+        </p>
+
+        <h3>4. Ninhydrin Spraying for Amino Acids</h3>
+        <p>
+          Amino acids are colorless. After the solvent ascends, spraying with 0.2% ninhydrin reagent in ethanol and warm air drying converts free alpha-amino acids into <strong>Ruhemann's purple</strong> (diketohydrindylidene-diketohydrindamine) complexes with strong absorption at 570 nm.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/app.js"></script>
+</body>
+</html>

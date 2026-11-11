@@ -900,3 +900,4 @@ class PhotoelectricSimulation {
 window.addEventListener('DOMContentLoaded', () => {
   window.sim = new PhotoelectricSimulation();
 });
+

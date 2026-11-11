@@ -60,3 +60,4 @@ const server = http.createServer((req, res) => {
 server.listen(PORT, () => {
   console.log(`[Gel Electrophoresis Lab] Server running at http://localhost:${PORT}/`);
 });
+

@@ -653,3 +653,4 @@ class DaniellCellSimulation {
 window.addEventListener('DOMContentLoaded', () => {
   window.sim = new DaniellCellSimulation();
 });
+

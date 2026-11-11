@@ -770,3 +770,4 @@ class GelElectrophoresisSimulation {
 window.addEventListener('DOMContentLoaded', () => {
   window.sim = new GelElectrophoresisSimulation();
 });
+

@@ -18,3 +18,4 @@ cd photoelectric_simulation
 node server.js   # http://localhost:8124
 ```
 Or open `index.html` directly in any modern browser.
+

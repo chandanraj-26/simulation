@@ -1,6 +1,6 @@
 # Interactive STEM Simulations & Virtual Labs Suite
 
-A collection of 48 interactive, client-side STEM virtual laboratories and simulations across Physics, Chemistry, and Biology built with HTML5 Canvas, modern Vanilla CSS, and JavaScript.
+A collection of 53 interactive, client-side STEM virtual laboratories and simulations across Physics, Chemistry, and Biology built with HTML5 Canvas, modern Vanilla CSS, and JavaScript.
 
 ---
 
@@ -322,6 +322,42 @@ A collection of 48 interactive, client-side STEM virtual laboratories and simula
   - **UV Transilluminator Mode**: Simulates $312\text{ nm}$ ultraviolet excitation of intercalated GelGreen / Ethidium Bromide dyes, illuminating vibrant fluorescent glowing green DNA bands in the dark chamber.
 - **Interactive Band Reticle & Semi-Log Plot**: Hover over any DNA band to display exact base pair size and migration distance, with live semi-log calibration curve plotting $d$ vs $\log_{10}(\text{bp})$.
 
+### 49. ⚡ [Potentiometer Laboratory & EMF Comparison (`/potentiometer_simulation`)](potentiometer_simulation/)
+- **400 cm Multi-Wire Wooden Bench**: Authentic 4-wire Constantan/Manganin wire potentiometer stretched between heavy brass strips over an inverted dual-reading metric meter rule.
+- **Null-Deflection Principle**: Simulates an ideal infinite-impedance voltmeter drawing zero current at balance point ($E = k \cdot l$), calculating live potential gradient $k = V_{\text{wire}} / L$.
+- **Dual Standard Experimental Modes**:
+  - **EMF Comparison**: Two-way key switching between Leclanché cell ($E_1 = 1.45\text{ V}$) and Daniell cell ($E_2 = 1.08\text{ V}$), experimentally verifying $E_1/E_2 = l_1/l_2$.
+  - **Internal Resistance Determination**: Shunted secondary cell with decade resistance box ($R$) and plug key ($K_2$), deriving cell internal resistance $r = R(l_1/l_2 - 1)$.
+- **Interactive Knife-Edge Jockey & Center-Zero Galvanometer**: Smoothly drag jockey across wires or press arrow keys for fine $\pm 0.1\text{ cm}$ adjustments; galvanometer reflects proportional deflection with procedural pitch audio.
+
+### 50. 🔦 [Fraunhofer Single-Slit Diffraction (`/diffraction_simulation`)](diffraction_simulation/)
+- **Wave Optics Sinc-Squared Profile**: Analytical intensity distribution $I(\theta) = I_0 \left(\frac{\sin\beta}{\beta}\right)^2$ with phase parameter $\beta = \frac{\pi a}{\lambda}\sin\theta$.
+- **Tunable Micrometer Slit & Diode Lasers**: Continuous slit width $a \in [20, 300]\ \mu\text{m}$, screen distance $D \in [0.5, 3.0]\text{ m}$, and 5 laser wavelengths (Violet $405\text{ nm}$, Cyan $488\text{ nm}$, Green $532\text{ nm}$, Yellow $589\text{ nm}$, Red $650\text{ nm}$).
+- **Central & Secondary Maxima Telemetry**: Live computation of central maximum angular spread $2\theta_0 = 2\lambda/a$, linear width $W_0 = \frac{2\lambda D}{a}$, and first secondary maximum relative intensity $I_1/I_0 \approx 4.72\%$.
+- **Draggable Photometer Sensor & Waveform Overlay**: Move photometer across screen to read exact position $y$, intensity ratio $I/I_0$, and minima condition $a\sin\theta = m\lambda$ with pitch-shifting audio feedback.
+
+### 51. 🧪 [Le Chatelier's Principle & Dynamic Equilibrium (`/le_chatelier_simulation`)](le_chatelier_simulation/)
+- **Reversible Chemical Equilibrium Systems**:
+  - **Iron(III)-Thiocyanate**: $\text{Fe}^{3+}(aq) + \text{SCN}^-(aq) \rightleftharpoons [\text{Fe(SCN)}]^{2+}(aq)$ (Blood-red complex).
+  - **Cobalt(II) Hexaaqua / Tetrachloro**: $[\text{Co(H}_2\text{O})_6]^{2+}(aq) + 4\text{Cl}^-(aq) \rightleftharpoons [\text{CoCl}_4]^{2-}(aq) + 6\text{H}_2\text{O}$ (Pink $\rightleftharpoons$ Deep Blue, endothermic $\Delta H > 0$).
+- **4-Tube Laboratory Rack & Temperature Baths**: Reference control tube, active test tube, $80^\circ\text{C}$ hot water bath, and $0^\circ\text{C}$ crushed ice bath.
+- **Stress Perturbations**: Add reagents ($\text{FeCl}_3$, $\text{KSCN}$, oxalic acid, $\text{AgNO}_3$, conc. $\text{HCl}$, distilled water) to dynamically shift reaction quotient $Q$ away from $K_{\text{eq}}$.
+- **Digital Spectrophotometer**: Live absorbance ($A$) and transmittance ($\%T$) measurements via Beer-Lambert law at $460\text{ nm}$ / $660\text{ nm}$ with dynamic colorimetric fluid rendering.
+
+### 52. 🌿 [Paper & Thin-Layer Chromatography (`/chromatography_simulation`)](chromatography_simulation/)
+- **Biophysical Lucas-Washburn Capillary Ascent**: Simulates rate-dependent capillary rise $h(t) = \sqrt{\frac{\gamma \cdot r \cdot \cos\theta}{2\eta} \cdot t}$ inside a sealed glass development chamber with solvent saturation.
+- **Multicomponent Sample Separation**:
+  - **Spinach Chloroplast Extract**: Resolves $\beta$-Carotene ($R_f \approx 0.94$), Xanthophyll ($R_f \approx 0.72$), Chlorophyll $a$ ($R_f \approx 0.58$), and Chlorophyll $b$ ($R_f \approx 0.42$).
+  - **Black Felt-Tip Marker Ink**: Resolves Fast Cyan ($R_f \approx 0.83$), Magenta ($R_f \approx 0.54$), and Tartrazine ($R_f \approx 0.28$).
+  - **Amino Acid Mixture**: Resolves Leucine ($R_f \approx 0.74$), Alanine ($R_f \approx 0.39$), and Glycine ($R_f \approx 0.26$) with Ninhydrin spray visualization of Ruhemann's purple.
+- **Draggable Metric Acrylic Ruler**: Align ruler with pencil origin baseline and solvent front to manually measure migration distances and calculate experimental $R_f = d_{\text{solute}} / d_{\text{solvent}}$.
+
+### 53. 🩸 [Blood Grouping & Agglutination Immunology (`/blood_grouping_simulation`)](blood_grouping_simulation/)
+- **ABO & Rh(D) Immunogenetics**: Complete 8-phenotype human blood catalog ($A^+$, $A^-$, $B^+$, $B^-$, $AB^+$, $AB^-$, $O^+$, $O^-$) governed by Landsteiner's law.
+- **Antigen-Antibody Hemagglutination Engine**: Simulates pentameric IgM crosslinking erythrocytes into macroscopic red clump lattices vs. smooth homogenous colloidal suspensions.
+- **Glazed Porcelain 3-Well Spot Plate**: Well A (Anti-A, Patent Blue V), Well B (Anti-B, Tartrazine Yellow), and Well D (Anti-D, Clear); interactive blood/antiserum droppers and glass stirring stick with procedural audio.
+- **400x Cytology Microscope Lens**: Inspect individual biconcave red blood cell discs vs. crosslinked cellular agglutinates in real time, accompanied by safe donor/recipient transfusion matrices.
+
 ---
 
 ## 💻 Tech Stack
@@ -417,6 +453,26 @@ node server.js   # http://localhost:8126
 # Agarose Gel Electrophoresis & DNA Fingerprinting
 cd gel_electrophoresis_simulation
 node server.js   # http://localhost:8127
+
+# Potentiometer Laboratory & EMF Comparison
+cd potentiometer_simulation
+node server.js   # http://localhost:8128
+
+# Fraunhofer Single-Slit Diffraction
+cd diffraction_simulation
+node server.js   # http://localhost:8129
+
+# Le Chatelier's Principle & Dynamic Equilibrium
+cd le_chatelier_simulation
+node server.js   # http://localhost:8130
+
+# Paper & Thin-Layer Chromatography
+cd chromatography_simulation
+node server.js   # http://localhost:8131
+
+# Blood Grouping & Agglutination Immunology
+cd blood_grouping_simulation
+node server.js   # http://localhost:8132
 
 # Roller Coaster Kinematics & Loop Fail Dynamics
 cd roller_coaster_simulation

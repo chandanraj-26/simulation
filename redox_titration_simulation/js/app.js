@@ -702,3 +702,4 @@ class RedoxTitrationSimulation {
 window.addEventListener('DOMContentLoaded', () => {
   window.sim = new RedoxTitrationSimulation();
 });
+

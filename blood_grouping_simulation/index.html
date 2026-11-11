@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Blood Grouping & Agglutination Immunology Virtual Laboratory | STEM Simulation</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <!-- Header -->
+  <header class="app-header">
+    <div class="header-container">
+      <div class="brand-wrapper">
+        <div class="brand-icon">🩸</div>
+        <div>
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <span class="brand-title">Blood Grouping Virtual Laboratory</span>
+            <span class="brand-tag">IMMUNOLOGY & HEMATOLOGY</span>
+          </div>
+          <div class="brand-sub">ABO & Rh(D) Hemagglutination, Landsteiner Antigen-Antibody Crosslinking</div>
+        </div>
+      </div>
+      <div class="header-actions">
+        <button id="helpBtn" class="action-btn" title="View Theory & Instructions">
+          <span>📖</span> Theory & Guide
+        </button>
+        <button id="resetBtn" class="action-btn" title="Reset Spot Plate">
+          <span>🔄</span> Clean Slide
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Responsive Layout -->
+  <main class="main-layout">
+    <!-- Canvas & Visuals Section -->
+    <section class="canvas-section">
+      <div class="canvas-viewport-card">
+        <div class="canvas-header-bar">
+          <span>3-Cavity Glazed Porcelain Reaction Slide</span>
+          <span style="font-weight: 500; font-size: 12px; color: var(--text-muted);">
+            💡 Select tool from sidebar, then click well cavity to dispense or stir
+          </span>
+        </div>
+        <div class="canvas-container">
+          <canvas id="simCanvas"></canvas>
+        </div>
+      </div>
+
+      <!-- Telemetry Cards -->
+      <div class="telemetry-grid">
+        <div class="telemetry-card">
+          <div class="telemetry-card-title">Well A (Anti-A Reagent)</div>
+          <div id="wellA_Val" class="telemetry-card-val">Pending Reagents</div>
+          <div class="telemetry-card-sub">Tests for A-antigen presence</div>
+        </div>
+        <div class="telemetry-card">
+          <div class="telemetry-card-title">Well B (Anti-B Reagent)</div>
+          <div id="wellB_Val" class="telemetry-card-val">Pending Reagents</div>
+          <div class="telemetry-card-sub">Tests for B-antigen presence</div>
+        </div>
+        <div class="telemetry-card">
+          <div class="telemetry-card-title">Well D (Anti-Rh Reagent)</div>
+          <div id="wellD_Val" class="telemetry-card-val">Pending Reagents</div>
+          <div class="telemetry-card-sub">Tests for Rh(D) protein factor</div>
+        </div>
+        <div class="telemetry-card">
+          <div class="telemetry-card-title">Deduced Phenotype</div>
+          <div id="deducedTypeVal" class="telemetry-card-val" style="color: var(--primary);">Pending Completion</div>
+          <div class="telemetry-card-sub">ABO/Rh clinical phenotype</div>
+        </div>
+      </div>
+
+      <!-- Transfusion Compatibility Card -->
+      <div class="compatibility-card">
+        <div class="panel-title" style="margin-bottom: 8px;">
+          <span>Clinical Immunogenetics & Transfusion Compatibility</span>
+          <span style="font-size: 11px; font-weight: 600; color: var(--text-muted); text-transform: none;">Erythrocyte Crossmatch</span>
+        </div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 12px;">
+          <div>
+            <div style="font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">RBC Surface Antigens:</div>
+            <div id="antigenListEl" style="font-size: 14px; font-weight: 700; color: var(--text-main); margin-top: 2px;">--</div>
+          </div>
+          <div>
+            <div style="font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">Serum Plasma Antibodies:</div>
+            <div id="antibodyListEl" style="font-size: 14px; font-weight: 700; color: var(--text-main); margin-top: 2px;">--</div>
+          </div>
+        </div>
+
+        <div style="margin-bottom: 10px;">
+          <div style="font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">Safe RBC Donors (Can Receive From):</div>
+          <div id="donorTagsEl" class="blood-tag-grid">
+            <!-- Dynamically populated -->
+          </div>
+        </div>
+
+        <div>
+          <div style="font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">Compatible Recipients (Can Donate RBCs To):</div>
+          <div id="recipientTagsEl" class="blood-tag-grid">
+            <!-- Dynamically populated -->
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Sidebar Controls -->
+    <aside class="control-sidebar">
+      <!-- Patient Selection Panel -->
+      <div class="control-panel">
+        <div class="panel-title">
+          <span>Patient Sample</span>
+          <span class="control-val-badge">Donor / Patient</span>
+        </div>
+
+        <div class="control-group">
+          <label class="control-label" for="patientSelect">
+            <span>Patient Blood Group</span>
+          </label>
+          <select id="patientSelect">
+            <option value="A+">A Positive (A+)</option>
+            <option value="A-">A Negative (A-)</option>
+            <option value="B+">B Positive (B+)</option>
+            <option value="B-">B Negative (B-)</option>
+            <option value="AB+">AB Positive (AB+) — Universal Recipient</option>
+            <option value="AB-">AB Negative (AB-)</option>
+            <option value="O+">O Positive (O+)</option>
+            <option value="O-">O Negative (O-) — Universal Donor</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Reagents & Tool Rack Panel -->
+      <div class="control-panel">
+        <div class="panel-title">
+          <span>Reagents & Pipettes</span>
+          <span class="control-val-badge">Active Tool</span>
+        </div>
+
+        <div class="tool-btn-grid">
+          <button id="toolBlood" class="tool-btn blood active">
+            <span>🩸</span> Blood Drop
+          </button>
+          <button id="toolAntiA" class="tool-btn anti-a">
+            <span style="color:#0284C7;">🔵</span> Anti-A
+          </button>
+          <button id="toolAntiB" class="tool-btn anti-b">
+            <span style="color:#CA8A04;">🟡</span> Anti-B
+          </button>
+          <button id="toolAntiD" class="tool-btn anti-d">
+            <span style="color:#64748B;">⚪</span> Anti-D (Rh)
+          </button>
+          <button id="toolStir" class="tool-btn stir">
+            <span>🥢</span> Glass Stirring Stick
+          </button>
+        </div>
+
+        <button id="autoTestBtn" class="btn-auto-test">
+          <span>⚡</span> Auto-Dispense & Mix All
+        </button>
+      </div>
+
+      <!-- Hemagglutination Rule Table -->
+      <div class="control-panel">
+        <div class="panel-title">
+          <span>Landsteiner's Law</span>
+          <span>🔬</span>
+        </div>
+        <div style="font-size: 12px; color: var(--text-muted); line-height: 1.6;">
+          <p style="margin-bottom: 6px;">
+            <strong>Antigen-Antibody Agglutination:</strong>
+          </p>
+          <ul style="padding-left: 18px; margin-bottom: 8px;">
+            <li><strong>Well A Clumps (+):</strong> Erythrocytes carry Antigen A.</li>
+            <li><strong>Well B Clumps (+):</strong> Erythrocytes carry Antigen B.</li>
+            <li><strong>Well D Clumps (+):</strong> Rh(D) protein present (Rh+).</li>
+            <li><strong>No Clumping in A & B:</strong> Group O phenotype.</li>
+          </ul>
+          <p>
+            <strong>Microscope Feature:</strong> Click any well cavity to inspect the 400x cytology zoom lens overlay showing red blood cell lattice formation.
+          </p>
+        </div>
+      </div>
+    </aside>
+  </main>
+
+  <!-- Theory & Help Modal -->
+  <div id="helpModal" class="modal-backdrop">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h2>Blood Grouping & Immunogenetics Lab Manual</h2>
+        <button id="modalCloseBtn" class="modal-close-btn">&times;</button>
+      </div>
+      <div class="modal-body">
+        <h3>1. The ABO Blood Group System</h3>
+        <p>
+          Discovered in 1900 by Karl Landsteiner, the ABO blood system is determined by the presence or absence of specific carbohydrate oligosaccharide antigens (A and B) anchored to erythrocyte membranes via the lipid precursor <strong>H substance</strong>.
+        </p>
+
+        <div class="formula-box">
+          Landsteiner's Law: If an agglutinogen (antigen) is present on a person's RBCs, the corresponding agglutinin (antibody) MUST be absent from their plasma, and vice versa.
+        </div>
+
+        <h3>2. The Rhesus (Rh) System & Factor D</h3>
+        <p>
+          The Rh system comprises over 50 antigens, with the transmembrane protein <strong>D antigen</strong> being the most clinically significant and highly immunogenic. Individuals possessing the D antigen are classified as <strong>Rh-positive (Rh+)</strong>; those lacking it are <strong>Rh-negative (Rh-)</strong>.
+        </p>
+        <p>
+          Unlike ABO antibodies which occur naturally without prior red cell exposure, Anti-D antibodies are typically IgG molecules that develop after Rh- individuals are sensitized by Rh+ blood during transfusion or fetomaternal hemorrhage (potentially causing <em>Erythroblastosis Fetalis</em> / Hemolytic Disease of the Fetus and Newborn).
+        </p>
+
+        <h3>3. Hemagglutination Mechanism</h3>
+        <p>
+          Commercial antisera contain high-affinity monoclonal antibodies (primarily pentameric <strong>IgM</strong> for Anti-A and Anti-B). Because each IgM molecule possesses 10 antigen-binding Fab sites, it bridges adjacent red blood cells, overcoming their natural electrostatic repulsive <em>zeta potential</em> and crosslinking them into macroscopic aggregates (clumping).
+        </p>
+
+        <h3>4. Blood Transfusion Compatibility Rules</h3>
+        <ul>
+          <li><strong>Universal RBC Donor (O-):</strong> Lacks A, B, and Rh(D) antigens; safe to administer in emergency trauma transfusions before complete type-and-crossmatch.</li>
+          <li><strong>Universal RBC Recipient (AB+):</strong> Possesses all major antigens; plasma contains neither anti-A nor anti-B agglutinins, allowing safe reception of any RBC unit.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/app.js"></script>
+</body>
+</html>

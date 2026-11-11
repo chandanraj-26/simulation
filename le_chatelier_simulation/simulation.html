@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chemical Equilibrium &amp; Le Chatelier's Principle | NCERT Class 11 Chemistry</title>
+  <meta name="description" content="Interactive STEM chemistry virtual lab exploring Le Chatelier's principle, Fe(III)-thiocyanate and Co(II)-chloride reversible systems, temperature baths, and spectrophotometric absorbance.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+  <!-- APP HEADER -->
+  <header class="app-header">
+    <div class="header-container">
+      <div class="brand-wrapper">
+        <div class="brand-icon">⚖️</div>
+        <div>
+          <div style="display: flex; align-items: center;">
+            <h1 class="brand-title">LeChatelierLab</h1>
+            <span class="brand-tag">NCERT Class 11 Chemical Equilibrium</span>
+          </div>
+          <div class="brand-sub">Chemical Equilibrium Perturbations &amp; Le Chatelier's Principle Virtual Laboratory</div>
+        </div>
+      </div>
+
+      <div class="header-actions">
+        <button id="btnOpenTheory" class="action-btn btn-primary" title="View equilibrium equations and Le Chatelier derivations">
+          <span>📚</span> Theory &amp; Formulas
+        </button>
+        <button id="btnAudioToggle" class="action-btn" title="Toggle audio feedback">
+          🔊 Sound: ON
+        </button>
+        <button id="btnResetAll" class="action-btn" title="Reset all simulation values">
+          <span>↺</span> Reset All
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN WORKSPACE -->
+  <main class="main-layout">
+
+    <!-- LEFT: Apparatus & Telemetry -->
+    <div class="canvas-section">
+
+      <!-- Canvas Viewport -->
+      <div class="canvas-viewport-card">
+        <div class="canvas-header-bar">
+          <span>Interactive 4-Tube Laboratory Rack &mdash; Click any tube to analyze it in the digital spectrophotometer</span>
+        </div>
+        <div class="canvas-container">
+          <canvas id="simCanvas"></canvas>
+          <div class="canvas-overlay-hint">
+            <div class="hud-pill">💡 Tip: Compare the active test tube against the untouched control and hot/cold water baths</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Telemetry Cards Grid -->
+      <div class="telemetry-grid">
+        <div class="telemetry-card">
+          <div class="telemetry-card-title">Equilibrium Shift</div>
+          <div id="teleEquilibriumState" class="telemetry-card-val">Tube 2: At Dynamic Equilibrium</div>
+          <div class="telemetry-card-sub">Direction of stress response</div>
+        </div>
+
+        <div class="telemetry-card">
+          <div class="telemetry-card-title">Absorbance (A)</div>
+          <div id="teleAbsorbance" class="telemetry-card-val">0.775 A</div>
+          <div class="telemetry-card-sub">A = &epsilon;&middot;b&middot;c at &lambda;_max</div>
+        </div>
+
+        <div class="telemetry-card">
+          <div class="telemetry-card-title">Transmittance (%T)</div>
+          <div id="teleTransmittance" class="telemetry-card-val">16.8% T</div>
+          <div class="telemetry-card-sub">%T = 10^-A &times; 100</div>
+        </div>
+
+        <div class="telemetry-card">
+          <div class="telemetry-card-title">Active Stress / Perturbation</div>
+          <div id="teleActivePerturbation" class="telemetry-card-val">Equilibrium Baseline</div>
+          <div class="telemetry-card-sub">Applied chemical or thermal stress</div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- RIGHT: Control Sidebar -->
+    <aside class="control-sidebar">
+
+      <!-- System Selector -->
+      <div class="control-panel">
+        <div class="panel-title">
+          <span>Reversible Equilibrium System</span>
+        </div>
+        <div class="control-group">
+          <select id="selectSystem">
+            <option value="fe_scn" selected>Fe³⁺ + SCN⁻ ⇌ [Fe(SCN)]²⁺ (Blood-Red Complex)</option>
+            <option value="co_cl">[Co(H₂O)₆]²⁺ + 4Cl⁻ ⇌ [CoCl₄]²⁻ (Pink ⇌ Blue)</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Chemical Additions -->
+      <div class="control-panel">
+        <div class="panel-title">
+          <span>Reagent Dropper Perturbations</span>
+        </div>
+        <div id="reagentsContainer"></div>
+      </div>
+
+    </aside>
+
+  </main>
+
+  <!-- THEORY MODAL -->
+  <div id="modalTheory" class="modal-backdrop">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h2>Le Chatelier's Principle &mdash; Theoretical Principles</h2>
+        <button id="btnCloseTheory" class="modal-close-btn">&times;</button>
+      </div>
+      <div class="modal-body">
+        <h3>1. Le Chatelier's Principle (1884)</h3>
+        <p>If a dynamic chemical equilibrium is subjected to a change in concentration, temperature, or pressure, the system readjusts itself in a direction that opposes the applied disturbance.</p>
+
+        <h3>2. System 1: Iron(III) Thiocyanate Equilibrium</h3>
+        <div class="formula-box">Fe³⁺(aq) + SCN⁻(aq) &rightleftharpoons; [Fe(SCN)]²⁺(aq) &nbsp; (&Delta;H &lt; 0, Exothermic)</div>
+        <ul>
+          <li><strong>Increasing [Fe³⁺] or [SCN⁻]:</strong> System consumes added reactants by shifting forward, increasing blood-red complex concentration.</li>
+          <li><strong>Adding Oxalic Acid:</strong> C₂O₄²⁻ ions strongly bind Fe³⁺ into stable $[\text{Fe(C}_2\text{O}_4)_3]^{3-}$, decreasing free $[\text{Fe}^{3+}]$, shifting equilibrium backward into the pale yellow state.</li>
+          <li><strong>Adding AgNO₃:</strong> Ag⁺ ions precipitate insoluble $\text{AgSCN}\downarrow$, removing SCN⁻ and shifting equilibrium backward.</li>
+          <li><strong>Temperature Effect:</strong> Since the forward reaction is exothermic, heating (Tube 3) shifts backward (fainter color), whereas cooling in an ice bath (Tube 4) shifts forward (deeper red).</li>
+        </ul>
+
+        <h3>3. System 2: Cobalt(II) Chloro Complex Equilibrium</h3>
+        <div class="formula-box">[Co(H₂O)₆]²⁺(aq) [Pink] + 4Cl⁻(aq) &rightleftharpoons; [CoCl₄]²⁻(aq) [Blue] + 6H₂O(l) &nbsp; (&Delta;H &gt; 0, Endothermic)</div>
+        <ul>
+          <li><strong>Temperature Effect:</strong> The forward reaction absorbs heat ($\Delta H > 0$). In a hot water bath ($80^\circ\text{C}$, Tube 3), equilibrium shifts forward to form intense royal-blue $[\text{CoCl}_4]^{2-}$. In an ice bath ($0^\circ\text{C}$, Tube 4), it shifts backward to pink $[\text{Co(H}_2\text{O})_6]^{2+}$.</li>
+          <li><strong>Adding Conc. HCl:</strong> Increases $[\text{Cl}^-]$, driving equilibrium forward to produce royal blue.</li>
+          <li><strong>Dilution with Water:</strong> Favors the side with more water molecules (reverse), turning pink.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/app.js"></script>
+</body>
+</html>
