@@ -6,6 +6,22 @@
  * and precision digital probe instrumentation.
  */
 
+// Safe CanvasRenderingContext2D.roundRect Polyfill
+if (typeof CanvasRenderingContext2D !== 'undefined' && !CanvasRenderingContext2D.prototype.roundRect) {
+  CanvasRenderingContext2D.prototype.roundRect = function (x, y, w, h, radii) {
+    let r = radii || 0;
+    if (Array.isArray(r)) r = r[0] || 0;
+    r = Math.min(r, Math.abs(w) / 2, Math.abs(h) / 2);
+    this.moveTo(x + r, y);
+    this.arcTo(x + w, y, x + w, y + h, r);
+    this.arcTo(x + w, y + h, x, y + h, r);
+    this.arcTo(x, y + h, x, y, r);
+    this.arcTo(x, y, x + w, y, r);
+    this.closePath();
+    return this;
+  };
+}
+
 class SoundEngine {
   constructor() {
     this.ctx = null;
@@ -259,20 +275,20 @@ class CalorimeterSimulation {
     this.sliderWater = document.getElementById('sliderWater');
     this.valWater = document.getElementById('valWater');
     this.chkStirrer = document.getElementById('chkStirrer');
-    this.btnStart = document.getElementById('btnStart');
-    this.btnReset = document.getElementById('btnReset');
+    this.btnStart = document.getElementById('btnStartReaction') || document.getElementById('btnStart');
+    this.btnReset = document.getElementById('btnResetCalorimeter') || document.getElementById('btnReset');
     this.btnResetAll = document.getElementById('btnResetAll');
-    this.btnSound = document.getElementById('btnSound');
+    this.btnSound = document.getElementById('btnAudioToggle') || document.getElementById('btnSound');
 
     // Telemetry readouts
     this.readoutTemp = document.getElementById('readoutTemp');
     this.readoutDeltaT = document.getElementById('readoutDeltaT');
-    this.readoutHeat = document.getElementById('readoutHeat');
-    this.readoutDeltaH = document.getElementById('readoutDeltaH');
+    this.readoutHeat = document.getElementById('readoutQ') || document.getElementById('readoutHeat');
+    this.readoutDeltaH = document.getElementById('readoutEnthalpy') || document.getElementById('readoutDeltaH');
     this.readoutType = document.getElementById('readoutType');
 
     // Modals
-    this.btnTheory = document.getElementById('btnTheory');
+    this.btnTheory = document.getElementById('btnOpenTheory') || document.getElementById('btnTheory');
     this.modalTheory = document.getElementById('modalTheory');
     this.btnCloseTheory = document.getElementById('btnCloseTheory');
 
