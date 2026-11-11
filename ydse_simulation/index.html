@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Young's Double Slit Experiment &amp; Wave Interference | NCERT Class 12 Physics</title>
+  <meta name="description" content="Interactive STEM physics simulation for Young's Double Slit Experiment (YDSE). Explore wave interference, fringe width, diffraction envelope, path difference, thin sheet shift, and white light fringes.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+  <!-- APP HEADER -->
+  <header class="app-header">
+    <div class="header-container">
+      <div class="brand-wrapper">
+        <div class="brand-icon">🌊</div>
+        <div>
+          <div style="display: flex; align-items: center;">
+            <h1 class="brand-title">YDSEOpticsLab</h1>
+            <span class="brand-tag">NCERT Class 12 &amp; AP Physics</span>
+          </div>
+          <div class="brand-sub">Young's Double Slit Experiment &amp; Optical Wave Interference Virtual Laboratory</div>
+        </div>
+      </div>
+
+      <div class="header-actions">
+        <button id="btnOpenTheory" class="action-btn btn-primary" title="View theoretical equations and derivations">
+          <span>📚</span> Theory &amp; Formulas
+        </button>
+        <button id="btnAudioToggle" class="action-btn" title="Toggle audio feedback">
+          🔊 Sound: ON
+        </button>
+        <button id="btnResetAll" class="action-btn" title="Reset all simulation values">
+          <span>↺</span> Reset All
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN WORKSPACE -->
+  <main class="main-layout">
+
+    <!-- LEFT: Optical Bench & Telemetry -->
+    <div class="canvas-section">
+
+      <!-- Canvas Viewport -->
+      <div class="canvas-viewport-card">
+        <div class="canvas-header-bar">
+          <span>Interactive Optical Bench &mdash; Drag the yellow photometer probe on the screen to sample intensity</span>
+        </div>
+        <div class="canvas-container">
+          <canvas id="simCanvas"></canvas>
+          <div class="canvas-overlay-hint">
+            <div class="hud-pill">💡 Tip: Click and drag along the projection screen to move the photometer sensor</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Telemetry Cards Grid -->
+      <div class="telemetry-grid">
+        <div class="telemetry-card">
+          <div class="telemetry-card-title">Fringe Width (&beta;)</div>
+          <div id="teleFringeWidth" class="telemetry-card-val">3.120 mm</div>
+          <div class="telemetry-card-sub">&beta; = &lambda;D / d</div>
+        </div>
+
+        <div class="telemetry-card">
+          <div class="telemetry-card-title">Angular Fringe Width (&theta;)</div>
+          <div id="teleAngularWidth" class="telemetry-card-val">2.60 mrad</div>
+          <div class="telemetry-card-sub">&theta; = &lambda; / d = &beta; / D</div>
+        </div>
+
+        <div class="telemetry-card">
+          <div class="telemetry-card-title">Probe Position (y)</div>
+          <div id="teleProbePos" class="telemetry-card-val">+0.00 mm</div>
+          <div class="telemetry-card-sub">Distance from central axis</div>
+        </div>
+
+        <div class="telemetry-card">
+          <div class="telemetry-card-title">Path Difference (&Delta;x)</div>
+          <div id="telePathDiff" class="telemetry-card-val">0.00 µm (n=0.00)</div>
+          <div class="telemetry-card-sub">&Delta;x = y&middot;d / D</div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- RIGHT: Control Sidebar -->
+    <aside class="control-sidebar">
+
+      <!-- Parameters Panel -->
+      <div class="control-panel">
+        <div class="panel-title">
+          <span>Aperture &amp; Light Source</span>
+        </div>
+
+        <!-- Wavelength Slider -->
+        <div class="control-group">
+          <div class="control-label">
+            <span>Wavelength (&lambda;)</span>
+            <span id="valWavelength" class="control-val-badge">650 nm</span>
+          </div>
+          <input type="range" id="sliderWavelength" min="400" max="700" step="5" value="650">
+
+          <!-- Color Preset Pills -->
+          <div class="preset-pills">
+            <button class="pill-btn" data-wavelength="405">
+              <span class="color-dot" style="background:#8B5CF6;"></span> 405nm Violet
+            </button>
+            <button class="pill-btn" data-wavelength="470">
+              <span class="color-dot" style="background:#3B82F6;"></span> 470nm Blue
+            </button>
+            <button class="pill-btn" data-wavelength="532">
+              <span class="color-dot" style="background:#10B981;"></span> 532nm Green
+            </button>
+            <button class="pill-btn" data-wavelength="589">
+              <span class="color-dot" style="background:#F59E0B;"></span> 589nm Sodium
+            </button>
+            <button class="pill-btn active" data-wavelength="650">
+              <span class="color-dot" style="background:#EF4444;"></span> 650nm Red
+            </button>
+            <button class="pill-btn" data-wavelength="white">
+              <span class="color-dot" style="background:linear-gradient(90deg, red, yellow, green, blue);"></span> White Light
+            </button>
+          </div>
+        </div>
+
+        <!-- Slit Separation (d) -->
+        <div class="control-group">
+          <div class="control-label">
+            <span>Slit Separation (d)</span>
+            <span id="valSlitDistance" class="control-val-badge">0.25 mm</span>
+          </div>
+          <input type="range" id="sliderSlitDistance" min="0.10" max="0.80" step="0.01" value="0.25">
+        </div>
+
+        <!-- Screen Distance (D) -->
+        <div class="control-group">
+          <div class="control-label">
+            <span>Screen Distance (D)</span>
+            <span id="valScreenDistance" class="control-val-badge">1.20 m</span>
+          </div>
+          <input type="range" id="sliderScreenDistance" min="0.50" max="2.20" step="0.05" value="1.20">
+        </div>
+
+        <!-- Slit Width (a) -->
+        <div class="control-group">
+          <div class="control-label">
+            <span>Slit Width (a)</span>
+            <span id="valSlitWidth" class="control-val-badge">0.04 mm</span>
+          </div>
+          <input type="range" id="sliderSlitWidth" min="0.01" max="0.10" step="0.005" value="0.04">
+        </div>
+      </div>
+
+      <!-- Advanced Optics Options -->
+      <div class="control-panel">
+        <div class="panel-title">
+          <span>Thin Sheet &amp; Overlays</span>
+        </div>
+
+        <!-- Thin Sheet Toggle -->
+        <label class="toggle-wrapper">
+          <span>Insert Mica Sheet in S₁</span>
+          <div class="switch">
+            <input type="checkbox" id="toggleThinSheet">
+            <span class="slider-round"></span>
+          </div>
+        </label>
+
+        <!-- Sheet Thickness Slider (Conditional) -->
+        <div id="sheetThicknessGroup" class="control-group" style="display: none; margin-top: 8px;">
+          <div class="control-label">
+            <span>Sheet Thickness (t)</span>
+            <span id="valSheetThickness" class="control-val-badge">3.0 µm</span>
+          </div>
+          <input type="range" id="sliderSheetThickness" min="0.5" max="8.0" step="0.5" value="3.0">
+          <div style="font-size: 11px; color: var(--text-muted); margin-top: 4px;">Refractive Index: &mu; = 1.55 (Mica)</div>
+        </div>
+
+        <!-- Wavefronts Toggle -->
+        <label class="toggle-wrapper">
+          <span>Huygens Wavefronts</span>
+          <div class="switch">
+            <input type="checkbox" id="toggleWavefronts" checked>
+            <span class="slider-round"></span>
+          </div>
+        </label>
+
+        <!-- Intensity Profile Toggle -->
+        <label class="toggle-wrapper">
+          <span>Intensity Profile Curve I(y)</span>
+          <div class="switch">
+            <input type="checkbox" id="toggleIntensity" checked>
+            <span class="slider-round"></span>
+          </div>
+        </label>
+
+        <!-- Geometric Rays Toggle -->
+        <label class="toggle-wrapper">
+          <span>Sensor Tracking Rays</span>
+          <div class="switch">
+            <input type="checkbox" id="toggleRays" checked>
+            <span class="slider-round"></span>
+          </div>
+        </label>
+      </div>
+
+    </aside>
+
+  </main>
+
+  <!-- THEORY MODAL -->
+  <div id="modalTheory" class="modal-backdrop">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h2>Young's Double Slit Experiment &mdash; Theoretical Principles</h2>
+        <button id="btnCloseTheory" class="modal-close-btn">&times;</button>
+      </div>
+      <div class="modal-body">
+        <h3>1. Wave Superposition &amp; Path Difference</h3>
+        <p>When light from a monochromatic coherent source passes through two narrow slits <strong>S₁</strong> and <strong>S₂</strong> separated by distance <em>d</em>, each slit acts as a secondary source of spherical wavelets (Huygens' Principle). The optical path difference &Delta;x to a point <em>P</em> at distance <em>y</em> on a screen placed at distance <em>D</em> is:</p>
+        <div class="formula-box">&Delta;x = S₂P &minus; S₁P &approx; (y &middot; d) / D</div>
+
+        <h3>2. Conditions for Maxima and Minima</h3>
+        <ul>
+          <li><strong>Constructive Interference (Bright Fringes / Maxima):</strong> Occurs when waves arrive in phase, i.e., path difference is an integral multiple of wavelength:
+            <div class="formula-box">&Delta;x = n &middot; &lambda; &rArr; y_n = (n &middot; &lambda; &middot; D) / d, &nbsp; where n = 0, &plusmn;1, &plusmn;2, ...</div>
+          </li>
+          <li><strong>Destructive Interference (Dark Fringes / Minima):</strong> Occurs when waves arrive out of phase by &pi; radians, i.e., path difference is an odd half-integral multiple of wavelength:
+            <div class="formula-box">&Delta;x = (2n &minus; 1) &middot; (&lambda; / 2) &rArr; y_n' = (2n &minus; 1) &middot; (&lambda;D / 2d), &nbsp; where n = &plusmn;1, &plusmn;2, ...</div>
+          </li>
+        </ul>
+
+        <h3>3. Fringe Width (&beta;) &amp; Angular Width (&theta;)</h3>
+        <p>The separation between any two successive bright fringes (or two successive dark fringes) is constant across the interference pattern:</p>
+        <div class="formula-box">&beta; = y_{n+1} &minus; y_n = (&lambda; &middot; D) / d</div>
+        <p>The angular fringe width subtended at the slits is independent of the screen distance <em>D</em>:</p>
+        <div class="formula-box">&theta; = &beta; / D = &lambda; / d</div>
+
+        <h3>4. Insertion of a Thin Transparent Sheet (Mica / Glass)</h3>
+        <p>If a thin transparent film of thickness <em>t</em> and refractive index <em>&mu;</em> is inserted in front of slit S₁, light slows down in the medium ($v = c/\mu$). The additional optical path introduced is $(\mu - 1)t$. This shifts the entire fringe pattern upward toward the side with the sheet by:</p>
+        <div class="formula-box">&Delta;y_{shift} = (D / d) &middot; (&mu; &minus; 1) &middot; t</div>
+        <p>Importantly, the fringe width &beta; remains completely unaltered; only the position of the central zeroth-order maximum shifts.</p>
+
+        <h3>5. White Light vs. Monochromatic Light</h3>
+        <p>With monochromatic light, identical bright and dark fringes extend outward. With white light (polychromatic):</p>
+        <ul>
+          <li>The central maximum ($n=0$) has zero path difference for all wavelengths, producing a sharp <strong>white central fringe</strong>.</li>
+          <li>The first bright fringe closest to center is violet (since $\lambda_{violet} < \lambda_{red}$ so $\beta_{violet} < \beta_{red}$), followed by blue, green, and red on the outside.</li>
+          <li>After a few colored fringes, overlapping maxima of different wavelengths wash out into uniform white illumination.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/app.js"></script>
+</body>
+</html>

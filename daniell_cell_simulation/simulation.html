@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Galvanic Daniell Cell &amp; Nernst Equation | NCERT Class 12 Chemistry</title>
+  <meta name="description" content="Interactive STEM electrochemistry virtual lab exploring the Galvanic Daniell Cell, Nernst equation, Gibbs free energy, removable salt bridge, and Drude electron drift.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+  <!-- APP HEADER -->
+  <header class="app-header">
+    <div class="header-container">
+      <div class="brand-wrapper">
+        <div class="brand-icon">🔋</div>
+        <div>
+          <div style="display: flex; align-items: center;">
+            <h1 class="brand-title">DaniellCellLab</h1>
+            <span class="brand-tag">NCERT Class 12 Electrochemistry</span>
+          </div>
+          <div class="brand-sub">Galvanic Daniell Cell &amp; Nernst Equation Thermodynamics Virtual Laboratory</div>
+        </div>
+      </div>
+
+      <div class="header-actions">
+        <button id="btnOpenTheory" class="action-btn btn-primary" title="View electrochemical cell reactions and Nernst derivation">
+          <span>📚</span> Theory &amp; Formulas
+        </button>
+        <button id="btnAudioToggle" class="action-btn" title="Toggle audio feedback">
+          🔊 Sound: ON
+        </button>
+        <button id="btnResetAll" class="action-btn" title="Reset all simulation values">
+          <span>↺</span> Reset All
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN WORKSPACE -->
+  <main class="main-layout">
+
+    <!-- LEFT: Apparatus & Telemetry -->
+    <div class="canvas-section">
+
+      <!-- Canvas Viewport -->
+      <div class="canvas-viewport-card">
+        <div class="canvas-header-bar">
+          <span>Interactive Electrochemical Bench &mdash; Toggle the salt bridge or modulate ion concentrations</span>
+        </div>
+        <div class="canvas-container">
+          <canvas id="simCanvas"></canvas>
+          <div class="canvas-overlay-hint">
+            <div class="hud-pill">💡 Tip: Removing the salt bridge breaks the internal circuit, instantly dropping cell EMF to 0.000 V</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Telemetry Cards Grid -->
+      <div class="telemetry-grid">
+        <div class="telemetry-card">
+          <div class="telemetry-card-title">Cell Potential (E_cell)</div>
+          <div id="teleEMF" class="telemetry-card-val">1.130 V</div>
+          <div class="telemetry-card-sub">Nernst EMF at current T &amp; Q</div>
+        </div>
+
+        <div class="telemetry-card">
+          <div class="telemetry-card-title">Gibbs Free Energy (&Delta;G)</div>
+          <div id="teleDeltaG" class="telemetry-card-val">-218.0 kJ/mol</div>
+          <div class="telemetry-card-sub">&Delta;G = &minus;nFE_cell (Spontaneous)</div>
+        </div>
+
+        <div class="telemetry-card">
+          <div class="telemetry-card-title">Reaction Quotient (Q)</div>
+          <div id="teleQuotient" class="telemetry-card-val">Q = 0.1000</div>
+          <div class="telemetry-card-sub">[Zn²⁺] / [Cu²⁺]</div>
+        </div>
+
+        <div class="telemetry-card">
+          <div class="telemetry-card-title">Circuit State</div>
+          <div id="teleCircuitState" class="telemetry-card-val" style="color:#10B981;">Closed &amp; Operating</div>
+          <div class="telemetry-card-sub">Internal liquid junction</div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- RIGHT: Control Sidebar -->
+    <aside class="control-sidebar">
+
+      <!-- Ion Concentrations -->
+      <div class="control-panel">
+        <div class="panel-title">
+          <span>Electrolyte Concentrations</span>
+        </div>
+
+        <!-- Zn2+ Concentration Slider -->
+        <div class="control-group">
+          <div class="control-label">
+            <span>Anode: [Zn²⁺] Molarity</span>
+            <span id="valZn" class="control-val-badge">0.100 M</span>
+          </div>
+          <input type="range" id="sliderZn" min="0.001" max="2.000" step="0.005" value="0.100">
+        </div>
+
+        <!-- Cu2+ Concentration Slider -->
+        <div class="control-group">
+          <div class="control-label">
+            <span>Cathode: [Cu²⁺] Molarity</span>
+            <span id="valCu" class="control-val-badge">1.000 M</span>
+          </div>
+          <input type="range" id="sliderCu" min="0.001" max="2.000" step="0.005" value="1.000">
+        </div>
+      </div>
+
+      <!-- Temperature Regulation -->
+      <div class="control-panel">
+        <div class="panel-title">
+          <span>Cell Temperature</span>
+        </div>
+        <div class="control-group">
+          <div class="control-label">
+            <span>Temperature (T)</span>
+            <span id="valTemp" class="control-val-badge">25°C</span>
+          </div>
+          <input type="range" id="sliderTemp" min="0" max="80" step="1" value="25">
+          <div style="font-size: 11px; color: var(--text-muted); margin-top: 4px;">Standard reference: 25°C (298.15 K)</div>
+        </div>
+      </div>
+
+      <!-- Apparatus Controls -->
+      <div class="control-panel">
+        <div class="panel-title">
+          <span>Circuit Components</span>
+        </div>
+
+        <!-- Salt Bridge Toggle -->
+        <label class="toggle-wrapper">
+          <span>Salt Bridge (KCl in Agar)</span>
+          <div class="switch">
+            <input type="checkbox" id="toggleBridge" checked>
+            <span class="slider-round"></span>
+          </div>
+        </label>
+
+        <!-- Knife Switch Toggle -->
+        <label class="toggle-wrapper">
+          <span>External Circuit Switch</span>
+          <div class="switch">
+            <input type="checkbox" id="toggleSwitch" checked>
+            <span class="slider-round"></span>
+          </div>
+        </label>
+      </div>
+
+    </aside>
+
+  </main>
+
+  <!-- THEORY MODAL -->
+  <div id="modalTheory" class="modal-backdrop">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h2>Galvanic Daniell Cell &mdash; Theoretical Principles</h2>
+        <button id="btnCloseTheory" class="modal-close-btn">&times;</button>
+      </div>
+      <div class="modal-body">
+        <h3>1. Half-Cell Electrochemistry</h3>
+        <p>A Daniell cell converts spontaneous chemical redox energy into electrical energy using two half-cells:</p>
+        <ul>
+          <li><strong>Anode (Oxidation):</strong> Zinc strip immersed in ZnSO₄ solution. Zinc atoms lose electrons and enter solution as Zn²⁺ ions:
+            <div class="formula-box">Zn(s) &rarr; Zn²⁺(aq) + 2e⁻ &nbsp; (E&deg;_{ox} = +0.763 V)</div>
+          </li>
+          <li><strong>Cathode (Reduction):</strong> Copper strip immersed in CuSO₄ solution. Cu²⁺ ions in solution gain electrons and plate onto the copper strip:
+            <div class="formula-box">Cu²⁺(aq) + 2e⁻ &rarr; Cu(s) &nbsp; (E&deg;_{red} = +0.337 V)</div>
+          </li>
+        </ul>
+        <p>Overall cell reaction:</p>
+        <div class="formula-box">Zn(s) + Cu²⁺(aq) &rarr; Zn²⁺(aq) + Cu(s) &nbsp; (E&deg;_{cell} = +1.100 V at 298 K)</div>
+
+        <h3>2. Role of the Salt Bridge</h3>
+        <p>The salt bridge is an inverted U-tube filled with an inert agar-agar gel containing strong electrolytes such as <strong>KCl</strong> or <strong>KNO₃</strong> (chosen because K⁺ and Cl⁻ have nearly identical ionic mobilities, minimizing liquid junction potential):</p>
+        <ul>
+          <li><strong>Completes the internal electrical circuit</strong> by facilitating ion migration.</li>
+          <li><strong>Maintains electrical neutrality:</strong> As Zn²⁺ accumulates at the anode, Cl⁻ ions flow into the zinc beaker. As Cu²⁺ is consumed at the cathode leaving excess SO₄²⁻, K⁺ ions flow into the copper beaker.</li>
+          <li><strong>If the salt bridge is removed:</strong> Charges rapidly accumulate at both electrodes, creating an opposing back-EMF that immediately brings the current and cell voltage to zero.</li>
+        </ul>
+
+        <h3>3. The Nernst Equation</h3>
+        <p>For non-standard concentrations, the electromotive force (EMF) is governed by the Nernst Equation:</p>
+        <div class="formula-box">E_{cell} = E&deg;_{cell} &minus; (2.303 &middot; R &middot; T) / (n &middot; F) &middot; log₁₀(Q)</div>
+        <p>At 25&deg;C (298.15 K), with $n = 2$ and $Q = [\text{Zn}^{2+}] / [\text{Cu}^{2+}]$:</p>
+        <div class="formula-box">E_{cell} = 1.100 &minus; (0.0591 / 2) &middot; log₁₀([Zn²⁺] / [Cu²⁺])</div>
+        <ul>
+          <li>Decreasing [Zn²⁺] or increasing [Cu²⁺] increases cell EMF ($E_{cell} &gt; 1.10\text{ V}$).</li>
+          <li>Increasing [Zn²⁺] or decreasing [Cu²⁺] decreases cell EMF ($E_{cell} &lt; 1.10\text{ V}$).</li>
+        </ul>
+
+        <h3>4. Thermodynamic Gibbs Free Energy (&Delta;G)</h3>
+        <p>The electrical work done by the cell equals the decrease in Gibbs free energy:</p>
+        <div class="formula-box">&Delta;G = &minus;n &middot; F &middot; E_{cell}</div>
+        <p>Since $E_{cell} &gt; 0$, $\Delta G &lt; 0$, confirming that the galvanic cell reaction proceeds spontaneously.</p>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/app.js"></script>
+</body>
+</html>

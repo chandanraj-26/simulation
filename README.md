@@ -1,6 +1,6 @@
 # Interactive STEM Simulations & Virtual Labs Suite
 
-A collection of 43 interactive, client-side STEM virtual laboratories and simulations across Physics, Chemistry, and Biology built with HTML5 Canvas, modern Vanilla CSS, and JavaScript.
+A collection of 48 interactive, client-side STEM virtual laboratories and simulations across Physics, Chemistry, and Biology built with HTML5 Canvas, modern Vanilla CSS, and JavaScript.
 
 ---
 
@@ -279,6 +279,49 @@ A collection of 43 interactive, client-side STEM virtual laboratories and simula
 - **Joule Heating & Thermal Resistance Drift**: Resistor thermal glow and non-linear resistance drift $R(T) = R_0[1 + \alpha(T - T_0)]$ at elevated currents.
 - **Live V-I Characteristic Plot**: Real-time Cartesian coordinate plotting with operating point radar and 25-point experimental data logger.
 
+### 44. 🌊 [Young's Double Slit Experiment & Wave Interference (`/ydse_simulation`)](ydse_simulation/)
+- **Huygens Circular Wavefront Synthesis**: 60 FPS real-time rendering of concentric wavefront emissions propagating from slits $S_1$ and $S_2$, forming continuous hyperbola-shaped nodal and antinodal interference lines.
+- **Multispectral Wavelength Controls**: Continuous tuning from $400\text{ nm}$ to $700\text{ nm}$ alongside calibrated laser presets: Violet ($405\text{ nm}$), Blue ($470\text{ nm}$), Green ($532\text{ nm}$), Sodium Yellow ($589\text{ nm}$), and Red ($650\text{ nm}$).
+- **Polychromatic White Light Mode**: Real-time spectral integration demonstrating a crisp central white fringe flanked by violet-to-red colored bands that gradually transition into uniform diffuse illumination.
+- **Thin Mica Sheet Insertion & Fringe Shift**: Insert a transparent mica plate ($t \in [0.5, 8.0]\ \mu\text{m}, \mu = 1.55$) in front of slit $S_1$ to observe the upward spatial shift $\Delta y = \frac{D}{d}(\mu - 1)t$ while rigorously maintaining constant fringe width $\beta$.
+- **Draggable Photometer Sensor**: Move an interactive photometer sensor along the screen to measure exact position $y$, intensity ratio $I/I_0$, optical path difference $\Delta x$, and fringe order $n$, complete with procedural pitch-modulating audio feedback.
+
+### 45. ⚡ [Photoelectric Effect & Planck's Constant (`/photoelectric_simulation`)](photoelectric_simulation/)
+- **Evacuated Quartz Phototube Simulation**: 60 FPS real-time rendering of photons incident through a quartz window, surface electron ejection, and electric field acceleration/deceleration between curved cathode and collector anode.
+- **6 Authentic Metal Cathodes**: Explore Cesium ($\Phi_0 = 2.14\text{ eV}$), Potassium ($2.30\text{ eV}$), Sodium ($2.75\text{ eV}$), Calcium ($2.87\text{ eV}$), Zinc ($4.31\text{ eV}$, requiring UV light), and Platinum ($6.35\text{ eV}$).
+- **Continuous Photon Spectrum**: Tune wavelength from deep ultraviolet ($150\text{ nm}$) to infrared ($750\text{ nm}$) with live photon energy ($E = hc/\lambda$) and maximum kinetic energy ($K_{\max} = E - \Phi_0$) telemetry.
+- **Variable Retarding Potential & Stopping Voltage**: Smooth potentiometer adjusting voltage from $-4.00\text{ V}$ (retarding) to $+4.00\text{ V}$ (accelerating), demonstrating instantaneous electron turnback at $V \le -V_0$.
+- **Dual Live Characteristic Graphs**:
+  - **Photocurrent vs. Voltage ($I\text{--}V$)**: Shows saturation current plateau scaling with light intensity and exact $V$-intercept at $-V_0$.
+  - **Stopping Potential vs. Frequency ($V_0\text{--}\nu$)**: Plots the landmark linear relation whose slope directly yields $h/e \approx 4.14 \times 10^{-15}\text{ V}\cdot\text{s}$ and x-intercept yields threshold frequency $\nu_0$.
+
+### 46. ⚗️ [Redox Titration & Permanganometry (`/redox_titration_simulation`)](redox_titration_simulation/)
+- **Self-Indicating Permanganometry**: Standard $0.020\text{ M } \text{KMnO}_4$ reducing from deep violet $[{\text{MnO}_4}^-]$ to colorless $\text{Mn}^{2+}$ in acidic medium, with sharp permanent faint pink equivalence detection.
+- **Stoichiometric Redox Reactions**:
+  - Mohr's Salt: $5\text{Fe}^{2+} + \text{MnO}_4^- + 8\text{H}^+ \to 5\text{Fe}^{3+} + \text{Mn}^{2+} + 4\text{H}_2\text{O}$ ($1:5$ stoichiometry).
+  - Oxalic Acid: $5(\text{COOH})_2 + 2\text{MnO}_4^- + 6\text{H}^+ \to 10\text{CO}_2\uparrow + 2\text{Mn}^{2+} + 8\text{H}_2\text{O}$ ($2:5$ stoichiometry at $60\text{–}70^\circ\text{C}$).
+- **Interactive Laboratory Bench**: $50\text{ mL}$ glass burette with dark upper meniscus readouts, working multi-mode stopcock (Single Drop $+0.05\text{ mL}$, Slow Drip, Fast Stream), and magnetic stirrer hotplate with variable RPM, spinning Teflon bar, and liquid vortex.
+- **Live Potentiometric Redox Curve**: Real-time Nernst cell potential ($E_{\text{cell}}$ vs. $V_{\text{titrant}}$) graph with dynamic operating radar tracking the sharp sigmoidal inflection at equivalence ($V_{\text{eq}}$).
+
+### 47. 🔋 [Galvanic Daniell Cell & Nernst Equation (`/daniell_cell_simulation`)](daniell_cell_simulation/)
+- **Electrochemical Couple & Thermodynamics**: $\text{Zn}(s) | \text{Zn}^{2+}(aq) \parallel \text{Cu}^{2+}(aq) | \text{Cu}(s)$ with live Nernst equation $E_{\text{cell}} = E^\circ - \frac{2.303 RT}{2F}\log_{10}([\text{Zn}^{2+}]/[\text{Cu}^{2+}])$ and Gibbs free energy $\Delta G$ readouts.
+- **Draggable Removable Salt Bridge**: Inverted glass U-tube filled with $\text{KCl}$ agar gel. Toggle or remove the bridge to observe the immediate loss of liquid junction equilibrium and cell voltage dropping to $0.000\text{ V}$.
+- **Microscopic Charge Transport**: Real-time animation of Drude electron conduction along external copper leads from Zn anode ($-$) to Cu cathode ($+$), coupled with counter-ion migration ($\text{K}^+$ and $\text{Cl}^-$) inside the salt bridge.
+- **Continuous Concentration & Temperature Control**: Independently vary $[\text{Zn}^{2+}]$ and $[\text{Cu}^{2+}]$ from $0.001\text{ M}$ to $2.000\text{ M}$, and regulate temperature from $0^\circ\text{C}$ to $80^\circ\text{C}$.
+- **Live Cartesian Nernst Plot**: Real-time operating point radar plotting cell EMF against the reaction quotient $\log_{10} Q$, empirically demonstrating the theoretical slope $-\frac{2.303 RT}{2F} \approx -0.0296\text{ V/decade}$ at $25^\circ\text{C}$.
+
+### 48. 🧬 [Agarose Gel Electrophoresis & DNA Fingerprinting (`/gel_electrophoresis_simulation`)](gel_electrophoresis_simulation/)
+- **Molecular Sieving Simulation**: Models electric field migration ($E = V/L$) through a 3D porous agarose mesh, demonstrating that migration distance is inversely proportional to the logarithm of fragment size ($d \propto 1 / \log_{10}(\text{bp})$).
+- **6-Lane Experimental Setup**:
+  - Lane 1: 1 kb DNA Molecular Weight Ladder ($500\text{–}10,000\text{ bp}$).
+  - Lane 2: Crime Scene DNA Forensic Evidence.
+  - Lanes 3–5: Suspects 1, 2, and 3 DNA profiling (demonstrating exact match for Suspect 2).
+  - Lane 6: Plasmid restriction digest (uncut supercoiled vs. linearized double digest).
+- **Dual Visual Modes**:
+  - **Visible Light Mode**: Displays submerged loading wells, electrode electrolysis bubbling ($2\text{H}_2\text{O} \to 2\text{H}_2\uparrow + \text{O}_2\uparrow$), and blue tracking dyes (Bromophenol Blue and Xylene Cyanol).
+  - **UV Transilluminator Mode**: Simulates $312\text{ nm}$ ultraviolet excitation of intercalated GelGreen / Ethidium Bromide dyes, illuminating vibrant fluorescent glowing green DNA bands in the dark chamber.
+- **Interactive Band Reticle & Semi-Log Plot**: Hover over any DNA band to display exact base pair size and migration distance, with live semi-log calibration curve plotting $d$ vs $\log_{10}(\text{bp})$.
+
 ---
 
 ## 💻 Tech Stack
@@ -354,6 +397,26 @@ node server.js   # http://localhost:8107
 # Ohm's Law & V-I Characteristic Virtual Laboratory
 cd ohms_law_simulation
 python -m http.server 8114
+
+# Young's Double Slit Experiment & Wave Interference
+cd ydse_simulation
+node server.js   # http://localhost:8123
+
+# Photoelectric Effect & Planck's Constant Determination
+cd photoelectric_simulation
+node server.js   # http://localhost:8124
+
+# Redox Titration & Permanganometry Virtual Lab
+cd redox_titration_simulation
+node server.js   # http://localhost:8125
+
+# Galvanic Daniell Cell & Nernst Equation Virtual Lab
+cd daniell_cell_simulation
+node server.js   # http://localhost:8126
+
+# Agarose Gel Electrophoresis & DNA Fingerprinting
+cd gel_electrophoresis_simulation
+node server.js   # http://localhost:8127
 
 # Roller Coaster Kinematics & Loop Fail Dynamics
 cd roller_coaster_simulation

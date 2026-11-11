@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Agarose Gel Electrophoresis &amp; DNA Fingerprinting | NCERT Class 12 Biology</title>
+  <meta name="description" content="Interactive STEM biotechnology virtual lab exploring Agarose Gel Electrophoresis, molecular sieving, DNA ladder calibration, UV transillumination, and forensic DNA fingerprinting.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+  <!-- APP HEADER -->
+  <header class="app-header">
+    <div class="header-container">
+      <div class="brand-wrapper">
+        <div class="brand-icon">🧬</div>
+        <div>
+          <div style="display: flex; align-items: center;">
+            <h1 class="brand-title">GelElectrophoresisLab</h1>
+            <span class="brand-tag">NCERT Class 12 Biotechnology</span>
+          </div>
+          <div class="brand-sub">Agarose Gel Electrophoresis &amp; Forensic DNA Fingerprinting Virtual Laboratory</div>
+        </div>
+      </div>
+
+      <div class="header-actions">
+        <button id="btnOpenTheory" class="action-btn btn-primary" title="View molecular sieving and electrophoresis theory">
+          <span>📚</span> Theory &amp; Formulas
+        </button>
+        <button id="btnAudioToggle" class="action-btn" title="Toggle audio feedback">
+          🔊 Sound: ON
+        </button>
+        <button id="btnResetAll" class="action-btn" title="Reset all simulation values">
+          <span>↺</span> Reset All
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN WORKSPACE -->
+  <main class="main-layout">
+
+    <!-- LEFT: Apparatus & Telemetry -->
+    <div class="canvas-section">
+
+      <!-- Canvas Viewport -->
+      <div class="canvas-viewport-card">
+        <div class="canvas-header-bar">
+          <span>Submerged Horizontal Gel Bed &mdash; Toggle UV Light to visualize fluorescent DNA bands</span>
+        </div>
+        <div class="canvas-container">
+          <canvas id="simCanvas"></canvas>
+          <div class="canvas-overlay-hint">
+            <div class="hud-pill">💡 Tip: Switch on 'UV Transilluminator' to reveal glowing Ethidium Bromide / GelGreen DNA bands</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Telemetry Cards Grid -->
+      <div class="telemetry-grid">
+        <div class="telemetry-card">
+          <div class="telemetry-card-title">Run Duration</div>
+          <div id="teleTime" class="telemetry-card-val">0.0 min</div>
+          <div class="telemetry-card-sub">Simulated electrophoresis time</div>
+        </div>
+
+        <div class="telemetry-card">
+          <div class="telemetry-card-title">Tracking Dye Front</div>
+          <div id="teleDyeFront" class="telemetry-card-val">0% of Gel</div>
+          <div class="telemetry-card-sub">Bromophenol Blue (~350 bp)</div>
+        </div>
+
+        <div class="telemetry-card">
+          <div class="telemetry-card-title">Forensic Analysis</div>
+          <div id="teleForensicMatch" class="telemetry-card-val">Run gel ≥15m to resolve</div>
+          <div class="telemetry-card-sub">Crime Scene vs. Suspects</div>
+        </div>
+
+        <div class="telemetry-card">
+          <div class="telemetry-card-title">DC Power Supply</div>
+          <div id="telePowerState" class="telemetry-card-val">Standby (Paused)</div>
+          <div class="telemetry-card-sub">E = V / L field strength</div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- RIGHT: Control Sidebar -->
+    <aside class="control-sidebar">
+
+      <!-- Power Supply & Run Button -->
+      <div class="control-panel">
+        <div class="panel-title">
+          <span>Electrophoresis Power</span>
+        </div>
+        <button id="btnRun" class="btn-run-electrophoresis">⚡ Start Electrophoresis</button>
+
+        <!-- Voltage Slider -->
+        <div class="control-group" style="margin-top: 14px;">
+          <div class="control-label">
+            <span>Electric Potential (V)</span>
+            <span id="valVoltage" class="control-val-badge">100 V</span>
+          </div>
+          <input type="range" id="sliderVoltage" min="60" max="150" step="10" value="100">
+        </div>
+      </div>
+
+      <!-- Gel Density -->
+      <div class="control-panel">
+        <div class="panel-title">
+          <span>Agarose Matrix Density</span>
+        </div>
+        <div class="control-group">
+          <div class="control-label">
+            <span>Agarose Concentration</span>
+            <span id="valAgarose" class="control-val-badge">1.0%</span>
+          </div>
+          <input type="range" id="sliderAgarose" min="0.7" max="2.0" step="0.1" value="1.0">
+          <div style="font-size: 11px; color: var(--text-muted); margin-top: 4px;">Higher % retards migration, resolving smaller fragments</div>
+        </div>
+      </div>
+
+      <!-- Visualization Options -->
+      <div class="control-panel">
+        <div class="panel-title">
+          <span>Optical Visualization</span>
+        </div>
+
+        <!-- UV Transilluminator Toggle -->
+        <label class="toggle-wrapper">
+          <span>UV Transilluminator (312 nm)</span>
+          <div class="switch">
+            <input type="checkbox" id="toggleUV">
+            <span class="slider-round"></span>
+          </div>
+        </label>
+        <div style="font-size: 11px; color: var(--text-muted);">Excites intercalated fluorescent dye to reveal DNA bands</div>
+      </div>
+
+    </aside>
+
+  </main>
+
+  <!-- THEORY MODAL -->
+  <div id="modalTheory" class="modal-backdrop">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h2>Agarose Gel Electrophoresis &mdash; Theoretical Principles</h2>
+        <button id="btnCloseTheory" class="modal-close-btn">&times;</button>
+      </div>
+      <div class="modal-body">
+        <h3>1. Principle of DNA Electrophoresis</h3>
+        <p>DNA molecules possess a uniform negative electrical charge across their entire length due to the repeating negatively charged phosphate groups ($\text{PO}_4^{3-}$) along their sugar-phosphate backbone. When placed in an electric field, DNA fragments migrate toward the positive electrode (<strong>Anode, +</strong>):</p>
+        <div class="formula-box">Migration Direction: Cathode (&minus;) &rarr; Anode (+)</div>
+
+        <h3>2. Molecular Sieving Through Agarose Mesh</h3>
+        <p>Agarose forms a three-dimensional porous polymer network. Rather than separating by charge-to-mass ratio (which is virtually identical for all double-stranded DNA), separation occurs strictly via <strong>molecular sieving</strong>:</p>
+        <ul>
+          <li>Smaller DNA fragments slip easily through polymer pores and travel much faster/farther.</li>
+          <li>Larger fragments experience severe frictional hindrance and migrate slowly near the top.</li>
+        </ul>
+        <p>The relative migration distance <em>d</em> is inversely proportional to the logarithm of the fragment size (in base pairs, bp):</p>
+        <div class="formula-box">d &prop; 1 / log₁₀(Base Pairs)</div>
+
+        <h3>3. DNA Ladder Reference Standards</h3>
+        <p>A calibrated mixture of DNA fragments of known molecular weights (such as a 1 kb ladder) is run in Lane 1 alongside unknown samples. Plotting migration distance <em>d</em> against $\log_{10}(\text{bp})$ creates a linear calibration curve from which unknown fragment sizes can be deduced with high precision.</p>
+
+        <h3>4. UV Transillumination &amp; Intercalating Dyes</h3>
+        <p>Because DNA is colorless and transparent in solution, an intercalating fluorescent dye such as <strong>Ethidium Bromide (EtBr)</strong> or <strong>GelGreen</strong> is incorporated into the gel:</p>
+        <ul>
+          <li>The planar dye molecule slips between stacked DNA base pairs.</li>
+          <li>When irradiated with ultraviolet light ($\approx 302\text{–}365\text{ nm}$), the intercalated dye absorbs UV and fluoresces brightly in the visible spectrum ($\lambda \approx 590\text{ nm}$ orange or $530\text{ nm}$ green), revealing the discrete DNA bands.</li>
+        </ul>
+
+        <h3>5. DNA Fingerprinting &amp; Forensic Matching</h3>
+        <p>Forensic identification relies on hypervariable VNTRs (Variable Number Tandem Repeats) or STRs (Short Tandem Repeats) cut by specific restriction endonucleases. If the banding pattern of a suspect's DNA matches the crime scene evidence across multiple loci (as seen in <strong>Suspect 2</strong>), the probability of identity approaches certainty.</p>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/app.js"></script>
+</body>
+</html>

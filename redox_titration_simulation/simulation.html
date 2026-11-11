@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Redox Titration &amp; Permanganometry | NCERT Class 11 &amp; 12 Chemistry</title>
+  <meta name="description" content="Interactive STEM chemistry virtual lab exploring redox titration of KMnO4 against Mohr's Salt and Oxalic Acid, self-indicator endpoint detection, and potentiometric Nernst curves.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+  <!-- APP HEADER -->
+  <header class="app-header">
+    <div class="header-container">
+      <div class="brand-wrapper">
+        <div class="brand-icon">⚗️</div>
+        <div>
+          <div style="display: flex; align-items: center;">
+            <h1 class="brand-title">RedoxTitrationLab</h1>
+            <span class="brand-tag">NCERT Class 11 &amp; 12 Chemistry</span>
+          </div>
+          <div class="brand-sub">Permanganometry &amp; Potentiometric Equivalence Virtual Laboratory</div>
+        </div>
+      </div>
+
+      <div class="header-actions">
+        <button id="btnOpenTheory" class="action-btn btn-primary" title="View redox reaction mechanisms and Nernst equations">
+          <span>📚</span> Theory &amp; Formulas
+        </button>
+        <button id="btnAudioToggle" class="action-btn" title="Toggle audio feedback">
+          🔊 Sound: ON
+        </button>
+        <button id="btnResetAll" class="action-btn" title="Reset all simulation values">
+          <span>↺</span> Reset All
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN WORKSPACE -->
+  <main class="main-layout">
+
+    <!-- LEFT: Apparatus & Telemetry -->
+    <div class="canvas-section">
+
+      <!-- Canvas Viewport -->
+      <div class="canvas-viewport-card">
+        <div class="canvas-header-bar">
+          <span>Interactive Titration Bench &mdash; Dispense KMnO₄ and observe the pink endpoint</span>
+        </div>
+        <div class="canvas-container">
+          <canvas id="simCanvas"></canvas>
+          <div class="canvas-overlay-hint">
+            <div class="hud-pill">💡 Tip: Use 'Single Drop' near the 10.00 mL equivalence mark to catch the permanent faint pink tint</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Telemetry Cards Grid -->
+      <div class="telemetry-grid">
+        <div class="telemetry-card">
+          <div class="telemetry-card-title">Titrant Added (V)</div>
+          <div id="teleBuretteVol" class="telemetry-card-val">0.00 mL</div>
+          <div class="telemetry-card-sub">0.02 M KMnO₄ in burette</div>
+        </div>
+
+        <div class="telemetry-card">
+          <div class="telemetry-card-title">Redox Potential (E)</div>
+          <div id="telePotential" class="telemetry-card-val">0.650 V</div>
+          <div class="telemetry-card-sub">Nernst cell emf vs SHE</div>
+        </div>
+
+        <div class="telemetry-card">
+          <div class="telemetry-card-title">Fe³⁺ / Fe²⁺ Ratio</div>
+          <div id="teleFeRatio" class="telemetry-card-val">0.00</div>
+          <div class="telemetry-card-sub">Oxidation progression</div>
+        </div>
+
+        <div class="telemetry-card">
+          <div class="telemetry-card-title">Flask Indicator State</div>
+          <div id="teleIndicatorStatus" class="telemetry-card-val">Colorless (Before Eq)</div>
+          <div class="telemetry-card-sub">Self-indicating endpoint</div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- RIGHT: Control Sidebar -->
+    <aside class="control-sidebar">
+
+      <!-- Stopcock Dispenser -->
+      <div class="control-panel">
+        <div class="panel-title">
+          <span>Burette Stopcock</span>
+        </div>
+        <div class="stopcock-buttons">
+          <button id="btnDrop" class="titrate-btn btn-drop">💧 Single Drop (+0.05mL)</button>
+          <button id="btnStop" class="titrate-btn active">🛑 Stop (Closed)</button>
+          <button id="btnSlow" class="titrate-btn">⏳ Slow Drip</button>
+          <button id="btnFast" class="titrate-btn">🌊 Fast Stream</button>
+        </div>
+      </div>
+
+      <!-- Analyte Selection -->
+      <div class="control-panel">
+        <div class="panel-title">
+          <span>Primary Standard Analyte</span>
+        </div>
+        <div class="control-group">
+          <select id="selectAnalyte">
+            <option value="mohrs_salt" selected>Mohr's Salt [FeSO₄·(NH₄)₂SO₄·6H₂O] (25°C)</option>
+            <option value="oxalic_acid">Oxalic Acid [(COOH)₂·2H₂O] (60–70°C Warm Bath)</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Magnetic Stirrer -->
+      <div class="control-panel">
+        <div class="panel-title">
+          <span>Magnetic Stirrer Hotplate</span>
+        </div>
+        <div class="control-group">
+          <div class="control-label">
+            <span>Stirrer Speed</span>
+            <span id="valStirrer" class="control-val-badge">500 RPM</span>
+          </div>
+          <input type="range" id="sliderStirrer" min="0" max="1000" step="50" value="500">
+        </div>
+      </div>
+
+    </aside>
+
+  </main>
+
+  <!-- THEORY MODAL -->
+  <div id="modalTheory" class="modal-backdrop">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h2>Permanganometry &amp; Redox Titration &mdash; Theoretical Principles</h2>
+        <button id="btnCloseTheory" class="modal-close-btn">&times;</button>
+      </div>
+      <div class="modal-body">
+        <h3>1. Principle of Permanganate Titration</h3>
+        <p>Potassium permanganate (<strong>KMnO₄</strong>) is a powerful oxidizing agent in acidic medium. In dilute H₂SO₄, the purple MnO₄⁻ ion undergoes a 5-electron reduction to virtually colorless manganese(II) ion (Mn²⁺):</p>
+        <div class="formula-box">MnO₄⁻ + 8H⁺ + 5e⁻ &rarr; Mn²⁺ + 4H₂O &nbsp; (E&deg; = +1.51 V)</div>
+
+        <h3>2. Titration of Mohr's Salt (Ferrous Ammonium Sulfate)</h3>
+        <p>Mohr's salt provides stable Fe²⁺ ions that undergo 1-electron oxidation to Fe³⁺:</p>
+        <div class="formula-box">Fe²⁺ &rarr; Fe³⁺ + e⁻ &nbsp; (E&deg; = +0.77 V)</div>
+        <p>Multiplying the oxidation half-reaction by 5 gives the net stoichiometric ionic equation:</p>
+        <div class="formula-box">5Fe²⁺ + MnO₄⁻ + 8H⁺ &rarr; 5Fe³⁺ + Mn²⁺ + 4H₂O</div>
+        <p>Therefore, <strong>1 mole of KMnO₄ oxidizes exactly 5 moles of Fe²⁺</strong>.</p>
+
+        <h3>3. Self-Indicating Equivalence Point</h3>
+        <p>No external indicator is needed. As long as unreacted Fe²⁺ ions remain in the flask, incoming purple KMnO₄ is instantaneously reduced to colorless Mn²⁺. Once all Fe²⁺ is oxidized, <strong>a single excess drop of 0.02 M KMnO₄</strong> imparts a distinct, permanent faint pink color to the solution lasting for at least 30 seconds.</p>
+
+        <h3>4. Why Dilute H₂SO₄ Is Used (and Not HCl or HNO₃)</h3>
+        <ul>
+          <li><strong>HCl cannot be used:</strong> KMnO₄ oxidizes chloride ions (Cl⁻) to poisonous chlorine gas (Cl₂), causing erroneous over-consumption of titrant.</li>
+          <li><strong>HNO₃ cannot be used:</strong> Nitric acid is itself an oxidizing agent and would compete with KMnO₄ by oxidizing Fe²⁺.</li>
+          <li><strong>Dilute H₂SO₄ is ideal:</strong> Sulfate ions (SO₄²⁻) are completely resistant to further oxidation by KMnO₄.</li>
+        </ul>
+
+        <h3>5. Potentiometric Curve &amp; Nernst Equation</h3>
+        <p>The redox potential before equivalence follows the Fe³⁺/Fe²⁺ couple:</p>
+        <div class="formula-box">E = 0.771 + 0.0591 &middot; log₁₀([Fe³⁺] / [Fe²⁺])</div>
+        <p>At equivalence, the potential jumps sharply through the weighted formal potential:</p>
+        <div class="formula-box">E_{eq} = (5 &middot; E&deg;_{Mn} + E&deg;_{Fe}) / 6 &approx; 1.387 V</div>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/app.js"></script>
+</body>
+</html>

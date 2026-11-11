@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Photoelectric Effect &amp; Planck's Constant | NCERT Class 12 Physics</title>
+  <meta name="description" content="Interactive STEM physics virtual lab exploring Einstein's Photoelectric Equation, stopping potential, work function, threshold frequency, and Planck's constant determination.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+  <!-- APP HEADER -->
+  <header class="app-header">
+    <div class="header-container">
+      <div class="brand-wrapper">
+        <div class="brand-icon">⚡</div>
+        <div>
+          <div style="display: flex; align-items: center;">
+            <h1 class="brand-title">PhotoelectricLab</h1>
+            <span class="brand-tag">NCERT Class 12 &amp; Modern Physics</span>
+          </div>
+          <div class="brand-sub">Photoelectric Effect &amp; Planck's Constant (h/e) Virtual Laboratory</div>
+        </div>
+      </div>
+
+      <div class="header-actions">
+        <button id="btnOpenTheory" class="action-btn btn-primary" title="View theoretical principles and Einstein's equation">
+          <span>📚</span> Theory &amp; Formulas
+        </button>
+        <button id="btnAudioToggle" class="action-btn" title="Toggle audio feedback">
+          🔊 Sound: ON
+        </button>
+        <button id="btnResetAll" class="action-btn" title="Reset all simulation values">
+          <span>↺</span> Reset All
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN WORKSPACE -->
+  <main class="main-layout">
+
+    <!-- LEFT: Apparatus & Telemetry -->
+    <div class="canvas-section">
+
+      <!-- Canvas Viewport -->
+      <div class="canvas-viewport-card">
+        <div class="canvas-header-bar">
+          <span>Interactive Phototube &mdash; Adjust Retarding Potential and Light Wavelength</span>
+        </div>
+        <div class="canvas-container">
+          <canvas id="simCanvas"></canvas>
+          <div class="canvas-overlay-hint">
+            <div class="hud-pill">💡 Tip: Switch tabs in the sidebar to toggle between I-V curves and V₀-ν linear fit</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Telemetry Cards Grid -->
+      <div class="telemetry-grid">
+        <div class="telemetry-card">
+          <div class="telemetry-card-title">Photon Energy (E)</div>
+          <div id="telePhotonEnergy" class="telemetry-card-val">3.10 eV</div>
+          <div class="telemetry-card-sub">E = hc / &lambda;</div>
+        </div>
+
+        <div class="telemetry-card">
+          <div class="telemetry-card-title">Work Function (&Phi;₀)</div>
+          <div id="teleWorkFunction" class="telemetry-card-val">2.75 eV</div>
+          <div class="telemetry-card-sub">Cathode binding threshold</div>
+        </div>
+
+        <div class="telemetry-card">
+          <div class="telemetry-card-title">Max Kinetic Energy (K_max)</div>
+          <div id="teleMaxKE" class="telemetry-card-val">0.35 eV</div>
+          <div class="telemetry-card-sub">K_max = E &minus; &Phi;₀</div>
+        </div>
+
+        <div class="telemetry-card">
+          <div class="telemetry-card-title">Stopping Potential (V₀)</div>
+          <div id="teleStoppingPotential" class="telemetry-card-val">0.35 V</div>
+          <div class="telemetry-card-sub">e &middot; V₀ = K_max</div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- RIGHT: Control Sidebar -->
+    <aside class="control-sidebar">
+
+      <!-- Graph View Switcher -->
+      <div class="control-panel" style="padding: 12px 16px;">
+        <div class="panel-title" style="margin-bottom: 8px;">
+          <span>Characteristic Graph</span>
+        </div>
+        <div class="graph-tabs">
+          <button id="tabIV" class="tab-btn active">I vs. V Curve</button>
+          <button id="tabV0Nu" class="tab-btn">V₀ vs. &nu; (Planck h/e)</button>
+        </div>
+      </div>
+
+      <!-- Cathode Material -->
+      <div class="control-panel">
+        <div class="panel-title">
+          <span>Photocathode Material</span>
+        </div>
+        <div class="control-group">
+          <select id="selectMaterial">
+            <option value="cesium">Cesium (Cs) &mdash; &Phi; = 2.14 eV</option>
+            <option value="potassium">Potassium (K) &mdash; &Phi; = 2.30 eV</option>
+            <option value="sodium" selected>Sodium (Na) &mdash; &Phi; = 2.75 eV</option>
+            <option value="calcium">Calcium (Ca) &mdash; &Phi; = 2.87 eV</option>
+            <option value="zinc">Zinc (Zn) &mdash; &Phi; = 4.31 eV (UV)</option>
+            <option value="platinum">Platinum (Pt) &mdash; &Phi; = 6.35 eV (Deep UV)</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Incident Light Controls -->
+      <div class="control-panel">
+        <div class="panel-title">
+          <span>Incident Light Beam</span>
+        </div>
+
+        <!-- Wavelength Slider -->
+        <div class="control-group">
+          <div class="control-label">
+            <span>Wavelength (&lambda;)</span>
+            <span id="valWavelength" class="control-val-badge">400 nm</span>
+          </div>
+          <input type="range" id="sliderWavelength" min="150" max="750" step="5" value="400">
+        </div>
+
+        <!-- Intensity Slider -->
+        <div class="control-group">
+          <div class="control-label">
+            <span>Beam Intensity</span>
+            <span id="valIntensity" class="control-val-badge">60%</span>
+          </div>
+          <input type="range" id="sliderIntensity" min="0" max="100" step="5" value="60">
+        </div>
+      </div>
+
+      <!-- Circuit Potential Controls -->
+      <div class="control-panel">
+        <div class="panel-title">
+          <span>Collector Potential (V)</span>
+        </div>
+
+        <!-- Retarding Voltage Slider -->
+        <div class="control-group">
+          <div class="control-label">
+            <span>Voltage (Anode vs. Cathode)</span>
+            <span id="valVoltage" class="control-val-badge">+0.00 V</span>
+          </div>
+          <input type="range" id="sliderVoltage" min="-4.00" max="4.00" step="0.05" value="0.00">
+          <div style="display: flex; justify-content: space-between; font-size: 11px; color: var(--text-muted); margin-top: 4px;">
+            <span>-4.0V (Retarding)</span>
+            <span>0.0V</span>
+            <span>+4.0V (Accelerating)</span>
+          </div>
+        </div>
+      </div>
+
+    </aside>
+
+  </main>
+
+  <!-- THEORY MODAL -->
+  <div id="modalTheory" class="modal-backdrop">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h2>Einstein's Photoelectric Equation &mdash; Theoretical Principles</h2>
+        <button id="btnCloseTheory" class="modal-close-btn">&times;</button>
+      </div>
+      <div class="modal-body">
+        <h3>1. Discovery &amp; Wave Theory Failure</h3>
+        <p>Classical wave theory predicted that electron emission should occur at any light frequency if the intensity was high enough, with a noticeable time lag. Experiments by Hertz, Hallwachs, and Lenard revealed that:</p>
+        <ul>
+          <li>Emission is completely instantaneous (&lt; 10⁻⁹ s).</li>
+          <li>No electrons are emitted below a specific <strong>threshold frequency (&nu;₀)</strong>, regardless of intensity.</li>
+          <li>Maximum kinetic energy is independent of light intensity and depends solely on frequency.</li>
+        </ul>
+
+        <h3>2. Einstein's Photon Theory (1905)</h3>
+        <p>Albert Einstein explained the effect by proposing that light consists of discrete energy quanta called <strong>photons</strong>, each carrying energy:</p>
+        <div class="formula-box">E = h &middot; &nu; = (h &middot; c) / &lambda;</div>
+        <p>When a photon of energy <em>E</em> strikes a conduction electron, it transfers all its energy instantaneously in a 1-to-1 interaction. Part of the energy overcomes the metal binding barrier (<strong>Work Function, &Phi;₀</strong>), and the remaining energy becomes electron kinetic energy:</p>
+        <div class="formula-box">K_{max} = h&nu; &minus; &Phi;₀ = e &middot; V₀</div>
+
+        <h3>3. Stopping Potential (V₀) &amp; Determination of Planck's Constant</h3>
+        <p>By applying a negative (retarding) voltage to the collector plate, electrons are decelerated. The exact potential required to reduce photocurrent to zero is the <strong>stopping potential (V₀)</strong>:</p>
+        <div class="formula-box">V₀ = (h / e) &middot; &nu; &minus; (&Phi;₀ / e)</div>
+        <p>Plotting <em>V₀</em> against frequency <em>&nu;</em> yields a straight line with:</p>
+        <ul>
+          <li><strong>Slope:</strong> equal to <code>h / e &approx; 4.136 &times; 10⁻¹⁵ V&middot;s</code> (universal constant for all metals!).</li>
+          <li><strong>X-intercept:</strong> equal to the material's threshold frequency <code>&nu;₀ = &Phi;₀ / h</code>.</li>
+          <li><strong>Y-intercept:</strong> equal to negative work function potential <code>&minus;&Phi;₀ / e</code>.</li>
+        </ul>
+
+        <h3>4. Laws of Photoelectric Emission</h3>
+        <ol>
+          <li>For a given frequency (&nu; &gt; &nu;₀), the number of photoelectrons emitted per second (saturation photocurrent) is directly proportional to the incident light intensity.</li>
+          <li>The maximum kinetic energy and stopping potential increase linearly with frequency and are completely independent of intensity.</li>
+          <li>Emission occurs only when incident frequency exceeds threshold frequency (&nu; &ge; &nu;₀).</li>
+        </ol>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/app.js"></script>
+</body>
+</html>
