@@ -572,3 +572,4 @@ class LeChatelierSimulation {
 window.addEventListener('DOMContentLoaded', () => {
   window.sim = new LeChatelierSimulation();
 });
+

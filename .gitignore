@@ -15,3 +15,6 @@ __pycache__/
 .vscode/
 .idea/
 .env
+
+# Temporary uploaded images
+image*.png

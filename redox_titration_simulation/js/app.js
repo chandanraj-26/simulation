@@ -3,6 +3,22 @@
  * Strict Zero-Dependency Vanilla Web Standard & Simulation Guidelines
  */
 
+// Safe CanvasRenderingContext2D.roundRect Polyfill
+if (typeof CanvasRenderingContext2D !== 'undefined' && !CanvasRenderingContext2D.prototype.roundRect) {
+  CanvasRenderingContext2D.prototype.roundRect = function (x, y, w, h, radii) {
+    let r = radii || 0;
+    if (Array.isArray(r)) r = r[0] || 0;
+    r = Math.min(r, Math.abs(w) / 2, Math.abs(h) / 2);
+    this.moveTo(x + r, y);
+    this.arcTo(x + w, y, x + w, y + h, r);
+    this.arcTo(x + w, y + h, x, y + h, r);
+    this.arcTo(x, y + h, x, y, r);
+    this.arcTo(x, y, x + w, y, r);
+    this.closePath();
+    return this;
+  };
+}
+
 class RedoxTitrationSimulation {
   constructor() {
     this.canvas = document.getElementById('simCanvas');
@@ -115,10 +131,12 @@ class RedoxTitrationSimulation {
   }
 
   resize() {
-    const rect = this.canvas.parentElement.getBoundingClientRect();
+    if (!this.canvas) return;
+    const parent = this.canvas.parentElement;
+    const rect = parent ? parent.getBoundingClientRect() : null;
     this.dpr = window.devicePixelRatio || 1;
-    this.width = rect.width;
-    this.height = rect.height;
+    this.width = (rect && rect.width > 0) ? rect.width : (this.canvas.clientWidth || 800);
+    this.height = (rect && rect.height > 0) ? rect.height : (this.canvas.clientHeight || 520);
     this.canvas.width = Math.round(this.width * this.dpr);
     this.canvas.height = Math.round(this.height * this.dpr);
     this.ctx.setTransform(this.dpr, 0, 0, this.dpr, 0, 0);
@@ -363,6 +381,14 @@ class RedoxTitrationSimulation {
   }
 
   draw() {
+    if (!this.ctx) return;
+    const parent = this.canvas ? this.canvas.parentElement : null;
+    if (parent && parent.clientWidth > 0 && parent.clientHeight > 0) {
+      if (Math.abs(this.width - parent.clientWidth) > 2 || Math.abs(this.height - parent.clientHeight) > 2) {
+        this.resize();
+      }
+    }
+
     const { ctx, width, height } = this;
     ctx.clearRect(0, 0, width, height);
 
@@ -429,14 +455,14 @@ class RedoxTitrationSimulation {
     const buretteH = buretteBottomY - buretteTopY;
 
     // Liquid inside burette (KMnO4 deep purple)
-    const liquidTopY = buretteTopY + (this.titrantAdded / 50.0) * buretteH;
+    const buretteLiquidY = buretteTopY + (this.titrantAdded / 50.0) * buretteH;
     ctx.fillStyle = 'rgba(112, 26, 117, 0.85)';
-    ctx.fillRect(bx - buretteW * 0.5, liquidTopY, buretteW, buretteBottomY - liquidTopY);
+    ctx.fillRect(bx - buretteW * 0.5, buretteLiquidY, buretteW, buretteBottomY - buretteLiquidY);
 
     // Upper dark meniscus curve
     ctx.fillStyle = '#4A044E';
     ctx.beginPath();
-    ctx.ellipse(bx, liquidTopY, buretteW * 0.5, 3, 0, 0, Math.PI * 2);
+    ctx.ellipse(bx, buretteLiquidY, buretteW * 0.5, 3, 0, 0, Math.PI * 2);
     ctx.fill();
 
     // Glass walls
@@ -517,15 +543,15 @@ class RedoxTitrationSimulation {
     // Liquid inside flask
     const solutionColor = this.getFlaskSolutionColor();
     const liquidH = (flaskBottomY - flaskShoulderY) * 0.75;
-    const liquidTopY = flaskBottomY - liquidH;
+    const flaskLiquidY = flaskBottomY - liquidH;
 
     // Liquid Body polygon
     ctx.fillStyle = solutionColor;
     ctx.beginPath();
     ctx.moveTo(bx - flaskBaseW * 0.46, flaskBottomY);
     ctx.lineTo(bx + flaskBaseW * 0.46, flaskBottomY);
-    ctx.lineTo(bx + flaskBaseW * 0.28, liquidTopY);
-    ctx.lineTo(bx - flaskBaseW * 0.28, liquidTopY);
+    ctx.lineTo(bx + flaskBaseW * 0.28, flaskLiquidY);
+    ctx.lineTo(bx - flaskBaseW * 0.28, flaskLiquidY);
     ctx.closePath();
     ctx.fill();
 
@@ -534,12 +560,12 @@ class RedoxTitrationSimulation {
       const vortexDepth = Math.min(22, (this.stirrerSpeed / 1000) * 22);
       ctx.fillStyle = 'rgba(255, 255, 255, 0.4)';
       ctx.beginPath();
-      ctx.ellipse(bx, liquidTopY, flaskBaseW * 0.25, 4, 0, 0, Math.PI * 2);
+      ctx.ellipse(bx, flaskLiquidY, flaskBaseW * 0.25, 4, 0, 0, Math.PI * 2);
       ctx.fill();
 
       ctx.fillStyle = solutionColor;
       ctx.beginPath();
-      ctx.ellipse(bx, liquidTopY + vortexDepth * 0.5, 6, vortexDepth, 0, 0, Math.PI * 2);
+      ctx.ellipse(bx, flaskLiquidY + vortexDepth * 0.5, 6, vortexDepth, 0, 0, Math.PI * 2);
       ctx.fill();
     }
 

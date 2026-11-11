@@ -658,3 +658,4 @@ class DiffractionSimulation {
 window.addEventListener('DOMContentLoaded', () => {
   window.sim = new DiffractionSimulation();
 });
+

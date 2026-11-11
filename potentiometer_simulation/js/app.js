@@ -702,3 +702,4 @@ class PotentiometerSimulation {
 window.addEventListener('DOMContentLoaded', () => {
   window.sim = new PotentiometerSimulation();
 });
+

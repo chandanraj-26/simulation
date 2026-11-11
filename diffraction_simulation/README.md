@@ -16,3 +16,4 @@ cd diffraction_simulation
 node server.js   # http://localhost:8129
 ```
 Or open `index.html` directly in any modern browser.
+

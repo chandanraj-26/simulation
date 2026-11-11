@@ -56,3 +56,4 @@ const server = http.createServer((req, res) => {
 server.listen(PORT, () => {
   console.log(`Blood Grouping Virtual Laboratory running at http://localhost:${PORT}`);
 });
+

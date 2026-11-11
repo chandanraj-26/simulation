@@ -316,7 +316,7 @@ A collection of 53 interactive, client-side STEM virtual laboratories and simula
   - Lane 1: 1 kb DNA Molecular Weight Ladder ($500\text{–}10,000\text{ bp}$).
   - Lane 2: Crime Scene DNA Forensic Evidence.
   - Lanes 3–5: Suspects 1, 2, and 3 DNA profiling (demonstrating exact match for Suspect 2).
-  - Lane 6: Plasmid restriction digest (uncut supercoiled vs. linearized double digest).
+  - Lane 6: Plasmid restriction dig![alt text](image.png)est (uncut supercoiled vs. linearized double digest).
 - **Dual Visual Modes**:
   - **Visible Light Mode**: Displays submerged loading wells, electrode electrolysis bubbling ($2\text{H}_2\text{O} \to 2\text{H}_2\uparrow + \text{O}_2\uparrow$), and blue tracking dyes (Bromophenol Blue and Xylene Cyanol).
   - **UV Transilluminator Mode**: Simulates $312\text{ nm}$ ultraviolet excitation of intercalated GelGreen / Ethidium Bromide dyes, illuminating vibrant fluorescent glowing green DNA bands in the dark chamber.

@@ -24,3 +24,4 @@ cd blood_grouping_simulation
 node server.js
 ```
 Open [http://localhost:8132](http://localhost:8132) in any modern web browser.
+
